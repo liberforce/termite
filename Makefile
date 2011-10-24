@@ -3,7 +3,7 @@ CFLAGS=-O3 -funroll-loops -c
 LDFLAGS=-O2 -lm
 SOURCES=MyBot.c YourCode.c ants.c
 OBJECTS=$(SOURCES:.c=.o)
-EXECUTABLE=MyBot
+EXECUTABLE=termite
 
 all: $(OBJECTS) $(EXECUTABLE)
 
