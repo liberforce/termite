@@ -5,7 +5,8 @@
 
 // this header is basically self-documenting
 
-struct game_info {
+struct game_info 
+{
 	int loadtime;
 	int turntime;
 	int rows;
@@ -14,37 +15,41 @@ struct game_info {
 	int viewradius_sq;
 	int attackradius_sq;
 	int spawnradius_sq;
-    int seed;
+	int seed;
 	char *map;
 };
 
-struct basic_ant {
-    int row;
-    int col;
-    char player;
+struct basic_ant 
+{
+	int row;
+	int col;
+	char player;
 };
 
-struct my_ant {
-    int id;
-    int row;
-    int col;
+struct my_ant 
+{
+	int id;
+	int row;
+	int col;
 };
 
-struct food {
-    int row;
-    int col;
+struct food 
+{
+	int row;
+	int col;
 };
 
-struct game_state {
-    struct my_ant *my_ants;
-    struct basic_ant *enemy_ants;
-    struct food *food;
-    struct basic_ant *dead_ants;
-    
-    int my_count;
-    int enemy_count;
-    int food_count;
-    int dead_count;
+struct game_state
+{
+	struct my_ant *my_ants;
+	struct basic_ant *enemy_ants;
+	struct food *food;
+	struct basic_ant *dead_ants;
 
-    int my_ant_index;
+	int my_count;
+	int enemy_count;
+	int food_count;
+	int dead_count;
+
+	int my_ant_index;
 };
