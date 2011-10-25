@@ -7,9 +7,10 @@ ${there}/playgame.py                                        \
 	--end_wait=0.25                                     \
 	--nolaunch                                          \
 	--verbose                                           \
+	-e                                                  \
 	--log_dir ${there}/logs                             \
 	--turns 30                                          \
 	--map_file ${there}/maps/example/tutorial1.map      \
 	"$@"                                                \
 	termite                                             \
-	"python sample_bots/python/HunterBot.py" 
+	"python ${there}/sample_bots/python/HunterBot.py" 
