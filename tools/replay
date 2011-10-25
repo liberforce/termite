@@ -1,0 +1,4 @@
+#!/bin/sh
+this_script_dir="$(cd $(dirname $0) && pwd)"
+java -jar ${this_script_dir}/visualizer.jar $1
+
