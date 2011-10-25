@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-O3 -funroll-loops -c
 LDFLAGS=-O2 -lm
-SOURCES=MyBot.c YourCode.c ants.c
+SOURCES=MyBot.c YourCode.c ants.c ant.c
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=termite
 
