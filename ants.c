@@ -133,9 +133,6 @@ void _init_game (struct game_info *game_info, struct game_state *game_state)
 
 	game_state->food = malloc(food_count*sizeof(struct food));
 
-
-	int my_count_start = my_count;
-
 	for (i = 0; i < game_info->rows; ++i) 
 	{
 		for (j = 0; j < game_info->cols; ++j) 
