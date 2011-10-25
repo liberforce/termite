@@ -85,7 +85,7 @@ void do_turn(struct game_state *Game, struct game_info *Info) {
 		// Now we do our move
 
 		if (dir != -1)
-			bot_move_ant (ant, dir, Game, Info);
+			bot_move_ant (Game, Info, ant, dir);
 	}
 
 	// There are many ways to make this program better.
