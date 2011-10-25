@@ -10,7 +10,7 @@
 // struct game_info check ants.h. There is also a distance function
 // provided in bot.c
 
-void do_turn(struct game_state *Game, struct game_info *Info) {
+void bot_do_turn(struct game_state *Game, struct game_info *Info) {
 
 	// defining things just so we can do less writing
 	// UP and DOWN move up and down rows while LEFT and RIGHT

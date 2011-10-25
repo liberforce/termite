@@ -177,7 +177,7 @@ int main(int argc, char *argv[])
 
 			_init_map(skip_line, &Info);
 			_init_game(&Info, &Game);
-			do_turn(&Game, &Info);
+			bot_do_turn(&Game, &Info);
 			fprintf(stdout, "go\n");
 			fflush(stdout);
 		}
