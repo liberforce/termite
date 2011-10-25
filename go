@@ -7,7 +7,7 @@ ${there}/playgame.py                                        \
 	--end_wait=0.25                                     \
 	--nolaunch                                          \
 	--verbose                                           \
-	--log_dir ${there}/game_logs                        \
+	--log_dir ${there}/logs                             \
 	--turns 30                                          \
 	--map_file ${there}/maps/example/tutorial1.map      \
 	"$@"                                                \
