@@ -1,4 +1,5 @@
 #include "ants.h"
+#include "ant.h"
 
 // initializes the game_info structure on the very first turn
 // function is not called after the game has started
@@ -94,7 +95,7 @@ void _init_game(struct game_info *game_info, struct game_state *game_state) {
             ++enemy_count;
     }
 
-    struct my_ant *my_old = 0;
+    Ant *my_old = 0;
     int my_old_count = game_state->my_count;
 
     game_state->my_count = my_count;
@@ -112,7 +113,7 @@ void _init_game(struct game_info *game_info, struct game_state *game_state) {
     if (game_state->dead_ants != 0)
         free(game_state->dead_ants);
 
-    game_state->my_ants = malloc(my_count*sizeof(struct my_ant));
+    game_state->my_ants = malloc(my_count*sizeof(Ant));
 
     if (enemy_count > 0)
         game_state->enemy_ants = malloc(enemy_count*sizeof(struct basic_ant));
