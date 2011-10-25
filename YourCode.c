@@ -1,4 +1,5 @@
 #include "ants.h"
+#include "ant.h"
 
 // The following is an example program displaying a basic ai that
 // tries all possible directions and then moves in whichever one
@@ -24,14 +25,15 @@ void do_turn(struct game_state *Game, struct game_info *Info) {
     for (i = 0; i < Game->my_count; ++i) {
 
         // the location within the map array where our ant is currently
+        Ant *ant = &Game->my_ants[i];
 
-        int offset = Game->my_ants[i].row*Info->cols + Game->my_ants[i].col;
+        int offset = ant->row*Info->cols + ant->col;
 
         // defining things to do less writing again
 
-        #define ROW Game->my_ants[i].row
-        #define COL Game->my_ants[i].col
-        #define ID Game->my_ants[i].id
+        #define ROW ant->row
+        #define COL ant->col
+        #define ID  ant->id
 
         // Now here is the tricky part. We have to account for
         // the fact that the map wraps (when you go off one edge
@@ -82,7 +84,7 @@ void do_turn(struct game_state *Game, struct game_info *Info) {
         // Now we do our move
 
         if (dir != -1)
-            move(i, dir, Game, Info);
+            bot_move_ant (ant, dir, Game, Info);
     }
 
     // There are many ways to make this program better.

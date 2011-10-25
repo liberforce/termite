@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include "ant.h"
 
 // this header is basically self-documenting
 
@@ -26,13 +27,6 @@ struct basic_ant
 	char player;
 };
 
-struct my_ant 
-{
-	int id;
-	int row;
-	int col;
-};
-
 struct food 
 {
 	int row;
@@ -41,7 +35,7 @@ struct food
 
 struct game_state
 {
-	struct my_ant *my_ants;
+	Ant *my_ants;
 	struct basic_ant *enemy_ants;
 	struct food *food;
 	struct basic_ant *dead_ants;

@@ -1,4 +1,5 @@
 #include "ants.h"
+#include "ant.h"
 
 // returns the absolute value of a number; used in distance function
 
@@ -39,36 +40,35 @@ int distance (int row1, int col1, int row2, int col2, struct game_info *Info)
 
 // sends a move to the tournament engine and keeps track of ants new location
 
-void move(int index, char dir, struct game_state* Game, struct game_info* Info) 
+void bot_move_ant (struct game_state* Game, struct game_info* Info, Ant* ant, char dir) 
 {
-	fprintf(stdout, "O %i %i %c\n", Game->my_ants[index].row, Game->my_ants[index].col, dir);
+	fprintf(stdout, "O %i %i %c\n", ant->row, ant->col, dir);
 
-	switch (dir) {
+	switch (dir) 
+	{
 		case 'N':
-			if (Game->my_ants[index].row != 0)
-				Game->my_ants[index].row -= 1;
-			else
-				Game->my_ants[index].row = Info->rows - 1;
+			ant->row -= 1;
 			break;
 		case 'E':
-			if (Game->my_ants[index].col != Info->cols - 1)
-				Game->my_ants[index].col += 1;
-			else
-				Game->my_ants[index].col = 0;
+			ant->col += 1;
 			break;
 		case 'S':
-			if (Game->my_ants[index].row != Info->rows - 1)
-				Game->my_ants[index].row += 1;
-			else
-				Game->my_ants[index].row = 0;
+			ant->row += 1;
 			break;
 		case 'W':
-			if (Game->my_ants[index].col != 0)
-				Game->my_ants[index].col -= 1;
-			else
-				Game->my_ants[index].col = Info->cols - 1;
+			ant->col -= 1;
 			break;
 	}
+
+	if (ant->row == Info->rows)
+		ant->row = 0;
+	else if (ant->row == -1)
+		ant->row = Info->rows - 1;
+
+	if (ant->col == Info->cols)
+		ant->col = 0;
+	else if (ant->col == -1)
+		ant->col = Info->cols - 1;
 }
 
 // just a function that returns the string on a given line for i/o
