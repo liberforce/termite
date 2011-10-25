@@ -1,4 +1,5 @@
 #include "ants.h"
+#include "MyBot.h"
 #include "ant.h"
 
 // The following is an example program displaying a basic ai that

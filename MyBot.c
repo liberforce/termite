@@ -1,5 +1,7 @@
 #include "ants.h"
+#include "MyBot.h"
 #include "ant.h"
+#include "debug.h"
 
 // returns the absolute value of a number; used in distance function
 
