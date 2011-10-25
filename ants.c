@@ -116,12 +116,12 @@ void _init_game(struct game_info *game_info, struct game_state *game_state) {
     game_state->my_ants = malloc(my_count*sizeof(Ant));
 
     if (enemy_count > 0)
-        game_state->enemy_ants = malloc(enemy_count*sizeof(struct basic_ant));
+        game_state->enemy_ants = malloc(enemy_count*sizeof(Ant));
     else
         game_state->enemy_ants = 0;
 
     if (dead_count > 0)
-        game_state->dead_ants = malloc(dead_count*sizeof(struct basic_ant));
+        game_state->dead_ants = malloc(dead_count*sizeof(Ant));
     else
         game_state->dead_ants = 0;
 
@@ -165,19 +165,23 @@ void _init_game(struct game_info *game_info, struct game_state *game_state) {
                 else
                     game_state->my_ants[my_count].id = keep_id;
             }
-            else if (current > 64 && current < 91) {
+            else if (current > 64 && current < 91) 
+	    {
                 --dead_count;
 
-                game_state->dead_ants[dead_count].row = i;
-                game_state->dead_ants[dead_count].col = j;
-                game_state->dead_ants[dead_count].player = current;
+		Ant *dead = &game_state->dead_ants[dead_count];
+                ant_set_row (dead, i);
+                ant_set_col (dead, j);
+                ant_set_owner (dead, current);
             }
-            else {
+            else 
+	    {
                 --enemy_count;
 
-                game_state->enemy_ants[enemy_count].row = i;
-                game_state->enemy_ants[enemy_count].col = j;
-                game_state->enemy_ants[enemy_count].player = current;
+		Ant *enemy = &game_state->enemy_ants[enemy_count];
+                ant_set_row (enemy, i);
+                ant_set_col (enemy, j);
+                ant_set_owner (enemy, current);
             } 
         }
     }

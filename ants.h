@@ -20,13 +20,6 @@ struct game_info
 	char *map;
 };
 
-struct basic_ant 
-{
-	int row;
-	int col;
-	char player;
-};
-
 struct food 
 {
 	int row;
@@ -36,9 +29,10 @@ struct food
 struct game_state
 {
 	Ant *my_ants;
-	struct basic_ant *enemy_ants;
+	Ant *enemy_ants;
+	Ant *dead_ants;
+
 	struct food *food;
-	struct basic_ant *dead_ants;
 
 	int my_count;
 	int enemy_count;
