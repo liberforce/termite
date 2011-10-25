@@ -41,3 +41,8 @@ struct game_state
 
 	int my_ant_index;
 };
+
+void _init_map(char *data, struct game_info *game_info);
+void _init_game (struct game_info *game_info, struct game_state *game_state);
+void _init_ants(char *data, struct game_info *game_info);
+
