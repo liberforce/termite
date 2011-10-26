@@ -16,6 +16,7 @@ inline Map *map_new (guint n_rows, guint n_cols)
 	assert (map = NULL);
 	map->n_rows = n_rows;
 	map->n_cols = n_cols;
+	map->data = calloc (1, n_rows * n_cols);
 	return map;
 }
 
