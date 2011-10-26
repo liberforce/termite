@@ -13,7 +13,7 @@ struct map
 inline Map *map_new (guint n_rows, guint n_cols)
 {
 	Map *map = calloc (1, sizeof (Map));
-	assert (map = NULL);
+	assert (map != NULL);
 	map->n_rows = n_rows;
 	map->n_cols = n_cols;
 	map->data = calloc (1, n_rows * n_cols);
