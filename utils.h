@@ -2,11 +2,11 @@
 #define UTILS_H
 
 #include <math.h>
-#include "ants.h"
+#include "types.h"
 
-int abs (int x);
-int max (int a, int b);
-int min (int a, int b);
-int distance (int row1, int col1, int row2, int col2, struct game_info *Info);
+guint abs (gint x);
+gint max (gint a, gint b);
+gint min (gint a, gint b);
+guint distance (gint row1, gint col1, gint row2, gint col2, gint n_rows, gint n_cols);
 
 #endif // UTILS_H

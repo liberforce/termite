@@ -2,38 +2,36 @@
 
 // returns the absolute value of a number; used in distance function
 
-int abs (int x) 
+guint abs (gint x) 
 {
-	if (x >= 0)
-		return x;
-	return -x;
+	return (x >= 0) ? x : -x;
 }
 
-int max (int a, int b)
+gint max (gint a, gint b)
 {
 	return (a >= b) ? a : b;
 }
 
-int min (int a, int b)
+gint min (gint a, gint b)
 {
 	return (a <= b) ? a : b;
 }
 
 // returns the distance between two items on the grid accounting for map wrapping
 
-int distance (int row1, int col1, int row2, int col2, struct game_info *Info) 
+guint distance (gint row1, gint col1, gint row2, gint col2, gint n_rows, gint n_cols) 
 {
-	int dr, dc;
-	int abs1, abs2;
+	gint dr, dc;
+	gint abs1, abs2;
 
 	abs1 = abs(row1 - row2);
-	abs2 = Info->rows - abs(row1 - row2);
+	abs2 = n_rows - abs(row1 - row2);
 	dr = min (abs1, abs2);
 
 	abs1 = abs(col1 - col2);
-	abs2 = Info->cols - abs(col1 - col2);
+	abs2 = n_cols - abs(col1 - col2);
 	dc = min (abs1, abs2);
 
-	return sqrt(pow(dr, 2) + pow(dc, 2));
+	return sqrt(dr * dr + dc * dc);
 }
 
