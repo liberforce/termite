@@ -49,15 +49,18 @@ void termite_move_ant (struct game_state* Game, struct game_info* Info, Ant* ant
 			break;
 	}
 
-	if (ant_get_row (ant) == Info->rows)
+	guint n_rows = map_get_n_rows (Info->map);
+	guint n_cols = map_get_n_cols (Info->map);
+
+	if (ant_get_row (ant) == n_rows)
 		ant_set_row (ant, 0);
 	else if (ant_get_row (ant) == -1)
-		ant_set_row (ant, Info->rows - 1);
+		ant_set_row (ant, n_rows - 1);
 
-	if (ant_get_col (ant) == Info->cols)
+	if (ant_get_col (ant) == n_cols)
 		ant_set_col (ant, 0);
 	else if (ant_get_col (ant) == -1)
-		ant_set_col (ant, Info->cols - 1);
+		ant_set_col (ant, n_cols - 1);
 }
 
 // initializes the game_info structure on the very first turn
