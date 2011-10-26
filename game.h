@@ -1,9 +1,7 @@
-#ifndef ANTS_H
-#define ANTS_H
+#ifndef GAME_H
+#define GAME_H
 
 #include "ant.h"
-
-// this header is basically self-documenting
 
 struct game_info 
 {
@@ -41,4 +39,4 @@ struct game_state
 	int my_ant_index;
 };
 
-#endif // ANTS_H
+#endif // GAME_H

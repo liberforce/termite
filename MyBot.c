@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "ants.h"
+#include "game.h"
 #include "termite.h"
 #include "debug.h"
 

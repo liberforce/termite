@@ -1,7 +1,7 @@
 #ifndef TERMITE_H
 #define TERMITE_H
 
-#include "ants.h"
+#include "game.h"
 #include "ant.h"
 
 void termite_init_map(char *data, struct game_info *game_info);

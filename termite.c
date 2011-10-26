@@ -2,7 +2,6 @@
 #include <stdio.h>     // for stdout, stderr, fprintf
 #include <string.h>    // for memset, strcmp, strlen
 
-#include "ants.h"
 #include "termite.h"
 #include "ant.h"
 
