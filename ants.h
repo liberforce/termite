@@ -1,7 +1,9 @@
+#ifndef ANTS_H
+#define ANTS_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
 #include "ant.h"
 
 // this header is basically self-documenting
@@ -46,3 +48,4 @@ void _init_map(char *data, struct game_info *game_info);
 void _init_game (struct game_info *game_info, struct game_state *game_state);
 void _init_ants(char *data, struct game_info *game_info);
 
+#endif // ANTS_H
