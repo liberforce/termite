@@ -6,6 +6,21 @@
 #include "termite.h"
 #include "debug.h"
 
+void on_init_game (struct game_info *game_info, struct game_state *game_state)
+{
+	termite_init_game (game_info, game_state);
+}
+
+void on_init_map (char *data, struct game_info *game_info)
+{
+	termite_init_map (data, game_info);
+}
+
+void on_init_ants (char *data, struct game_info *game_info)
+{
+	termite_init_ants (data, game_info);
+}
+
 // just a function that returns the string on a given line for i/o
 // you don't need to worry about this
 
@@ -108,15 +123,15 @@ int main(int argc, char *argv[])
 			while (*++skip_line != '\n');
 			++skip_line;
 
-			_init_map(skip_line, &Info);
-			_init_game(&Info, &Game);
+			on_init_map(skip_line, &Info);
+			on_init_game(&Info, &Game);
 			termite_do_turn(&Game, &Info);
 			fprintf(stdout, "go\n");
 			fflush(stdout);
 		}
 		else if (action == 1)
 		{
-			_init_ants(data + 1, &Info);
+			on_init_ants(data + 1, &Info);
 
 			Game.my_ant_index = -1;
 
