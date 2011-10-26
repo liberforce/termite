@@ -5,6 +5,7 @@
 
 #include "termite.h"
 #include "ant.h"
+#include "map.h"
 
 void termite_do_turn (struct game_state *Game, struct game_info *Info)
 {
@@ -135,17 +136,22 @@ void termite_init_ants (char *data, struct game_info *game_info)
 
 void termite_init_game (struct game_info *game_info, struct game_state *game_state)
 {
-	int map_len = game_info->rows*game_info->cols;
+	Map *map = game_info->map;
+	guint map_len = map_get_length (map);
+	gchar *map_data = map_get_buffer (map);
+	gchar *map_end = map_data + map_len;
+	const guint n_rows = map_get_n_rows (map);
+	const guint n_cols = map_get_n_cols (map);
 
 	int my_count = 0;
 	int enemy_count = 0;
 	int food_count = 0;
 	int dead_count = 0;
-	int i, j;
+	guint i;
 
-	for (i = 0; i < map_len; ++i)
+	while (map_data < map_end)
 	{
-		char current = game_info->map[i];
+		gchar current = *map_data++;
 
 		if (current == '?' || current == '.' || current == '%')
 			continue;
@@ -191,11 +197,12 @@ void termite_init_game (struct game_info *game_info, struct game_state *game_sta
 
 	game_state->food = malloc(food_count*sizeof(struct food));
 
-	for (i = 0; i < game_info->rows; ++i) 
+	gint j;
+	for (i = 0; i < n_rows; ++i) 
 	{
-		for (j = 0; j < game_info->cols; ++j) 
+		for (j = 0; j < n_cols; ++j) 
 		{
-			char current = game_info->map[game_info->cols*i + j];
+			char current = map_get_content (map, i, j);
 			if (current == '?' || current == '.' || current == '%')
 				continue;
 
@@ -269,20 +276,28 @@ void termite_init_game (struct game_info *game_info, struct game_state *game_sta
 //    ?   = Unknown     (not used in latest engine version, unknowns are assumed to be land)
 
 
-void termite_init_map(char *data, struct game_info *game_info) 
+void termite_init_map (char *data, struct game_info *game_info) 
 {
-	if (game_info->map == 0) 
+	Map *map;
+	gchar *map_data;
+	guint map_len;
+
+	if (game_info->map == NULL)
 	{
-		game_info->map = malloc(game_info->rows*game_info->cols);
-		memset(game_info->map, '.', game_info->rows*game_info->cols);
+		game_info->map = map_new (game_info->rows, game_info->cols);
+		memset (map_get_buffer (game_info->map), '.', map_get_length (game_info->map));
 	}
 
-	int map_len = game_info->rows * game_info->cols;
+	map = game_info->map;
+	map_data = map_get_buffer (map);
+	map_len = map_get_length (map);
+
+
 	int i;
 
 	for (i = 0; i < map_len; ++i)
-		if (game_info->map[i] != '%')
-			game_info->map[i] = '.';
+		if (map_data[i] != '%')
+			map_data[i] = '.';
 
 	while (*data != 0) 
 	{
@@ -316,21 +331,21 @@ void termite_init_map(char *data, struct game_info *game_info)
 			var3 = *(tmp_data + jump);
 		}
 
-		int offset = row*game_info->cols + col;
+		int offset = row * map_get_n_cols (map) + col;
 
 		switch (*data)
 		{
 			case 'w':
-				game_info->map[offset] = '%';
+				map_data[offset] = '%';
 				break;
 			case 'a':
-				game_info->map[offset] = var3 + 49;
+				map_data[offset] = var3 + 49;
 				break;
 			case 'd':
-				game_info->map[offset] = var3 + 27;
+				map_data[offset] = var3 + 27;
 				break;
 			case 'f':
-				game_info->map[offset] = '*';
+				map_data[offset] = '*';
 				break;
 		}
 
@@ -343,61 +358,20 @@ char termite_choose_ant_direction (struct game_state *Game,
 		Ant *ant)
 {
 	assert (ant != NULL);
-	int offset = ant_get_row (ant) * Info->cols + ant_get_col (ant);
-
-	// defining things just so we can do less writing
-	// UP and DOWN move up and down rows while LEFT and RIGHT
-	// move side to side. The map is just one big array.
-
-#define UP -Info->cols
-#define DOWN Info->cols
-#define LEFT -1
-#define RIGHT 1
-
-	// Now here is the tricky part. We have to account for
-	// the fact that the map wraps (when you go off one edge
-	// you end up on the side of the map opposite that edge).
-	// This is done by checking to see if we are on the last
-	// row or column and if the direction we are taking would
-	// take us off the side of the map.
-	//
-	// For example, you can see here the West direction checks
-	// to see if we are in the first column, in which case "West"
-	// is a character a full row minus one from our location.
-
-	char obj_north, obj_east, obj_south, obj_west;
-
-	if (ant_get_col (ant) != 0)
-		obj_west = Info->map[offset + LEFT];
-	else
-		obj_west = Info->map[offset + Info->cols - 1];
-
-	if (ant_get_col (ant) != Info->cols - 1)
-		obj_east = Info->map[offset + RIGHT];
-	else
-		obj_east = Info->map[offset - Info->cols - 1];
-
-	if (ant_get_row (ant) != 0)
-		obj_north = Info->map[offset + UP];
-	else
-		obj_north = Info->map[offset + (Info->rows - 1)*Info->cols];
-
-	if (ant_get_row (ant) != Info->rows - 1)
-		obj_south = Info->map[offset + DOWN];
-	else
-		obj_south = Info->map[offset - (Info->rows - 1)*Info->cols];
 
 	char dir = DIR_NONE;
+	struct cardinals look = { 0 };
+
+	map_get_cardinals (Info->map, ant_get_row (ant), ant_get_col (ant), &look);
 
 	// cycle through the directions, pick one that works
-
-	if (obj_north != '%')
+	if (look.north != '%')
 		dir = DIR_NORTH;
-	else if (obj_east != '%')
+	else if (look.east != '%')
 		dir = DIR_EAST;
-	else if (obj_south != '%')
+	else if (look.south != '%')
 		dir = DIR_SOUTH;
-	else if (obj_west != '%')
+	else if (look.west != '%')
 		dir = DIR_WEST;
 
 	return dir;

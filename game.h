@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include "ant.h"
+#include "map.h"
 
 struct game_info 
 {
@@ -14,7 +15,7 @@ struct game_info
 	int attackradius_sq;
 	int spawnradius_sq;
 	int seed;
-	char *map;
+	Map *map;
 };
 
 struct food 
