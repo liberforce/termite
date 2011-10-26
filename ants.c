@@ -211,26 +211,30 @@ void _init_game (struct game_info *game_info, struct game_state *game_state)
 //    ?   = Unknown     (not used in latest engine version, unknowns are assumed to be land)
 
 
-void _init_map(char *data, struct game_info *game_info) {
-
-	if (game_info->map == 0) {
+void _init_map(char *data, struct game_info *game_info) 
+{
+	if (game_info->map == 0) 
+	{
 		game_info->map = malloc(game_info->rows*game_info->cols);
 		memset(game_info->map, '.', game_info->rows*game_info->cols);
 	}
 
-	int map_len = game_info->rows*game_info->cols;
-	int i = 0;
+	int map_len = game_info->rows * game_info->cols;
+	int i;
 
-	for (; i < map_len; ++i)
+	for (i = 0; i < map_len; ++i)
 		if (game_info->map[i] != '%')
 			game_info->map[i] = '.';
 
-	while (*data != 0) {
+	while (*data != 0) 
+	{
 		char *tmp_data = data;
 		int arg = 0;
 
-		while (*tmp_data != '\n') {
-			if (*tmp_data == ' ') {
+		while (*tmp_data != '\n')
+		{
+			if (*tmp_data == ' ')
+			{
 				*tmp_data = '\0';
 				++arg;
 			}
@@ -248,14 +252,16 @@ void _init_map(char *data, struct game_info *game_info) {
 		int col = atoi(tmp_data + jump);
 		char var3 = -1;
 
-		if (arg > 2) {
+		if (arg > 2)
+		{
 			jump += strlen(tmp_data + jump) + 1;
 			var3 = *(tmp_data + jump);
 		}
 
 		int offset = row*game_info->cols + col;
 
-		switch (*data) {
+		switch (*data)
+		{
 			case 'w':
 				game_info->map[offset] = '%';
 				break;

@@ -1,7 +1,10 @@
-#ifndef MYBOT_H
-#define MYBOT_H
+#ifndef TERMITE_H
+#define TERMITE_H
 
-void bot_move_ant (struct game_state* Game, struct game_info* Info, Ant* ant, char dir);
-void bot_do_turn (struct game_state *Game, struct game_info *Info);
+#include "ants.h"
+#include "ant.h"
 
-#endif // MYBOT_H
+void termite_move_ant (struct game_state* Game, struct game_info* Info, Ant* ant, char dir);
+void termite_do_turn (struct game_state *Game, struct game_info *Info);
+
+#endif // TERMITE_H

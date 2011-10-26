@@ -1,5 +1,6 @@
+#include <stdlib.h>
 #include "ants.h"
-#include "MyBot.h"
+#include "termite.h"
 #include "ant.h"
 
 // The following is an example program displaying a basic ai that
@@ -10,7 +11,8 @@
 // struct game_info check ants.h. There is also a distance function
 // provided in bot.c
 
-void bot_do_turn(struct game_state *Game, struct game_info *Info) {
+void termite_do_turn(struct game_state *Game, struct game_info *Info)
+{
 
 	// defining things just so we can do less writing
 	// UP and DOWN move up and down rows while LEFT and RIGHT
@@ -79,7 +81,7 @@ void bot_do_turn(struct game_state *Game, struct game_info *Info) {
 		// Now we do our move
 
 		if (dir != -1)
-			bot_move_ant (Game, Info, ant, dir);
+			termite_move_ant (Game, Info, ant, dir);
 	}
 
 	// There are many ways to make this program better.
@@ -89,3 +91,40 @@ void bot_do_turn(struct game_state *Game, struct game_info *Info) {
 	//
 	// Good luck!
 }
+
+// sends a move to the tournament engine and keeps track of ants new location
+
+void termite_move_ant (struct game_state* Game, struct game_info* Info, Ant* ant, char dir) 
+{
+	gint old_row = ant_get_row (ant);
+	gint old_col = ant_get_col (ant);
+
+	fprintf(stdout, "O %i %i %c\n", old_row, old_col, dir);
+
+	switch (dir) 
+	{
+		case 'N':
+			ant_set_row (ant, old_row - 1);
+			break;
+		case 'E':
+			ant_set_col (ant, old_col + 1);
+			break;
+		case 'S':
+			ant_set_row (ant, old_row + 1);
+			break;
+		case 'W':
+			ant_set_col (ant, old_col - 1);
+			break;
+	}
+
+	if (ant_get_row (ant) == Info->rows)
+		ant_set_row (ant, 0);
+	else if (ant_get_row (ant) == -1)
+		ant_set_row (ant, Info->rows - 1);
+
+	if (ant_get_col (ant) == Info->cols)
+		ant_set_col (ant, 0);
+	else if (ant_get_col (ant) == -1)
+		ant_set_col (ant, Info->cols - 1);
+}
+

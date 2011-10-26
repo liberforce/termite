@@ -1,43 +1,6 @@
 #include "ants.h"
-#include "MyBot.h"
-#include "ant.h"
+#include "termite.h"
 #include "debug.h"
-
-// sends a move to the tournament engine and keeps track of ants new location
-
-void bot_move_ant (struct game_state* Game, struct game_info* Info, Ant* ant, char dir) 
-{
-	gint old_row = ant_get_row (ant);
-	gint old_col = ant_get_col (ant);
-
-	fprintf(stdout, "O %i %i %c\n", old_row, old_col, dir);
-
-	switch (dir) 
-	{
-		case 'N':
-			ant_set_row (ant, old_row - 1);
-			break;
-		case 'E':
-			ant_set_col (ant, old_col + 1);
-			break;
-		case 'S':
-			ant_set_row (ant, old_row + 1);
-			break;
-		case 'W':
-			ant_set_col (ant, old_col - 1);
-			break;
-	}
-
-	if (ant_get_row (ant) == Info->rows)
-		ant_set_row (ant, 0);
-	else if (ant_get_row (ant) == -1)
-		ant_set_row (ant, Info->rows - 1);
-
-	if (ant_get_col (ant) == Info->cols)
-		ant_set_col (ant, 0);
-	else if (ant_get_col (ant) == -1)
-		ant_set_col (ant, Info->cols - 1);
-}
 
 // just a function that returns the string on a given line for i/o
 // you don't need to worry about this
@@ -143,7 +106,7 @@ int main(int argc, char *argv[])
 
 			_init_map(skip_line, &Info);
 			_init_game(&Info, &Game);
-			bot_do_turn(&Game, &Info);
+			termite_do_turn(&Game, &Info);
 			fprintf(stdout, "go\n");
 			fflush(stdout);
 		}
