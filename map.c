@@ -27,7 +27,40 @@ inline void map_free (Map *map)
 	free (map);
 }
 
-inline void map_get_cardinals (Map *map,
+inline gchar * map_get_buffer (Map *map)
+{
+	assert (map != NULL);
+	return map->data;
+}
+
+inline guint map_get_length (Map *map)
+{
+	assert (map != NULL);
+	return map->n_rows * map->n_cols;
+}
+
+inline guint map_get_n_rows (Map *map)
+{
+	assert (map != NULL);
+	return map->n_rows;
+}
+
+inline guint map_get_n_cols (Map *map)
+{
+	assert (map != NULL);
+	return map->n_cols;
+}
+
+inline gchar map_get_content (Map *map, gint row, gint col)
+{
+	assert (map != NULL);
+	assert (map->data != NULL);
+	assert (row < map->n_rows);
+	assert (col < map->n_cols);
+	return map->data[row * map->n_cols + col];
+}
+
+void map_get_cardinals (Map *map,
 		gint row,
 		gint col,
 		struct cardinals *seen)
