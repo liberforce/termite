@@ -7,33 +7,36 @@
 
 void bot_move_ant (struct game_state* Game, struct game_info* Info, Ant* ant, char dir) 
 {
-	fprintf(stdout, "O %i %i %c\n", ant->row, ant->col, dir);
+	gint old_row = ant_get_row (ant);
+	gint old_col = ant_get_col (ant);
+
+	fprintf(stdout, "O %i %i %c\n", old_row, old_col, dir);
 
 	switch (dir) 
 	{
 		case 'N':
-			ant->row -= 1;
+			ant_set_row (ant, old_row - 1);
 			break;
 		case 'E':
-			ant->col += 1;
+			ant_set_col (ant, old_col + 1);
 			break;
 		case 'S':
-			ant->row += 1;
+			ant_set_row (ant, old_row + 1);
 			break;
 		case 'W':
-			ant->col -= 1;
+			ant_set_col (ant, old_col - 1);
 			break;
 	}
 
-	if (ant->row == Info->rows)
-		ant->row = 0;
-	else if (ant->row == -1)
-		ant->row = Info->rows - 1;
+	if (ant_get_row (ant) == Info->rows)
+		ant_set_row (ant, 0);
+	else if (ant_get_row (ant) == -1)
+		ant_set_row (ant, Info->rows - 1);
 
-	if (ant->col == Info->cols)
-		ant->col = 0;
-	else if (ant->col == -1)
-		ant->col = Info->cols - 1;
+	if (ant_get_col (ant) == Info->cols)
+		ant_set_col (ant, 0);
+	else if (ant_get_col (ant) == -1)
+		ant_set_col (ant, Info->cols - 1);
 }
 
 // just a function that returns the string on a given line for i/o

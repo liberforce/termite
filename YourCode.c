@@ -28,13 +28,7 @@ void bot_do_turn(struct game_state *Game, struct game_info *Info) {
 		// the location within the map array where our ant is currently
 		Ant *ant = &Game->my_ants[i];
 
-		int offset = ant->row*Info->cols + ant->col;
-
-		// defining things to do less writing again
-
-#define ROW ant->row
-#define COL ant->col
-#define ID  ant->id
+		int offset = ant_get_row (ant) * Info->cols + ant_get_col (ant);
 
 		// Now here is the tricky part. We have to account for
 		// the fact that the map wraps (when you go off one edge
@@ -49,22 +43,22 @@ void bot_do_turn(struct game_state *Game, struct game_info *Info) {
 
 		char obj_north, obj_east, obj_south, obj_west;
 
-		if (COL != 0)
+		if (ant_get_col (ant) != 0)
 			obj_west = Info->map[offset + LEFT];
 		else
 			obj_west = Info->map[offset + Info->cols - 1];
 
-		if (COL != Info->cols - 1)
+		if (ant_get_col (ant) != Info->cols - 1)
 			obj_east = Info->map[offset + RIGHT];
 		else
 			obj_east = Info->map[offset - Info->cols - 1];
 
-		if (ROW != 0)
+		if (ant_get_row (ant) != 0)
 			obj_north = Info->map[offset + UP];
 		else
 			obj_north = Info->map[offset + (Info->rows - 1)*Info->cols];
 
-		if (ROW != Info->rows - 1)
+		if (ant_get_row (ant) != Info->rows - 1)
 			obj_south = Info->map[offset + DOWN];
 		else
 			obj_south = Info->map[offset - (Info->rows - 1)*Info->cols];
