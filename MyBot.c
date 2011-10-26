@@ -1,3 +1,7 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "ants.h"
 #include "termite.h"
 #include "debug.h"

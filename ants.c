@@ -1,3 +1,6 @@
+#include <string.h>   // for memset, strcmp, strlen
+#include <stdlib.h>   // for free, atoi
+
 #include "ants.h"
 #include "ant.h"
 

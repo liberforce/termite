@@ -1,9 +1,6 @@
 #ifndef ANTS_H
 #define ANTS_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "ant.h"
 
 // this header is basically self-documenting

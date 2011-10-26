@@ -1,4 +1,6 @@
-#include <stdlib.h>
+#include <stdlib.h>    // for malloc, calloc, free
+#include <stdio.h>     // for stdout, stderr, fprintf
+
 #include "ants.h"
 #include "termite.h"
 #include "ant.h"
