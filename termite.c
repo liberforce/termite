@@ -7,7 +7,8 @@
 #include "ant.h"
 #include "map.h"
 
-void termite_do_turn (State *state, Rules *rules)
+void termite_do_turn (Rules *rules,
+		State *state)
 {
 	int i;
 
@@ -16,17 +17,20 @@ void termite_do_turn (State *state, Rules *rules)
 	{
 		// the location within the map array where our ant is currently
 		Ant *ant = &state->my_ants[i];
-		char dir = termite_choose_ant_direction (state, rules, ant);
+		char dir = termite_choose_ant_direction (rules, state, ant);
 
 		// Now we do our move
 		if (dir != DIR_NONE)
-			termite_move_ant (state, rules, ant, dir);
+			termite_move_ant (rules, state, ant, dir);
 	}
 }
 
 // sends a move to the tournament engine and keeps track of ants new location
 
-void termite_move_ant (State* state, Rules *rules, Ant* ant, char dir) 
+void termite_move_ant (Rules *rules,
+		State* state,
+		Ant* ant,
+		gchar dir) 
 {
 	gint old_row = ant_get_row (ant);
 	gint old_col = ant_get_col (ant);
@@ -66,7 +70,9 @@ void termite_move_ant (State* state, Rules *rules, Ant* ant, char dir)
 // initializes the bot on the very first turn
 // function is not called after the game has started
 
-void termite_init (Rules *rules, State *state, char *data) 
+void termite_init (Rules *rules,
+		State *state,
+		gchar *data) 
 {
 	assert (rules != NULL);
 	assert (state != NULL);
@@ -146,7 +152,8 @@ void termite_init (Rules *rules, State *state, char *data)
 // updates game data with locations of ants and food
 // only the ids of your ants are preserved
 
-void termite_init_game (Rules *rules, State *state)
+void termite_update_state (Rules *rules,
+		State *state)
 {
 	Map *map = state->map;
 	guint map_len = map_get_length (map);
@@ -288,7 +295,9 @@ void termite_init_game (Rules *rules, State *state)
 //    ?   = Unknown     (not used in latest engine version, unknowns are assumed to be land)
 
 
-void termite_init_map (char *data, State *state) 
+void termite_update_map (Rules *rules,
+		State *state,
+		gchar *data)  
 {
 	Map *map = state->map;
 	gchar *map_data = map_get_buffer (map);
@@ -354,8 +363,8 @@ void termite_init_map (char *data, State *state)
 	}
 }
 
-char termite_choose_ant_direction (State *state, 
-		Rules *rules, 
+char termite_choose_ant_direction (Rules *rules,
+		State *state,
 		Ant *ant)
 {
 	assert (ant != NULL);

@@ -6,17 +6,17 @@
 #include "termite.h"
 #include "debug.h"
 
-void on_init_game (Rules *rules, State *state)
+void on_update_state (Rules *rules, State *state)
 {
-	termite_init_game (rules, state);
+	termite_update_state (rules, state);
 }
 
-void on_init_map (char *data, Rules *rules, State *state)
+void on_update_map (Rules *rules, State *state, gchar *data)
 {
-	termite_init_map (data, state);
+	termite_update_map (rules, state, data);
 }
 
-void on_init_bot (Rules *rules, State *state, char *data)
+void on_init_bot (Rules *rules, State *state, gchar *data)
 {
 	termite_init (rules, state, data);
 }
@@ -123,9 +123,9 @@ int main(int argc, char *argv[])
 			while (*++skip_line != '\n');
 			++skip_line;
 
-			on_init_map(skip_line, &rules, &state);
-			on_init_game(&rules, &state);
-			termite_do_turn(&state, &rules);
+			on_update_map (&rules, &state, skip_line);
+			on_update_state (&rules, &state);
+			termite_do_turn (&rules, &state);
 			fprintf(stdout, "go\n");
 			fflush(stdout);
 		}

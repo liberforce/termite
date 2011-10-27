@@ -14,24 +14,25 @@
 
 void termite_init (Rules *rules,
 		State *state,
-		char *data);
+		gchar *data);
 
-void termite_init_map (char *data, 
+void termite_update_map (Rules *rules,
+		State *state, 
+		gchar *data);
+
+void termite_update_state (Rules *rules, 
 		State *state);
 
-void termite_init_game (Rules *rules, 
+void termite_do_turn (Rules *rules,
 		State *state);
 
-void termite_do_turn (State *state, 
-		Rules *rules);
-
-void termite_move_ant (State* state, 
-		Rules *rules, 
+void termite_move_ant (Rules *rules,
+		State* state, 
 		Ant* ant, 
-		char dir);
+		gchar dir);
 
-char termite_choose_ant_direction (State *state, 
-		Rules *rules, 
+gchar termite_choose_ant_direction (Rules *rules,
+		State *state,
 		Ant *ant);
 
 #endif // TERMITE_H
