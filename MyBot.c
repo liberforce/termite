@@ -55,12 +55,12 @@ int main(int argc, char *argv[])
 
 	struct game_info Info;
 	struct game_state Game;
-	Info.map = 0;
+	Info.map = NULL;
 
-	Game.my_ants = 0;
-	Game.enemy_ants = 0;
-	Game.food = 0;
-	Game.dead_ants = 0;
+	Game.my_ants = NULL;
+	Game.enemy_ants = NULL;
+	Game.food = NULL;
+	Game.dead_ants = NULL;
 
 	while (42) 
 	{
