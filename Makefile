@@ -4,6 +4,7 @@ LDFLAGS=-O2 -lm
 SOURCES=MyBot.c termite.c ant.c map.c utils.c
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=termite
+ARCHIVE=$(EXECUTABLE).zip
 
 all: $(OBJECTS) $(EXECUTABLE)
 
@@ -16,4 +17,7 @@ $(EXECUTABLE): $(OBJECTS)
 clean:
 	rm -f ${EXECUTABLE} ${OBJECTS} *.d
 
+dist:
+	rm -f $(ARCHIVE)
+	file-roller --add-to=$(ARCHIVE) *.c *.h Makefile VERSION README
 .PHONY: all clean
