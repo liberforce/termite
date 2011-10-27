@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
 
 			on_update_map (&rules, &state, skip_line);
 			on_update_state (&rules, &state);
-			termite_do_turn (&rules, &state);
+			termite_play_turn (&rules, &state);
 			fprintf(stdout, "go\n");
 			fflush(stdout);
 		}

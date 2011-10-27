@@ -23,7 +23,7 @@ void termite_update_map (Rules *rules,
 void termite_update_state (Rules *rules, 
 		State *state);
 
-void termite_do_turn (Rules *rules,
+void termite_play_turn (Rules *rules,
 		State *state);
 
 void termite_move_ant (Rules *rules,

@@ -7,7 +7,7 @@
 #include "ant.h"
 #include "map.h"
 
-void termite_do_turn (Rules *rules,
+void termite_play_turn (Rules *rules,
 		State *state)
 {
 	int i;
