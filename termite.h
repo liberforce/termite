@@ -1,7 +1,8 @@
 #ifndef TERMITE_H
 #define TERMITE_H
 
-#include "game.h"
+#include "rules.h"
+#include "state.h"
 #include "ant.h"
 
 // Possible directions
@@ -12,24 +13,24 @@
 #define DIR_NONE  'X'
 
 void termite_init_map (char *data, 
-		struct game_info *game_info);
+		struct game_state *state);
 
-void termite_init_game (struct game_info *game_info, 
+void termite_init_game (Rules *rules, 
 		struct game_state *game_state);
 
 void termite_init_ants (char *data, 
-		struct game_info *game_info);
+		Rules *rules);
 
-void termite_do_turn (struct game_state *Game, 
-		struct game_info *Info);
+void termite_do_turn (struct game_state *state, 
+		Rules *rules);
 
-void termite_move_ant (struct game_state* Game, 
-		struct game_info* Info, 
+void termite_move_ant (struct game_state* state, 
+		Rules *rules, 
 		Ant* ant, 
 		char dir);
 
 char termite_choose_ant_direction (struct game_state *Game, 
-		struct game_info *Info, 
+		Rules *rules, 
 		Ant *ant);
 
 #endif // TERMITE_H

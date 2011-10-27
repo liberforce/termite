@@ -7,7 +7,7 @@
 #include "ant.h"
 #include "map.h"
 
-void termite_do_turn (struct game_state *Game, struct game_info *Info)
+void termite_do_turn (struct game_state *Game, Rules *rules)
 {
 	int i;
 
@@ -16,17 +16,17 @@ void termite_do_turn (struct game_state *Game, struct game_info *Info)
 	{
 		// the location within the map array where our ant is currently
 		Ant *ant = &Game->my_ants[i];
-		char dir = termite_choose_ant_direction (Game, Info, ant);
+		char dir = termite_choose_ant_direction (Game, rules, ant);
 
 		// Now we do our move
 		if (dir != DIR_NONE)
-			termite_move_ant (Game, Info, ant, dir);
+			termite_move_ant (Game, rules, ant, dir);
 	}
 }
 
 // sends a move to the tournament engine and keeps track of ants new location
 
-void termite_move_ant (struct game_state* Game, struct game_info* Info, Ant* ant, char dir) 
+void termite_move_ant (struct game_state* Game, Rules *rules, Ant* ant, char dir) 
 {
 	gint old_row = ant_get_row (ant);
 	gint old_col = ant_get_col (ant);
@@ -49,8 +49,8 @@ void termite_move_ant (struct game_state* Game, struct game_info* Info, Ant* ant
 			break;
 	}
 
-	guint n_rows = map_get_n_rows (Info->map);
-	guint n_cols = map_get_n_cols (Info->map);
+	guint n_rows = map_get_n_rows (Game->map);
+	guint n_cols = map_get_n_cols (Game->map);
 
 	if (ant_get_row (ant) == n_rows)
 		ant_set_row (ant, 0);
@@ -63,10 +63,10 @@ void termite_move_ant (struct game_state* Game, struct game_info* Info, Ant* ant
 		ant_set_col (ant, n_cols - 1);
 }
 
-// initializes the game_info structure on the very first turn
+// initializes the Rules structure on the very first turn
 // function is not called after the game has started
 
-void termite_init_ants (char *data, struct game_info *game_info) 
+void termite_init_ants (char *data, Rules *rules) 
 {
 	char *replace_data = data;
 
@@ -89,37 +89,37 @@ void termite_init_ants (char *data, struct game_info *game_info)
 		switch (*data)
 		{
 			case 'l':
-				game_info->loadtime = num_value;
+				rules->loadtime = num_value;
 				break;
 
 			case 't':
 				if (*(data + 4) == 't')
-					game_info->turntime = num_value;
+					rules->turntime = num_value;
 				else
-					game_info->turns = num_value;
+					rules->turns = num_value;
 				break;
 
 			case 'r':
-				game_info->rows = num_value;
+				rules->rows = num_value;
 				break;
 
 			case 'c':
-				game_info->cols = num_value;
+				rules->cols = num_value;
 				break;
 
 			case 'v':
-				game_info->viewradius_sq = num_value;
+				rules->viewradius_sq = num_value;
 				break;
 
 			case 'a':
-				game_info->attackradius_sq = num_value;
+				rules->attackradius_sq = num_value;
 				break;
 
 			case 's':
 				if (*(data + 1) == 'p')
-					game_info->spawnradius_sq = num_value;
+					rules->spawnradius_sq = num_value;
 				else
-					game_info->seed = num_value;
+					rules->seed = num_value;
 				break;
 
 		}
@@ -137,9 +137,9 @@ void termite_init_ants (char *data, struct game_info *game_info)
 // updates game data with locations of ants and food
 // only the ids of your ants are preserved
 
-void termite_init_game (struct game_info *game_info, struct game_state *game_state)
+void termite_init_game (Rules *rules, struct game_state *game_state)
 {
-	Map *map = game_info->map;
+	Map *map = game_state->map;
 	guint map_len = map_get_length (map);
 	gchar *map_data = map_get_buffer (map);
 	gchar *map_end = map_data + map_len;
@@ -279,22 +279,11 @@ void termite_init_game (struct game_info *game_info, struct game_state *game_sta
 //    ?   = Unknown     (not used in latest engine version, unknowns are assumed to be land)
 
 
-void termite_init_map (char *data, struct game_info *game_info) 
+void termite_init_map (char *data, struct game_state *state) 
 {
-	Map *map;
-	gchar *map_data;
-	guint map_len;
-
-	if (game_info->map == NULL)
-	{
-		game_info->map = map_new (game_info->rows, game_info->cols);
-		memset (map_get_buffer (game_info->map), '.', map_get_length (game_info->map));
-	}
-
-	map = game_info->map;
-	map_data = map_get_buffer (map);
-	map_len = map_get_length (map);
-
+	Map *map = state->map;
+	gchar *map_data = map_get_buffer (map);
+	guint map_len = map_get_length (map);
 
 	int i;
 
@@ -357,11 +346,11 @@ void termite_init_map (char *data, struct game_info *game_info)
 }
 
 char termite_choose_ant_direction (struct game_state *Game, 
-		struct game_info *Info, 
+		Rules *rules, 
 		Ant *ant)
 {
 	assert (ant != NULL);
-	Map *map = Info->map;
+	Map *map = Game->map;
 
 	char dir = DIR_NONE;
 	struct cardinals look = { 0 };

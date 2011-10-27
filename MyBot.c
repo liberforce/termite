@@ -2,23 +2,29 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "game.h"
+#include "rules.h"
 #include "termite.h"
 #include "debug.h"
 
-void on_init_game (struct game_info *game_info, struct game_state *game_state)
+void on_init_game (Rules *rules, struct game_state *game_state)
 {
-	termite_init_game (game_info, game_state);
+	termite_init_game (rules, game_state);
 }
 
-void on_init_map (char *data, struct game_info *game_info)
+void on_init_map (char *data, Rules *rules, struct game_state *state)
 {
-	termite_init_map (data, game_info);
+	if (state->map == NULL)
+	{
+		state->map = map_new (rules->rows, rules->cols);
+		memset (map_get_buffer (state->map), '.', map_get_length (state->map));
+	}
+
+	termite_init_map (data, state);
 }
 
-void on_init_ants (char *data, struct game_info *game_info)
+void on_init_ants (char *data, Rules *rules)
 {
-	termite_init_ants (data, game_info);
+	termite_init_ants (data, rules);
 }
 
 // just a function that returns the string on a given line for i/o
@@ -53,10 +59,10 @@ int main(int argc, char *argv[])
 {
 	int action = -1;
 
-	struct game_info Info;
+	Rules rules;
 	struct game_state Game;
-	Info.map = NULL;
 
+	Game.map = NULL;
 	Game.my_ants = NULL;
 	Game.enemy_ants = NULL;
 	Game.food = NULL;
@@ -123,15 +129,15 @@ int main(int argc, char *argv[])
 			while (*++skip_line != '\n');
 			++skip_line;
 
-			on_init_map(skip_line, &Info);
-			on_init_game(&Info, &Game);
-			termite_do_turn(&Game, &Info);
+			on_init_map(skip_line, &rules, &Game);
+			on_init_game(&rules, &Game);
+			termite_do_turn(&Game, &rules);
 			fprintf(stdout, "go\n");
 			fflush(stdout);
 		}
 		else if (action == 1)
 		{
-			on_init_ants(data + 1, &Info);
+			on_init_ants(data + 1, &rules);
 
 			Game.my_ant_index = -1;
 
