@@ -1,9 +1,361 @@
-This starter package zip was published on Mon Oct 24 01:08:58 UTC 2011.
+commit 1f9cdfea04f9e71f753b7d247052b3cbf44544aa
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Thu Oct 27 21:46:33 2011 +0200
 
-Last change on this starter package was:
-commit 4bdd620e20780ca6045b5d1c1026b96eee81d1b0
-Date:   Sat May 28 22:26:14 2011 -0400
+    Add 'make dist'.
 
-    Update to latest C starter bot
+commit 6b2783512f5ac3f32cbe3b946767e61c4cb9b888
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Thu Oct 27 21:28:25 2011 +0200
 
-Check https://github.com/aichallenge/aichallenge/tree/epsilon/ants/dist/starter_bots/c for new versions.
+    Naming: 'play turn' instead of 'do turn'.
+
+commit 5fff39ffeee31b0a41bb95502b5fc924d5462f77
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Thu Oct 27 21:26:48 2011 +0200
+
+    Naming: update instead of init; always pass rules before state.
+
+commit aa71ceeb619e71522c417cfa307b5e434d5d2ac9
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Thu Oct 27 20:52:49 2011 +0200
+
+    Alloc map memory once during init phase.
+
+commit c5831200dd78212ee46e6791e13c4e71997d14c7
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Thu Oct 27 20:32:18 2011 +0200
+
+    Naming: game_state -> State.
+
+commit b6dd1c77451c1451f0812d8d62b2ad1ef788b54f
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Thu Oct 27 20:17:50 2011 +0200
+
+    Use 'rules' instead of 'game_info'.
+
+commit 3ff8c5457f96cefbc02fd1156ebec6d1435f197d
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Thu Oct 27 02:10:28 2011 +0200
+
+    Minor naming change.
+
+commit ebbe86461ff85ddf00b4f9468efbf0394229898b
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Thu Oct 27 02:06:46 2011 +0200
+
+    Use NULL instead of 0.
+
+commit 55e059a402782e8f9d22e8adb1fca09c187ea6ce
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Thu Oct 27 01:51:36 2011 +0200
+
+    More use of Map features.
+
+commit 0c090a5e4e3bfb028c7fcd9a9021ee4d7aa1c9d0
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Thu Oct 27 01:44:49 2011 +0200
+
+    Use class Map instead of raw buffer.
+
+commit c017abff71da2cbce8778bd5be57a5c59bf737d4
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Thu Oct 27 01:35:01 2011 +0200
+
+    Fix assertion.
+
+commit e0a3c4c3cb9afbffec871211d8d1c9a1cd815703
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Thu Oct 27 01:33:07 2011 +0200
+
+    Implement map basic functionalities.
+
+commit fd5a5fef1c817d9b43cd2855faba0be7bfdb0b9e
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Thu Oct 27 00:46:07 2011 +0200
+
+    First implementation of getting neighbours through map.
+
+commit 778c1deef7c63a41c40f21f33ecdf86f555c7a00
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Wed Oct 26 23:59:28 2011 +0200
+
+    Factorize out the direction chosing code.
+
+commit 3f016df7e7d9b854c8ecf8fb19fef4f130cfb07d
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Wed Oct 26 23:40:24 2011 +0200
+
+    Rename ants header into game.
+
+commit e53b05e749751de137165ffadc73c6174e6b3bb1
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Wed Oct 26 23:33:02 2011 +0200
+
+    Move bot functions into termite.
+
+commit 34f84e192bef472b8f266c4d756b5d7bd9861156
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Wed Oct 26 23:19:49 2011 +0200
+
+    Remove unwanted includes from ants.h.
+
+commit 4cc921413faf2875cce57f37b398b533c39ecb11
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Wed Oct 26 23:07:49 2011 +0200
+
+    Rename bot code into termite.
+
+commit 1ee163d4924b082f07811dc22d8f50978edd8b69
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Wed Oct 26 23:07:44 2011 +0200
+
+    Rename bot code into termite.
+
+commit 7a6e1e4e77873b5c59675af82a89857831cd3bce
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Wed Oct 26 22:54:05 2011 +0200
+
+    Use objet methods instead of direct adressing.
+
+commit bd2125ed02c9edc9aaf50d1d677747c94a5cfaa5
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Wed Oct 26 20:44:33 2011 +0200
+
+    Use GLib types.
+
+commit b0a4fb0ff9811953312c15d2b731946e5e6d3d18
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Wed Oct 26 11:55:04 2011 +0200
+
+    Move out utils functions.
+
+commit 9a42feb27afb0674eedd29a6686cf9730cb3fba7
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Wed Oct 26 11:38:14 2011 +0200
+
+    Fix map buffer creation.
+
+commit 7c12c55313839745f1ca5ec232ff1b254234f93e
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Wed Oct 26 11:34:38 2011 +0200
+
+    Add initial map implementation.
+
+commit 1f45c55ddee8e0c5643afb2fe8558f1fc4da4880
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Wed Oct 26 11:25:42 2011 +0200
+
+    Add base types (inspired by GLib).
+
+commit 34b061ee4d8c87af59d12f0af0c9e85058f41613
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Tue Oct 25 21:54:58 2011 +0200
+
+    Add bot error logging to the traces, fix bad bot call.
+
+commit 924742d6376be30dd853f1bc602e1d0dc4626dbc
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Tue Oct 25 21:43:28 2011 +0200
+
+    Use right log dir.
+
+commit 493218e61d460f72e0b9f141623ff126669668c0
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Tue Oct 25 21:36:02 2011 +0200
+
+    Update test script.
+
+commit aff6a39e13778c5fd468f14ca26422415a290676
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Tue Oct 25 21:32:09 2011 +0200
+
+    Change log dir.
+
+commit 8892034d3b723d8392685c84082a1e9ac9bce0b8
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Tue Oct 25 21:26:21 2011 +0200
+
+    Don't launch visualization in browser.
+
+commit 837fcb567967c4147f00208077754eda15c94743
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Tue Oct 25 21:08:40 2011 +0200
+
+    Ignore new game logs dir.
+
+commit 16cf637c9e7a0f5a308f4f5dd2ae5763576d01f1
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Tue Oct 25 21:07:50 2011 +0200
+
+    Add visualization script.
+
+commit 5385d61c953cd4d641529968e9e5a92ceee82920
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Tue Oct 25 20:54:27 2011 +0200
+
+    Fix implicit declaration of do_turn.
+
+commit 6043c50b189be60e8d15ee40c7073c93430c952c
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Tue Oct 25 20:49:46 2011 +0200
+
+    Remove unused var.
+
+commit afc2f3953acd30d907ee68f90d670b8461682091
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Tue Oct 25 20:29:50 2011 +0200
+
+    Fix parameter inversion in call to bot_move_ant.
+
+commit 647e4fdce8267b84940f0d27a2c68c6e746187f8
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Tue Oct 25 20:28:18 2011 +0200
+
+    Fix undeclared function warnings.
+
+commit 69a7d82f0f0dcdd3d80916bf7049c00f5161b694
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Tue Oct 25 20:20:48 2011 +0200
+
+    Add debug header.
+
+commit f9380527391c69d51262dd3e32d42d7c1dc736cf
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Tue Oct 25 20:20:35 2011 +0200
+
+    Add debug header.
+
+commit e2e9c9606819fb33a049597b2dda68eaabf11b72
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Tue Oct 25 20:18:48 2011 +0200
+
+    Add warnings.
+
+commit c2eb92934d68778638cd6de7255a333e17540c68
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Tue Oct 25 13:34:20 2011 +0200
+
+    Fix indentation style.
+
+commit 378b0cfe39efb3d71d6bd3ba0c63cb9dfbf0063e
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Tue Oct 25 13:25:36 2011 +0200
+
+    Fix the ant class, use same classes for our ants and ennemy ants.
+
+commit cda9ba58fe34c3cf67d805f59e0604f0e5caee81
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Tue Oct 25 13:25:07 2011 +0200
+
+    Fix the build system.
+
+commit 9e7178763e2befcae6cf8e91bc0e1eef5bdd607b
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Tue Oct 25 13:07:18 2011 +0200
+
+    Add basic member functions to the Ant type.
+
+commit 2eaa9d9b5e2f2b7508fed7868c19d0b46246c337
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Tue Oct 25 13:06:30 2011 +0200
+
+    Forgot a few struct my_ant -> Ant replacements.
+
+commit 1ed3ff3e2049c799f991eb915b7502d8476865bb
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Tue Oct 25 12:55:02 2011 +0200
+
+    Add Ant class.
+
+commit 97bdfa89357fec3bf9a0d1209e4c8c8fabe5b1e0
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Tue Oct 25 00:19:55 2011 +0200
+
+    Change indentation.
+
+commit 58c0a4556343b8227cc7ca0e05b37c02cd5addba
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Mon Oct 24 23:10:26 2011 +0200
+
+    Change indentation.
+
+commit 6011222aacec2af3f5e77623788eebb79d758477
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Mon Oct 24 23:08:28 2011 +0200
+
+    Change exe name to 'termite'.
+
+commit 5236c69a12ee68d78e37158b41a58e3531b902d9
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Mon Oct 24 23:04:52 2011 +0200
+
+    Add min and max functions.
+
+commit 66ea3e59567b8da4ec416b07066258447df2ebb3
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Mon Oct 24 22:36:49 2011 +0200
+
+    Copy playonegame template.
+
+commit c5f32d210787bf037f0a1b502f92088d8b04b6ff
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Mon Oct 24 22:06:36 2011 +0200
+
+    Revert "Rename bot 'termite'."
+    
+    The main bot source file needs to be named MyBot.c.
+
+commit 16158d1d62447c797ae0a1e3ae8a47223787efc5
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Mon Oct 24 20:32:51 2011 +0200
+
+    Add binary to gitignore.
+
+commit 386a38d288fa5da2a342b9992daa626cf072236b
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Mon Oct 24 20:18:00 2011 +0200
+
+    Rename bot 'termite'.
+
+commit 28e56a047cd986ab0ad91e243392a56d770d4a55
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Mon Oct 24 20:16:07 2011 +0200
+
+    Fix launch script.
+
+commit 05915e0448fd68855b28f32b37124248e38a6722
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Mon Oct 24 20:10:54 2011 +0200
+
+    Ignore object files.
+
+commit 39703622fd9ed8d4bc09ab026bb9d3ebb875c44d
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Mon Oct 24 13:37:44 2011 +0200
+
+    Add gitignore file.
+
+commit fd8d50168321a9c3a5e733af3dc96cd0323ca95b
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Mon Oct 24 13:36:07 2011 +0200
+
+    Add sample C bot.
+
+commit e552993338263b5f130a817d13c1c42db35ab42d
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Mon Oct 24 13:18:52 2011 +0200
+
+    Add simulation tools.
+
+commit 90b349f587d25ccb4496b5a490d0ff179a16de8c
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Mon Oct 24 13:15:37 2011 +0200
+
+    Move starter packages.
+
+commit 35604d2a5f551701a9c20204b1894f8beb82e66d
+Author: Luis Menina <liberforce@freeside.fr>
+Date:   Mon Oct 24 13:07:55 2011 +0200
+
+    Initial commit.
