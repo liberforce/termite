@@ -6,12 +6,12 @@
 #include "termite.h"
 #include "debug.h"
 
-void on_init_game (Rules *rules, struct game_state *game_state)
+void on_init_game (Rules *rules, State *state)
 {
-	termite_init_game (rules, game_state);
+	termite_init_game (rules, state);
 }
 
-void on_init_map (char *data, Rules *rules, struct game_state *state)
+void on_init_map (char *data, Rules *rules, State *state)
 {
 	if (state->map == NULL)
 	{
@@ -60,13 +60,13 @@ int main(int argc, char *argv[])
 	int action = -1;
 
 	Rules rules;
-	struct game_state Game;
+	State state;
 
-	Game.map = NULL;
-	Game.my_ants = NULL;
-	Game.enemy_ants = NULL;
-	Game.food = NULL;
-	Game.dead_ants = NULL;
+	state.map = NULL;
+	state.my_ants = NULL;
+	state.enemy_ants = NULL;
+	state.food = NULL;
+	state.dead_ants = NULL;
 
 	while (42) 
 	{
@@ -129,9 +129,9 @@ int main(int argc, char *argv[])
 			while (*++skip_line != '\n');
 			++skip_line;
 
-			on_init_map(skip_line, &rules, &Game);
-			on_init_game(&rules, &Game);
-			termite_do_turn(&Game, &rules);
+			on_init_map(skip_line, &rules, &state);
+			on_init_game(&rules, &state);
+			termite_do_turn(&state, &rules);
 			fprintf(stdout, "go\n");
 			fflush(stdout);
 		}
@@ -139,7 +139,7 @@ int main(int argc, char *argv[])
 		{
 			on_init_ants(data + 1, &rules);
 
-			Game.my_ant_index = -1;
+			state.my_ant_index = -1;
 
 			fprintf(stdout, "go\n");
 			fflush(stdout);

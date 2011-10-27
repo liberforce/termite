@@ -13,23 +13,23 @@
 #define DIR_NONE  'X'
 
 void termite_init_map (char *data, 
-		struct game_state *state);
+		State *state);
 
 void termite_init_game (Rules *rules, 
-		struct game_state *game_state);
+		State *state);
 
 void termite_init_ants (char *data, 
 		Rules *rules);
 
-void termite_do_turn (struct game_state *state, 
+void termite_do_turn (State *state, 
 		Rules *rules);
 
-void termite_move_ant (struct game_state* state, 
+void termite_move_ant (State* state, 
 		Rules *rules, 
 		Ant* ant, 
 		char dir);
 
-char termite_choose_ant_direction (struct game_state *Game, 
+char termite_choose_ant_direction (State *state, 
 		Rules *rules, 
 		Ant *ant);
 

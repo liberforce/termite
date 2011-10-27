@@ -7,26 +7,26 @@
 #include "ant.h"
 #include "map.h"
 
-void termite_do_turn (struct game_state *Game, Rules *rules)
+void termite_do_turn (State *state, Rules *rules)
 {
 	int i;
 
 	// Chose moves for each ant
-	for (i = 0; i < Game->my_count; ++i) 
+	for (i = 0; i < state->my_count; ++i) 
 	{
 		// the location within the map array where our ant is currently
-		Ant *ant = &Game->my_ants[i];
-		char dir = termite_choose_ant_direction (Game, rules, ant);
+		Ant *ant = &state->my_ants[i];
+		char dir = termite_choose_ant_direction (state, rules, ant);
 
 		// Now we do our move
 		if (dir != DIR_NONE)
-			termite_move_ant (Game, rules, ant, dir);
+			termite_move_ant (state, rules, ant, dir);
 	}
 }
 
 // sends a move to the tournament engine and keeps track of ants new location
 
-void termite_move_ant (struct game_state* Game, Rules *rules, Ant* ant, char dir) 
+void termite_move_ant (State* state, Rules *rules, Ant* ant, char dir) 
 {
 	gint old_row = ant_get_row (ant);
 	gint old_col = ant_get_col (ant);
@@ -49,8 +49,8 @@ void termite_move_ant (struct game_state* Game, Rules *rules, Ant* ant, char dir
 			break;
 	}
 
-	guint n_rows = map_get_n_rows (Game->map);
-	guint n_cols = map_get_n_cols (Game->map);
+	guint n_rows = map_get_n_rows (state->map);
+	guint n_cols = map_get_n_cols (state->map);
 
 	if (ant_get_row (ant) == n_rows)
 		ant_set_row (ant, 0);
@@ -137,9 +137,9 @@ void termite_init_ants (char *data, Rules *rules)
 // updates game data with locations of ants and food
 // only the ids of your ants are preserved
 
-void termite_init_game (Rules *rules, struct game_state *game_state)
+void termite_init_game (Rules *rules, State *state)
 {
-	Map *map = game_state->map;
+	Map *map = state->map;
 	guint map_len = map_get_length (map);
 	gchar *map_data = map_get_buffer (map);
 	gchar *map_end = map_data + map_len;
@@ -169,36 +169,36 @@ void termite_init_game (Rules *rules, struct game_state *game_state)
 	}
 
 	Ant *my_old = 0;
-	int my_old_count = game_state->my_count;
+	int my_old_count = state->my_count;
 
-	game_state->my_count = my_count;
-	game_state->enemy_count = enemy_count;
-	game_state->food_count = food_count;
-	game_state->dead_count = dead_count;
+	state->my_count = my_count;
+	state->enemy_count = enemy_count;
+	state->food_count = food_count;
+	state->dead_count = dead_count;
 
-	if (game_state->my_ants != 0)
-		my_old = game_state->my_ants;
+	if (state->my_ants != 0)
+		my_old = state->my_ants;
 
-	if (game_state->enemy_ants != 0)
-		free(game_state->enemy_ants);
-	if (game_state->food != 0)
-		free(game_state->food);
-	if (game_state->dead_ants != 0)
-		free(game_state->dead_ants);
+	if (state->enemy_ants != 0)
+		free(state->enemy_ants);
+	if (state->food != 0)
+		free(state->food);
+	if (state->dead_ants != 0)
+		free(state->dead_ants);
 
-	game_state->my_ants = malloc(my_count*sizeof(Ant));
+	state->my_ants = malloc(my_count*sizeof(Ant));
 
 	if (enemy_count > 0)
-		game_state->enemy_ants = malloc(enemy_count*sizeof(Ant));
+		state->enemy_ants = malloc(enemy_count*sizeof(Ant));
 	else
-		game_state->enemy_ants = 0;
+		state->enemy_ants = 0;
 
 	if (dead_count > 0)
-		game_state->dead_ants = malloc(dead_count*sizeof(Ant));
+		state->dead_ants = malloc(dead_count*sizeof(Ant));
 	else
-		game_state->dead_ants = 0;
+		state->dead_ants = 0;
 
-	game_state->food = malloc(food_count*sizeof(struct food));
+	state->food = malloc(food_count*sizeof(struct food));
 
 	gint j;
 	for (i = 0; i < n_rows; ++i) 
@@ -213,8 +213,8 @@ void termite_init_game (Rules *rules, struct game_state *game_state)
 			{
 				--food_count;
 
-				game_state->food[food_count].row = i;
-				game_state->food[food_count].col = j;
+				state->food[food_count].row = i;
+				state->food[food_count].col = j;
 			}
 			else if (current == 'a') 
 			{
@@ -234,19 +234,19 @@ void termite_init_game (Rules *rules, struct game_state *game_state)
 					}
 				}
 
-				game_state->my_ants[my_count].row = i;
-				game_state->my_ants[my_count].col = j;
+				state->my_ants[my_count].row = i;
+				state->my_ants[my_count].col = j;
 
 				if (keep_id == -1)
-					game_state->my_ants[my_count].id = ++game_state->my_ant_index;
+					state->my_ants[my_count].id = ++state->my_ant_index;
 				else
-					game_state->my_ants[my_count].id = keep_id;
+					state->my_ants[my_count].id = keep_id;
 			}
 			else if (current > 64 && current < 91) 
 			{
 				--dead_count;
 
-				Ant *dead = &game_state->dead_ants[dead_count];
+				Ant *dead = &state->dead_ants[dead_count];
 				ant_set_row (dead, i);
 				ant_set_col (dead, j);
 				ant_set_owner (dead, current);
@@ -255,7 +255,7 @@ void termite_init_game (Rules *rules, struct game_state *game_state)
 			{
 				--enemy_count;
 
-				Ant *enemy = &game_state->enemy_ants[enemy_count];
+				Ant *enemy = &state->enemy_ants[enemy_count];
 				ant_set_row (enemy, i);
 				ant_set_col (enemy, j);
 				ant_set_owner (enemy, current);
@@ -279,7 +279,7 @@ void termite_init_game (Rules *rules, struct game_state *game_state)
 //    ?   = Unknown     (not used in latest engine version, unknowns are assumed to be land)
 
 
-void termite_init_map (char *data, struct game_state *state) 
+void termite_init_map (char *data, State *state) 
 {
 	Map *map = state->map;
 	gchar *map_data = map_get_buffer (map);
@@ -345,12 +345,12 @@ void termite_init_map (char *data, struct game_state *state)
 	}
 }
 
-char termite_choose_ant_direction (struct game_state *Game, 
+char termite_choose_ant_direction (State *state, 
 		Rules *rules, 
 		Ant *ant)
 {
 	assert (ant != NULL);
-	Map *map = Game->map;
+	Map *map = state->map;
 
 	char dir = DIR_NONE;
 	struct cardinals look = { 0 };
