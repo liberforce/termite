@@ -361,11 +361,12 @@ char termite_choose_ant_direction (struct game_state *Game,
 		Ant *ant)
 {
 	assert (ant != NULL);
+	Map *map = Info->map;
 
 	char dir = DIR_NONE;
 	struct cardinals look = { 0 };
 
-	map_get_cardinals (Info->map, ant_get_row (ant), ant_get_col (ant), &look);
+	map_get_cardinals (map, ant_get_row (ant), ant_get_col (ant), &look);
 
 	// cycle through the directions, pick one that works
 	if (look.north != '%')
