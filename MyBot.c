@@ -13,18 +13,12 @@ void on_init_game (Rules *rules, State *state)
 
 void on_init_map (char *data, Rules *rules, State *state)
 {
-	if (state->map == NULL)
-	{
-		state->map = map_new (rules->rows, rules->cols);
-		memset (map_get_buffer (state->map), '.', map_get_length (state->map));
-	}
-
 	termite_init_map (data, state);
 }
 
-void on_init_ants (char *data, Rules *rules)
+void on_init_bot (Rules *rules, State *state, char *data)
 {
-	termite_init_ants (data, rules);
+	termite_init (rules, state, data);
 }
 
 // just a function that returns the string on a given line for i/o
@@ -137,7 +131,7 @@ int main(int argc, char *argv[])
 		}
 		else if (action == 1)
 		{
-			on_init_ants(data + 1, &rules);
+			on_init_bot (&rules, &state, data + 1);
 
 			state.my_ant_index = -1;
 

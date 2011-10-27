@@ -63,11 +63,15 @@ void termite_move_ant (State* state, Rules *rules, Ant* ant, char dir)
 		ant_set_col (ant, n_cols - 1);
 }
 
-// initializes the Rules structure on the very first turn
+// initializes the bot on the very first turn
 // function is not called after the game has started
 
-void termite_init_ants (char *data, Rules *rules) 
+void termite_init (Rules *rules, State *state, char *data) 
 {
+	assert (rules != NULL);
+	assert (state != NULL);
+	assert (data != NULL);
+
 	char *replace_data = data;
 
 	while (*replace_data != '\0')
@@ -132,6 +136,11 @@ void termite_init_ants (char *data, Rules *rules)
 		if (strcmp(data, "ready") == 0)
 			break;
 	}
+
+	// Create the empty map
+	assert (state->map == NULL);
+	state->map = map_new (rules->rows, rules->cols);
+	memset (map_get_buffer (state->map), '.', map_get_length (state->map));
 }
 
 // updates game data with locations of ants and food

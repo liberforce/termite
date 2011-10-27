@@ -12,14 +12,15 @@
 #define DIR_WEST  'W'
 #define DIR_NONE  'X'
 
+void termite_init (Rules *rules,
+		State *state,
+		char *data);
+
 void termite_init_map (char *data, 
 		State *state);
 
 void termite_init_game (Rules *rules, 
 		State *state);
-
-void termite_init_ants (char *data, 
-		Rules *rules);
 
 void termite_do_turn (State *state, 
 		Rules *rules);
