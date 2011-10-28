@@ -146,7 +146,7 @@ void termite_init (Rules *rules,
 
 	// Create the empty map
 	assert (state->map == NULL);
-	state->map = map_new (rules->rows, rules->cols, TILE_LAND);
+	state->map = map_new (rules->rows, rules->cols, TILE_UNSEEN);
 }
 
 // updates game data with locations of ants and food
@@ -172,16 +172,21 @@ void termite_update_state (Rules *rules,
 	{
 		gchar current = *map_data++;
 
+		// Keep them sorted from most to less frequent
 		if (current == TILE_UNSEEN || current == TILE_LAND || current == TILE_WATER)
 			continue;
-		else if (current == TILE_FOOD)
-			++food_count;
 		else if (current == TILE_ANT(0))
 			++my_count;
-		else if (current > 64 && current < 91)
-			++dead_count;
-		else
+		else if (current >= TILE_ANT(1) && current <= TILE_ANT(25))
 			++enemy_count;
+		else if (current == TILE_FOOD)
+			++food_count;
+		else if (current == TILE_DEAD_ANT)
+			++dead_count;
+		else if (current >= TILE_ANT_ON_HILL(1) && current <= TILE_ANT_ON_HILL(25))
+			++enemy_count;
+		else if (current == TILE_ANT_ON_HILL(0))
+			++my_count;
 	}
 
 	Ant *my_old = 0;
@@ -221,18 +226,18 @@ void termite_update_state (Rules *rules,
 	{
 		for (j = 0; j < n_cols; ++j) 
 		{
-			char current = map_get_content (map, i, j);
-			if (current == '?' || current == '.' || current == '%')
+			char tile = map_get_content (map, i, j);
+			if (tile == TILE_UNSEEN || tile == TILE_LAND || tile == TILE_WATER)
 				continue;
 
-			if (current == '*') 
+			if (tile == TILE_FOOD) 
 			{
 				--food_count;
 
 				state->food[food_count].row = i;
 				state->food[food_count].col = j;
 			}
-			else if (current == 'a') 
+			else if (tile == TILE_ANT(0)) 
 			{
 				--my_count;
 
@@ -258,14 +263,14 @@ void termite_update_state (Rules *rules,
 				else
 					state->my_ants[my_count].id = keep_id;
 			}
-			else if (current > 64 && current < 91) 
+			else if (tile == TILE_DEAD_ANT) 
 			{
 				--dead_count;
 
 				Ant *dead = &state->dead_ants[dead_count];
 				ant_set_row (dead, i);
 				ant_set_col (dead, j);
-				ant_set_owner (dead, current);
+				ant_set_owner (dead, tile);
 			}
 			else 
 			{
@@ -274,7 +279,7 @@ void termite_update_state (Rules *rules,
 				Ant *enemy = &state->enemy_ants[enemy_count];
 				ant_set_row (enemy, i);
 				ant_set_col (enemy, j);
-				ant_set_owner (enemy, current);
+				ant_set_owner (enemy, tile);
 			} 
 		}
 	}
