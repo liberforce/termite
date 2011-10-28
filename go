@@ -6,7 +6,6 @@ ${there}/playgame.py                                        \
 	--player_seed 42                                    \
 	--end_wait=0.25                                     \
 	--nolaunch                                          \
-	--verbose                                           \
 	-e                                                  \
 	--log_dir ${there}/logs                             \
 	--turns 30                                          \
