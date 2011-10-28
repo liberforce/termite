@@ -172,11 +172,11 @@ void termite_update_state (Rules *rules,
 	{
 		gchar current = *map_data++;
 
-		if (current == '?' || current == '.' || current == '%')
+		if (current == TILE_UNSEEN || current == TILE_LAND || current == TILE_WATER)
 			continue;
-		else if (current == '*')
+		else if (current == TILE_FOOD)
 			++food_count;
-		else if (current == 'a')
+		else if (current == TILE_ANT(0))
 			++my_count;
 		else if (current > 64 && current < 91)
 			++dead_count;
@@ -313,7 +313,7 @@ void termite_update_map (Rules *rules,
 
 	for (i = 0; i < map_len; ++i)
 		if (map_data[i] != TILE_WATER)
-			map_data[i] = TILE_LAND;
+			map_data[i] = TILE_UNSEEN;
 
 	while (*data != 0) 
 	{
@@ -352,7 +352,7 @@ void termite_update_map (Rules *rules,
 		switch (*data)
 		{
 			case 'w':
-				map_data[offset] = '%';
+				map_data[offset] = TILE_WATER;
 				break;
 			case 'a':
 				map_data[offset] = var3 + 49;
@@ -361,7 +361,7 @@ void termite_update_map (Rules *rules,
 				map_data[offset] = var3 + 27;
 				break;
 			case 'f':
-				map_data[offset] = '*';
+				map_data[offset] = TILE_FOOD;
 				break;
 		}
 
