@@ -13,7 +13,7 @@ struct cardinals
 
 typedef struct map Map;
 
-Map *map_new (guint n_rows, guint n_cols); 
+Map *map_new (guint n_rows, guint n_cols, gchar filler); 
 void map_free (Map *map);
 gchar * map_get_buffer (Map *map);
 guint map_get_length (Map *map);

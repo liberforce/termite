@@ -1,6 +1,7 @@
 #include <stdio.h>     // for NULL
 #include <assert.h>    // for assert
 #include <stdlib.h>    // for malloc, calloc
+#include <string.h>    // for memset
 #include "map.h"
 
 struct map
@@ -8,15 +9,18 @@ struct map
 	gchar *data;
 	guint n_rows;
 	guint n_cols;
+	guint length;
 };
 
-inline Map *map_new (guint n_rows, guint n_cols)
+inline Map *map_new (guint n_rows, guint n_cols, gchar filler)
 {
 	Map *map = calloc (1, sizeof (Map));
 	assert (map != NULL);
 	map->n_rows = n_rows;
 	map->n_cols = n_cols;
-	map->data = calloc (1, n_rows * n_cols);
+	map->length = n_cols * n_rows;
+	map->data = malloc (map->length * sizeof (gchar));
+	memset (map->data, filler, map->length);
 	return map;
 }
 
@@ -36,7 +40,7 @@ inline gchar * map_get_buffer (Map *map)
 inline guint map_get_length (Map *map)
 {
 	assert (map != NULL);
-	return map->n_rows * map->n_cols;
+	return map->length;
 }
 
 inline guint map_get_n_rows (Map *map)

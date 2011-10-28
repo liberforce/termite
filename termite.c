@@ -6,6 +6,7 @@
 #include "termite.h"
 #include "ant.h"
 #include "map.h"
+#include "tile.h"
 
 void termite_play_turn (Rules *rules,
 		State *state)
@@ -145,8 +146,7 @@ void termite_init (Rules *rules,
 
 	// Create the empty map
 	assert (state->map == NULL);
-	state->map = map_new (rules->rows, rules->cols);
-	memset (map_get_buffer (state->map), '.', map_get_length (state->map));
+	state->map = map_new (rules->rows, rules->cols, TILE_LAND);
 }
 
 // updates game data with locations of ants and food
@@ -312,8 +312,8 @@ void termite_update_map (Rules *rules,
 	int i;
 
 	for (i = 0; i < map_len; ++i)
-		if (map_data[i] != '%')
-			map_data[i] = '.';
+		if (map_data[i] != TILE_WATER)
+			map_data[i] = TILE_LAND;
 
 	while (*data != 0) 
 	{

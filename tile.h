@@ -1,6 +1,7 @@
 #ifndef TILE_H
 #define TILE_H
 
+#define TILE_LAND                   '.'
 #define TILE_UNSEEN                 '?'
 #define TILE_WATER                  '%'
 #define TILE_FOOD                   '*'
