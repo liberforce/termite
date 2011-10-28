@@ -6,7 +6,7 @@
 #define TILE_WATER                  '%'
 #define TILE_FOOD                   '*'
 #define TILE_DEAD_ANTS              '!'
-#define TILE_ANT                   ('a' + player)
+#define TILE_ANT(player)           ('a' + player)
 #define TILE_ANT_ON_HILL(player)   ('A' + player)
 #define TILE_HILL(player)          ('0' + player)
 
