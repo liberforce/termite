@@ -303,6 +303,12 @@ void termite_update_map (Rules *rules,
 	gchar *map_data = map_get_buffer (map);
 	guint map_len = map_get_length (map);
 
+#ifndef NDEBUG
+	// Trace map information sent by the server
+	fprintf (stderr, "%s", data);
+	fflush (stderr);
+#endif
+
 	int i;
 
 	for (i = 0; i < map_len; ++i)
@@ -361,6 +367,8 @@ void termite_update_map (Rules *rules,
 
 		data = tmp_ptr + 1;
 	}
+
+	map_dump(map);
 }
 
 char termite_choose_ant_direction (Rules *rules,

@@ -25,4 +25,10 @@ void map_get_cardinals (Map *map,
 		gint col,
 		struct cardinals *seen);
 
+#ifndef NDEBUG
+void map_dump (Map *map);
+#else
+#define map_dump(...)
 #endif
+
+#endif // MAP_H

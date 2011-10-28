@@ -107,3 +107,21 @@ void map_get_cardinals (Map *map,
 	seen->west  = map->data[offset + left ];
 }
 
+#ifndef NDEBUG
+inline void map_dump (Map *map)
+{
+	assert (map != NULL);
+	gint i, j;
+	for (i = 0; i < map->n_rows; i++)
+	{
+		for (j = 0; j < map->n_cols; j++)
+		{
+			fprintf (stderr, "%c ", map_get_content (map, i, j));
+		}
+		fprintf (stderr, "\n");
+	}
+	fprintf (stderr, "\n");
+	fflush (stderr);
+}
+#endif
+
