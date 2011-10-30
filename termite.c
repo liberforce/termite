@@ -374,10 +374,33 @@ gboolean termite_process_command (Rules *rules,
 	}
 	else if (strcmp (args[0], "a") == 0)
 	{
+		assert (n_args == 4);
 		guint row = atoi (args[1]);
 		guint col = atoi (args[2]);
 		guint owner = atoi (args[3]);
 		map_set_tile (state->map, row, col, TILE_ANT(owner));
+	}
+	else if (strcmp (args[0], "f") == 0)
+	{
+		assert (n_args == 3);
+		guint row = atoi (args[1]);
+		guint col = atoi (args[2]);
+		map_set_tile (state->map, row, col, TILE_FOOD);
+	}
+	else if (strcmp (args[0], "w") == 0)
+	{
+		assert (n_args == 3);
+		guint row = atoi (args[1]);
+		guint col = atoi (args[2]);
+		map_set_tile (state->map, row, col, TILE_WATER);
+	}
+	else if (strcmp (args[0], "h") == 0)
+	{
+		assert (n_args == 4);
+		guint row = atoi (args[1]);
+		guint col = atoi (args[2]);
+		guint owner = atoi (args[3]);
+		map_set_tile (state->map, row, col, TILE_HILL(owner));
 	}
 	else if (strcmp (args[0], "ready") == 0)
 	{
