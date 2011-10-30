@@ -130,22 +130,22 @@ void termite_update_state (Rules *rules,
 
 	while (map_data < map_end)
 	{
-		gchar current = *map_data++;
+		gchar tile = *map_data++;
 
 		// Keep them sorted from most to less frequent
-		if (current == TILE_UNSEEN || current == TILE_LAND || current == TILE_WATER)
+		if (tile == TILE_UNSEEN || tile == TILE_LAND || tile == TILE_WATER)
 			continue;
-		else if (current == TILE_ANT(0))
+		else if (tile == TILE_ANT(0))
 			++my_count;
-		else if (current >= TILE_ANT(1) && current <= TILE_ANT(25))
+		else if (tile >= TILE_ANT(1) && tile <= TILE_ANT(25))
 			++enemy_count;
-		else if (current == TILE_FOOD)
+		else if (tile == TILE_FOOD)
 			++food_count;
-		else if (current == TILE_DEAD_ANT)
+		else if (tile == TILE_DEAD_ANT)
 			++dead_count;
-		else if (current >= TILE_ANT_ON_HILL(1) && current <= TILE_ANT_ON_HILL(25))
+		else if (tile >= TILE_ANT_ON_HILL(1) && tile <= TILE_ANT_ON_HILL(25))
 			++enemy_count;
-		else if (current == TILE_ANT_ON_HILL(0))
+		else if (tile == TILE_ANT_ON_HILL(0))
 			++my_count;
 	}
 
