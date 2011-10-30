@@ -81,6 +81,9 @@ void termite_init (Rules *rules,
 
 	char *replace_data = data;
 
+	fprintf (stderr, "%s", data);
+	fflush (stderr);
+
 	while (*replace_data != '\0')
 	{
 		if (*replace_data == '\n')
@@ -166,6 +169,7 @@ void termite_update_state (Rules *rules,
 	int enemy_count = 0;
 	int food_count = 0;
 	int dead_count = 0;
+	static guint ant_id = 0;
 	guint i;
 
 	while (map_data < map_end)
@@ -259,7 +263,7 @@ void termite_update_state (Rules *rules,
 				state->my_ants[my_count].col = j;
 
 				if (keep_id == -1)
-					state->my_ants[my_count].id = ++state->my_ant_index;
+					state->my_ants[my_count].id = ++ant_id;
 				else
 					state->my_ants[my_count].id = keep_id;
 			}
@@ -399,5 +403,96 @@ char termite_choose_ant_direction (Rules *rules,
 		dir = DIR_WEST;
 
 	return dir;
+}
+
+gboolean termite_process_command (Rules *rules,
+		State *state,
+		gchar *line)
+{
+	gboolean game_running = TRUE;
+	gchar *arg = line;
+	gchar *args[10];
+	gint n_args = 0;
+
+	
+	// Replace spaces and newlines by null
+	// This splits the arguments into multiple null-terminated strings
+	while (*arg != '\0');
+	{
+		args[n_args++] = arg;
+
+		while (*arg != ' ' && *arg != '\n')
+			arg++;
+		*arg++ = '\0';
+	}
+
+	// Determine which action needs to be done
+	// Keep them sorted from most to less frequent
+	if (strcmp (args[0], "go") == 0)
+	{
+		//termite_play_turn (rules, state);
+		fprintf (stdout, "go\n");
+		fflush (stdout);
+	}
+	else if (strcmp (args[0], "ready") == 0)
+	{
+		fprintf (stdout, "go\n");
+		fflush (stdout);
+	}
+	else if (strcmp (args[0], "turn"))
+	{
+		assert (n_args == 2);
+		state->turn = atoi (args[1]); 
+	}
+	else if (strcmp (args[0], "playerseed") == 0)
+	{
+		assert (n_args == 2);
+		rules->seed = atoll (args[1]);
+	}
+	else if (strcmp (args[0], "attackradius2") == 0)
+	{
+		assert (n_args == 2);
+		rules->attackradius_sq = atoi (args[1]); 
+	}
+	else if (strcmp (args[0], "spawnradius2") == 0)
+	{
+		assert (n_args == 2);
+		rules->spawnradius_sq = atoi (args[1]); 
+		
+	}
+	else if (strcmp (args[0], "viewradius2") == 0)
+	{
+		assert (n_args == 2);
+		rules->viewradius_sq = atoi (args[1]); 
+
+	}
+	else if (strcmp (args[0], "turns") == 0)
+	{
+		assert (n_args == 2);
+		rules->turns = atoi (args[1]); 
+
+	}
+	else if (strcmp (args[0], "rows") == 0)
+	{
+		assert (n_args == 2);
+		rules->rows = atoi (args[1]); 
+	}
+	else if (strcmp (args[0], "cols") == 0)
+	{
+		assert (n_args == 2);
+		rules->cols = atoi (args[1]); 
+	}
+	else if (strcmp (args[0], "turntime") == 0)
+	{
+		assert (n_args == 2);
+		rules->turntime = atoi (args[1]); 
+	}
+	else if (strcmp (args[0], "loadtime") == 0)
+	{
+		assert (n_args == 2);
+		rules->loadtime = atoi (args[1]); 
+	}
+
+	return game_running;
 }
 

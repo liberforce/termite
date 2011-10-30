@@ -35,4 +35,8 @@ gchar termite_choose_ant_direction (Rules *rules,
 		State *state,
 		Ant *ant);
 
+gboolean termite_process_command (Rules *rules,
+		State *state,
+		gchar *line);
+
 #endif // TERMITE_H

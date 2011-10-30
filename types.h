@@ -13,6 +13,9 @@ typedef unsigned int guint;
 typedef int gint32;
 typedef unsigned int guint32;
 
+typedef signed long gint64;
+typedef unsigned long guint64;
+
 typedef int gboolean;
 
 #define TRUE  1
