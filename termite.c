@@ -88,6 +88,7 @@ void termite_init (Rules *rules,
 	// Inform the server we're ready to play
 	fprintf (stdout, "go\n");
 	fflush (stdout);
+	g_debug ("BOT: go\n");
 }
 
 // updates game data with locations of ants and food
@@ -352,7 +353,7 @@ gboolean termite_process_command (Rules *rules,
 	gchar *args[10];
 	gint n_args = 0;
 
-	g_debug ("command: %s", line);
+	g_debug ("SRV: %s", line);
 
 	// Replace spaces and newlines by null
 	// This splits the arguments into multiple null-terminated strings
