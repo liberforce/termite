@@ -376,7 +376,7 @@ gboolean termite_process_command (Rules *rules,
 	{
 		termite_init (rules, state);
 	}
-	else if (strcmp (args[0], "turn"))
+	else if (strcmp (args[0], "turn") == 0)
 	{
 		assert (n_args == 2);
 		state->turn = atoi (args[1]);
