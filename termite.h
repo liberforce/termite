@@ -15,9 +15,8 @@
 void termite_init (Rules *rules,
 		State *state);
 
-void termite_update_map (Rules *rules,
-		State *state, 
-		gchar *data);
+void termite_cleanup_map (Rules *rules,
+		State *state);
 
 void termite_update_state (Rules *rules, 
 		State *state);

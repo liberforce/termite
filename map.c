@@ -2,7 +2,9 @@
 #include <assert.h>    // for assert
 #include <stdlib.h>    // for malloc, calloc
 #include <string.h>    // for memset
+
 #include "map.h"
+#include "debug.h"
 
 struct map
 {
@@ -125,6 +127,8 @@ inline void map_dump (Map *map)
 {
 	assert (map != NULL);
 	gint i, j;
+
+	g_debug ("\n");
 	for (i = 0; i < map->n_rows; i++)
 	{
 		for (j = 0; j < map->n_cols; j++)
@@ -133,8 +137,7 @@ inline void map_dump (Map *map)
 		}
 		fprintf (stderr, "\n");
 	}
-	fprintf (stderr, "\n");
-	fflush (stderr);
+	g_debug ("\n");
 }
 #endif
 

@@ -14,6 +14,8 @@ void termite_play_turn (Rules *rules,
 {
 	int i;
 
+	map_dump (state->map);
+
 	// Chose moves for each ant
 	for (i = 0; i < state->my_count; ++i) 
 	{
@@ -29,6 +31,7 @@ void termite_play_turn (Rules *rules,
 	// Inform the server we finished sending our actions for the turn
 	fprintf (stdout, "go\n");
 	fflush (stdout);
+	g_debug ("BOT: go\n");
 }
 
 // sends a move to the tournament engine and keeps track of ants new location
@@ -89,6 +92,21 @@ void termite_init (Rules *rules,
 	fprintf (stdout, "go\n");
 	fflush (stdout);
 	g_debug ("BOT: go\n");
+}
+
+void termite_cleanup_map (Rules *rules,
+		State *state)
+{
+	guint length = map_get_length (state->map);
+	gchar *start = map_get_buffer (state->map);
+	gchar *end = start + length;
+
+	do
+	{
+		gchar tile = *start;
+		if (tile != TILE_UNSEEN && tile != TILE_WATER)
+			*start = TILE_LAND;
+	} while (++start < end);
 }
 
 // updates game data with locations of ants and food
@@ -231,94 +249,6 @@ void termite_update_state (Rules *rules,
 		free(my_old);
 }
 
-// Updates the map.
-//
-//    %   = Walls       (the official spec calls this water,
-//                      in either case it's simply space that is occupied)
-//    .   = Land        (territory that you can walk on)
-//    a   = Your Ant
-// [b..z] = Enemy Ants
-// [A..Z] = Dead Ants   (disappear after one turn)
-//    *   = Food
-//    ?   = Unknown     (not used in latest engine version, unknowns are assumed to be land)
-
-
-void termite_update_map (Rules *rules,
-		State *state,
-		gchar *data)  
-{
-	Map *map = state->map;
-	gchar *map_data = map_get_buffer (map);
-	guint map_len = map_get_length (map);
-
-#ifndef NDEBUG
-	// Trace map information sent by the server
-	fprintf (stderr, "%s", data);
-	fflush (stderr);
-#endif
-
-	int i;
-
-	for (i = 0; i < map_len; ++i)
-		if (map_data[i] != TILE_WATER)
-			map_data[i] = TILE_UNSEEN;
-
-	while (*data != 0) 
-	{
-		char *tmp_data = data;
-		int arg = 0;
-
-		while (*tmp_data != '\n')
-		{
-			if (*tmp_data == ' ')
-			{
-				*tmp_data = '\0';
-				++arg;
-			}
-
-			++tmp_data;
-		}
-
-		char *tmp_ptr = tmp_data;
-		tmp_data = data;
-
-		tmp_data += 2;
-		int jump = strlen(tmp_data) + 1;
-
-		int row = atoi(tmp_data);
-		int col = atoi(tmp_data + jump);
-		char var3 = -1;
-
-		if (arg > 2)
-		{
-			jump += strlen(tmp_data + jump) + 1;
-			var3 = *(tmp_data + jump);
-		}
-
-		int offset = row * map_get_n_cols (map) + col;
-
-		switch (*data)
-		{
-			case 'w':
-				map_data[offset] = TILE_WATER;
-				break;
-			case 'a':
-				map_data[offset] = var3 + 49;
-				break;
-			case 'd':
-				map_data[offset] = var3 + 27;
-				break;
-			case 'f':
-				map_data[offset] = TILE_FOOD;
-				break;
-		}
-
-		data = tmp_ptr + 1;
-	}
-
-	map_dump(map);
-}
-
 char termite_choose_ant_direction (Rules *rules,
 		State *state,
 		Ant *ant)
@@ -370,7 +300,9 @@ gboolean termite_process_command (Rules *rules,
 	// Keep them sorted from most to less frequent
 	if (strcmp (args[0], "go") == 0)
 	{
+		assert (n_args == 1);
 		termite_play_turn (rules, state);
+		termite_cleanup_map (rules, state);
 	}
 	else if (strcmp (args[0], "a") == 0)
 	{
