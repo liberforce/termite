@@ -7,6 +7,7 @@
 #include "ant.h"
 #include "map.h"
 #include "tile.h"
+#include "debug.h"
 
 void termite_play_turn (Rules *rules,
 		State *state)
@@ -414,10 +415,11 @@ gboolean termite_process_command (Rules *rules,
 	gchar *args[10];
 	gint n_args = 0;
 
-	
+	g_debug ("command: %s", line);
+
 	// Replace spaces and newlines by null
 	// This splits the arguments into multiple null-terminated strings
-	while (*arg != '\0');
+	while (*arg != '\0')
 	{
 		args[n_args++] = arg;
 
@@ -442,7 +444,7 @@ gboolean termite_process_command (Rules *rules,
 	else if (strcmp (args[0], "turn"))
 	{
 		assert (n_args == 2);
-		state->turn = atoi (args[1]); 
+		state->turn = atoi (args[1]);
 	}
 	else if (strcmp (args[0], "playerseed") == 0)
 	{
