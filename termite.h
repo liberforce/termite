@@ -13,8 +13,7 @@
 #define DIR_NONE  'X'
 
 void termite_init (Rules *rules,
-		State *state,
-		gchar *data);
+		State *state);
 
 void termite_update_map (Rules *rules,
 		State *state, 

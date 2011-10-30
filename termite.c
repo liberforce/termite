@@ -25,6 +25,10 @@ void termite_play_turn (Rules *rules,
 		if (dir != DIR_NONE)
 			termite_move_ant (rules, state, ant, dir);
 	}
+
+	// Inform the server we finished sending our actions for the turn
+	fprintf (stdout, "go\n");
+	fflush (stdout);
 }
 
 // sends a move to the tournament engine and keeps track of ants new location
@@ -69,88 +73,21 @@ void termite_move_ant (Rules *rules,
 		ant_set_col (ant, n_cols - 1);
 }
 
-// initializes the bot on the very first turn
-// function is not called after the game has started
+// initializes the bot on the very first turn using given rules
 
 void termite_init (Rules *rules,
-		State *state,
-		gchar *data) 
+		State *state) 
 {
 	assert (rules != NULL);
 	assert (state != NULL);
-	assert (data != NULL);
-
-	char *replace_data = data;
-
-	fprintf (stderr, "%s", data);
-	fflush (stderr);
-
-	while (*replace_data != '\0')
-	{
-		if (*replace_data == '\n')
-			*replace_data = '\0';
-		++replace_data;
-	}
-
-	while (42)
-	{
-		char *value = data;
-
-		while (*++value != ' ');
-		++value;
-
-		int num_value = atoi(value);
-
-		switch (*data)
-		{
-			case 'l':
-				rules->loadtime = num_value;
-				break;
-
-			case 't':
-				if (*(data + 4) == 't')
-					rules->turntime = num_value;
-				else
-					rules->turns = num_value;
-				break;
-
-			case 'r':
-				rules->rows = num_value;
-				break;
-
-			case 'c':
-				rules->cols = num_value;
-				break;
-
-			case 'v':
-				rules->viewradius_sq = num_value;
-				break;
-
-			case 'a':
-				rules->attackradius_sq = num_value;
-				break;
-
-			case 's':
-				if (*(data + 1) == 'p')
-					rules->spawnradius_sq = num_value;
-				else
-					rules->seed = num_value;
-				break;
-
-		}
-
-		data = value;
-
-		while (*++data != '\0');
-		++data;
-
-		if (strcmp(data, "ready") == 0)
-			break;
-	}
+	assert (state->map == NULL);
 
 	// Create the empty map
-	assert (state->map == NULL);
 	state->map = map_new (rules->rows, rules->cols, TILE_UNSEEN);
+
+	// Inform the server we're ready to play
+	fprintf (stdout, "go\n");
+	fflush (stdout);
 }
 
 // updates game data with locations of ants and food
@@ -432,14 +369,11 @@ gboolean termite_process_command (Rules *rules,
 	// Keep them sorted from most to less frequent
 	if (strcmp (args[0], "go") == 0)
 	{
-		//termite_play_turn (rules, state);
-		fprintf (stdout, "go\n");
-		fflush (stdout);
+		termite_play_turn (rules, state);
 	}
 	else if (strcmp (args[0], "ready") == 0)
 	{
-		fprintf (stdout, "go\n");
-		fflush (stdout);
+		termite_init (rules, state);
 	}
 	else if (strcmp (args[0], "turn"))
 	{
@@ -493,6 +427,11 @@ gboolean termite_process_command (Rules *rules,
 	{
 		assert (n_args == 2);
 		rules->loadtime = atoi (args[1]); 
+	}
+	else if (strcmp (args[0], "end") == 0)
+	{
+		assert (n_args == 1);
+		game_running = FALSE;
 	}
 
 	return game_running;
