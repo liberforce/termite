@@ -97,9 +97,8 @@ void termite_init (Rules *rules,
 void termite_cleanup_map (Rules *rules,
 		State *state)
 {
-	guint length = map_get_length (state->map);
 	gchar *start = map_get_buffer (state->map);
-	gchar *end = start + length;
+	gchar *end = start + map_get_length (state->map);
 
 	do
 	{
