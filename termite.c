@@ -169,7 +169,7 @@ void termite_update_state (Rules *rules,
 	{
 		for (j = 0; j < n_cols; ++j) 
 		{
-			char tile = map_get_content (map, i, j);
+			char tile = map_get_tile (map, i, j);
 			if (tile == TILE_UNSEEN || tile == TILE_LAND || tile == TILE_WATER)
 				continue;
 
@@ -371,6 +371,13 @@ gboolean termite_process_command (Rules *rules,
 	if (strcmp (args[0], "go") == 0)
 	{
 		termite_play_turn (rules, state);
+	}
+	else if (strcmp (args[0], "a") == 0)
+	{
+		guint row = atoi (args[1]);
+		guint col = atoi (args[2]);
+		guint owner = atoi (args[3]);
+		map_set_tile (state->map, row, col, TILE_ANT(owner));
 	}
 	else if (strcmp (args[0], "ready") == 0)
 	{

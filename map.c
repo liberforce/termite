@@ -55,7 +55,16 @@ inline guint map_get_n_cols (Map *map)
 	return map->n_cols;
 }
 
-inline gchar map_get_content (Map *map, gint row, gint col)
+inline void map_set_tile (Map *map, gint row, gint col, gchar tile)
+{
+	assert (map != NULL);
+	assert (map->data != NULL);
+	assert (row < map->n_rows);
+	assert (col < map->n_cols);
+	map->data[row * map->n_cols + col] = tile;
+}
+
+inline gchar map_get_tile (Map *map, gint row, gint col)
 {
 	assert (map != NULL);
 	assert (map->data != NULL);
@@ -120,7 +129,7 @@ inline void map_dump (Map *map)
 	{
 		for (j = 0; j < map->n_cols; j++)
 		{
-			fprintf (stderr, "%c ", map_get_content (map, i, j));
+			fprintf (stderr, "%c ", map_get_tile (map, i, j));
 		}
 		fprintf (stderr, "\n");
 	}

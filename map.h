@@ -19,7 +19,13 @@ gchar * map_get_buffer (Map *map);
 guint map_get_length (Map *map);
 guint map_get_n_rows (Map *map);
 guint map_get_n_cols (Map *map);
-gchar map_get_content (Map *map, gint row, gint col);
+void map_set_tile (Map *map, 
+		gint row, 
+		gint col, 
+		gchar tile);
+gchar map_get_tile (Map *map, 
+		gint row, 
+		gint col);
 void map_get_cardinals (Map *map,
 		gint row,
 		gint col,

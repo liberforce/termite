@@ -5,10 +5,10 @@
 
 typedef struct ant 
 {
-	int id;
-	int row;
-	int col;
-	int owner;
+	guint id;
+	guint row;
+	guint col;
+	guint owner;
 } Ant;
 
 gint ant_get_col (Ant *ant);
