@@ -44,7 +44,8 @@ void termite_move_ant (Rules *rules,
 	gint old_row = ant_get_row (ant);
 	gint old_col = ant_get_col (ant);
 
-	fprintf(stdout, "O %i %i %c\n", old_row, old_col, dir);
+	fprintf (stdout, "O %i %i %c\n", old_row, old_col, dir);
+	g_debug ("O %i %i %c\n", old_row, old_col, dir);
 
 	switch (dir) 
 	{
@@ -108,166 +109,26 @@ void termite_cleanup_map (Rules *rules,
 	} while (++start < end);
 }
 
-// updates game data with locations of ants and food
-// only the ids of your ants are preserved
-
-void termite_update_state (Rules *rules,
-		State *state)
-{
-	Map *map = state->map;
-	guint map_len = map_get_length (map);
-	gchar *map_data = map_get_buffer (map);
-	gchar *map_end = map_data + map_len;
-	const guint n_rows = map_get_n_rows (map);
-	const guint n_cols = map_get_n_cols (map);
-
-	int my_count = 0;
-	int enemy_count = 0;
-	int food_count = 0;
-	int dead_count = 0;
-	static guint ant_id = 0;
-	guint i;
-
-	while (map_data < map_end)
-	{
-		gchar tile = *map_data++;
-
-		// Keep them sorted from most to less frequent
-		if (tile == TILE_UNSEEN || tile == TILE_LAND || tile == TILE_WATER)
-			continue;
-		else if (tile == TILE_ANT(0))
-			++my_count;
-		else if (tile >= TILE_ANT(1) && tile <= TILE_ANT(25))
-			++enemy_count;
-		else if (tile == TILE_FOOD)
-			++food_count;
-		else if (tile == TILE_DEAD_ANT)
-			++dead_count;
-		else if (tile >= TILE_ANT_ON_HILL(1) && tile <= TILE_ANT_ON_HILL(25))
-			++enemy_count;
-		else if (tile == TILE_ANT_ON_HILL(0))
-			++my_count;
-	}
-
-	Ant *my_old = 0;
-	int my_old_count = state->my_count;
-
-	state->my_count = my_count;
-	state->enemy_count = enemy_count;
-	state->food_count = food_count;
-	state->dead_count = dead_count;
-
-	if (state->my_ants != 0)
-		my_old = state->my_ants;
-
-	if (state->enemy_ants != 0)
-		free(state->enemy_ants);
-	if (state->food != 0)
-		free(state->food);
-	if (state->dead_ants != 0)
-		free(state->dead_ants);
-
-	state->my_ants = malloc(my_count*sizeof(Ant));
-
-	if (enemy_count > 0)
-		state->enemy_ants = malloc(enemy_count*sizeof(Ant));
-	else
-		state->enemy_ants = 0;
-
-	if (dead_count > 0)
-		state->dead_ants = malloc(dead_count*sizeof(Ant));
-	else
-		state->dead_ants = 0;
-
-	state->food = malloc(food_count*sizeof(struct food));
-
-	gint j;
-	for (i = 0; i < n_rows; ++i) 
-	{
-		for (j = 0; j < n_cols; ++j) 
-		{
-			char tile = map_get_tile (map, i, j);
-			if (tile == TILE_UNSEEN || tile == TILE_LAND || tile == TILE_WATER)
-				continue;
-
-			if (tile == TILE_FOOD) 
-			{
-				--food_count;
-
-				state->food[food_count].row = i;
-				state->food[food_count].col = j;
-			}
-			else if (tile == TILE_ANT(0)) 
-			{
-				--my_count;
-
-				int keep_id = -1;
-				int k = 0;
-
-				if (my_old != 0) 
-				{
-					for (k = 0; k < my_old_count; ++k) 
-					{
-						if (my_old[k].row == i && my_old[k].col == j) {
-							keep_id = my_old[k].id;
-							break;
-						}
-					}
-				}
-
-				state->my_ants[my_count].row = i;
-				state->my_ants[my_count].col = j;
-
-				if (keep_id == -1)
-					state->my_ants[my_count].id = ++ant_id;
-				else
-					state->my_ants[my_count].id = keep_id;
-			}
-			else if (tile == TILE_DEAD_ANT) 
-			{
-				--dead_count;
-
-				Ant *dead = &state->dead_ants[dead_count];
-				ant_set_row (dead, i);
-				ant_set_col (dead, j);
-				ant_set_owner (dead, tile);
-			}
-			else 
-			{
-				--enemy_count;
-
-				Ant *enemy = &state->enemy_ants[enemy_count];
-				ant_set_row (enemy, i);
-				ant_set_col (enemy, j);
-				ant_set_owner (enemy, tile);
-			} 
-		}
-	}
-
-	if (my_old != 0)
-		free(my_old);
-}
-
-char termite_choose_ant_direction (Rules *rules,
+gchar termite_choose_ant_direction (Rules *rules,
 		State *state,
 		Ant *ant)
 {
 	assert (ant != NULL);
 	Map *map = state->map;
 
-	char dir = DIR_NONE;
+	gchar dir = DIR_NONE;
 	struct cardinals look = { 0 };
 
 	map_get_cardinals (map, ant_get_row (ant), ant_get_col (ant), &look);
 
 	// cycle through the directions, pick one that works
-	if (look.north != '%')
+	if (look.north != TILE_WATER)
 		dir = DIR_NORTH;
-	else if (look.east != '%')
+	else if (look.east != TILE_WATER)
 		dir = DIR_EAST;
-	else if (look.south != '%')
+	else if (look.south != TILE_WATER)
 		dir = DIR_SOUTH;
-	else if (look.west != '%')
+	else if (look.west != TILE_WATER)
 		dir = DIR_WEST;
 
 	return dir;
@@ -340,7 +201,8 @@ gboolean termite_process_command (Rules *rules,
 	else if (strcmp (args[0], "turn") == 0)
 	{
 		assert (n_args == 2);
-		state->turn = atoi (args[1]);
+		guint n_turn = atoi (args[1]);
+		state_set_turn (state, n_turn);
 	}
 	else if (strcmp (args[0], "playerseed") == 0)
 	{
