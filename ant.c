@@ -20,6 +20,12 @@ inline guint ant_get_owner (Ant *ant)
 	return ant->owner;
 }
 
+inline gchar ant_get_direction (Ant *ant)
+{
+	assert (ant != NULL);
+	return ant->direction;
+}
+
 inline void ant_set_col (Ant *ant, gint col)
 {
 	assert (ant != NULL);
@@ -38,3 +44,8 @@ inline void ant_set_owner (Ant *ant, guint player_id)
 	ant->owner = player_id;
 }
 
+inline void ant_set_direction (Ant *ant, gchar direction)
+{
+	assert (ant != NULL);
+	ant->direction = direction;
+}
