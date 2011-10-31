@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-O3 -funroll-loops -c -Wall
 LDFLAGS=-O2 -lm
-SOURCES=MyBot.c termite.c ant.c map.c utils.c
+SOURCES=MyBot.c termite.c ant.c map.c utils.c state.c
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=termite
 ARCHIVE=$(EXECUTABLE).zip

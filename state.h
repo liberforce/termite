@@ -12,7 +12,7 @@ typedef struct food
 
 typedef struct state
 {
-	guint turn;         // Current turn
+	guint n_turn;         // Current turn
 	Map *map;
 
 	Ant *my_ants;
@@ -27,5 +27,10 @@ typedef struct state
 	Food *food;
 	guint food_count;
 } State;
+
+void state_set_turn (State *state,
+		guint n_turn);
+
+guint state_get_turn (State *state);
 
 #endif // STATE_H
