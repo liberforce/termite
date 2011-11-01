@@ -115,6 +115,7 @@ void termite_cleanup_map (Rules *rules,
 	do
 	{
 		if (tile_get_type (tile) != TILE_TYPE_UNSEEN 
+				&& tile_get_type (tile) != TILE_TYPE_FOOD 
 				&& tile_get_type (tile) != TILE_TYPE_WATER)
 			tile_set_type (tile, TILE_TYPE_LAND);
 	} while (++tile < end);
