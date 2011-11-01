@@ -3,6 +3,16 @@
 
 #include "tile.h"
 
+// ascii codes for tile_dump
+#define TILE_LAND                   '.'
+#define TILE_UNSEEN                 '?'
+#define TILE_WATER                  '%'
+#define TILE_FOOD                   '*'
+#define TILE_DEAD_ANT               '!'  // 1 or more dead ants
+#define TILE_ANT(player)           ('a' + player)
+#define TILE_ANT_ON_HILL(player)   ('A' + player)
+#define TILE_HILL(player)          ('0' + player)
+
 inline void tile_set_type (Tile *tile, 
 		TileType type)
 {
@@ -39,7 +49,6 @@ inline void tile_set_row (Tile *tile, guint row)
 	assert (tile != NULL);
 	tile->row = row;
 }
-
 
 gchar tile_get_ascii_type (Tile *tile)
 {
