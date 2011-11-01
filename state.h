@@ -4,12 +4,6 @@
 #include "ant.h"
 #include "map.h"
 
-typedef struct food 
-{
-	int row;
-	int col;
-} Food;
-
 typedef struct state
 {
 	guint n_turn;         // Current turn
@@ -24,8 +18,8 @@ typedef struct state
 	Ant *dead_ants;
 	guint dead_count;
 
-	Food *food;
-	guint food_count;
+	Tile **food;
+	guint n_food;
 } State;
 
 void state_set_turn (State *state,

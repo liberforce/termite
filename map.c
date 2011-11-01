@@ -126,7 +126,7 @@ void map_get_cardinals (Map *map,
 	seen->west  = tile_get_type (&map->tiles[offset + left ]);
 }
 
-inline gboolean map_is_in_range (Map *map,
+inline gboolean map_tile_in_range (Map *map,
 		Tile *tile, 
 		Tile *other,
 		guint max_range_sq)

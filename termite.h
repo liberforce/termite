@@ -29,7 +29,7 @@ void termite_move_ant (Rules *rules,
 		Tile* tile, 
 		gchar dir);
 
-gchar termite_choose_ant_direction (Rules *rules,
+gchar termite_explore (Rules *rules,
 		State *state,
 		Tile *tile);
 

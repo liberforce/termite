@@ -12,20 +12,51 @@
 void termite_play_turn (Rules *rules,
 		State *state)
 {
-	int i;
+	guint i, j;
 
 	map_dump (state->map);
 
 	// Chose moves for each ant
 	for (i = 0; i < state->n_ants; ++i) 
 	{
-		// the location within the map array where our ant is currently
-		Tile *tile = state->ants[i];
-		char dir = termite_choose_ant_direction (rules, state, tile);
+		Tile *ant = state->ants[i];
+		Tile *food = NULL;
+		gchar dir = DIR_NONE;
+
+		// Find if that ant is near food
+		for (j = 0; j < state->n_food; ++j)
+		{
+			if (map_tile_in_range (state->map,
+						ant,
+						state->food[j],
+						rules->viewradius_sq))
+			{
+				food = state->food[j];
+				break;
+			}
+		}
+
+		if (food != NULL)
+		{
+			// Find path to go there !
+			if (ant->row < food->row)
+				dir = DIR_SOUTH;
+			else if (ant->row > food->row)
+				dir = DIR_NORTH;
+			else if (ant->col < food->col)
+				dir = DIR_EAST;
+			else if (ant->col > food->col)
+				dir = DIR_EAST;
+		}
+		else
+		{
+			// Exploration
+			dir = termite_explore (rules, state, ant);
+		}
 
 		// Now we do our move
 		if (dir != DIR_NONE)
-			termite_move_ant (rules, state, tile, dir);
+			termite_move_ant (rules, state, ant, dir);
 	}
 
 	state->n_ants = 0;
@@ -100,6 +131,9 @@ void termite_init (Rules *rules,
 	state->ants = calloc (rules->rows * rules->cols, sizeof (Tile *));
 	state->n_ants = 0;
 
+	state->food = calloc (rules->rows * rules->cols, sizeof (Tile *));
+	state->n_food = 0;
+
 	// Inform the server we're ready to play
 	fprintf (stdout, "go\n");
 	fflush (stdout);
@@ -121,7 +155,7 @@ void termite_cleanup_map (Rules *rules,
 	} while (++tile < end);
 }
 
-gchar termite_choose_ant_direction (Rules *rules,
+gchar termite_explore (Rules *rules,
 		State *state,
 		Tile *tile)
 {
@@ -196,6 +230,7 @@ gboolean termite_process_command (Rules *rules,
 		guint col = atoi (args[2]);
 		Tile *tile = map_get_tile (state->map, row, col);
 		tile_set_type (tile, TILE_TYPE_FOOD);
+		state->food[state->n_food++] = tile;
 	}
 	else if (strcmp (args[0], "w") == 0)
 	{
