@@ -28,6 +28,8 @@ void termite_play_turn (Rules *rules,
 			termite_move_ant (rules, state, tile, dir);
 	}
 
+	state->n_ants = 0;
+
 	// Inform the server we finished sending our actions for the turn
 	fprintf (stdout, "go\n");
 	fflush (stdout);
@@ -93,6 +95,10 @@ void termite_init (Rules *rules,
 
 	// Create the empty map
 	state->map = map_new (rules->rows, rules->cols, TILE_TYPE_UNSEEN);
+
+	// Allocate max size
+	state->ants = calloc (rules->rows * rules->cols, sizeof (Tile *));
+	state->n_ants = 0;
 
 	// Inform the server we're ready to play
 	fprintf (stdout, "go\n");
@@ -178,6 +184,9 @@ gboolean termite_process_command (Rules *rules,
 		Tile *tile = map_get_tile (state->map, row, col);
 		tile_set_type (tile, TILE_TYPE_ANT);
 		ant_set_owner (&tile->with.ant, owner);
+
+		if (owner == 0)
+			state->ants[state->n_ants++] = tile;
 	}
 	else if (strcmp (args[0], "f") == 0)
 	{
