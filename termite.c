@@ -53,6 +53,12 @@ void termite_play_turn (Rules *rules,
 				dir = DIR_EAST;
 			else if (ant->col > food->col)
 				dir = DIR_WEST;
+
+			// "Forget" that food to make sure several ants won't 
+			// try to get there at the same time
+			// The last item is moved there
+			state->food[j] = state->food[state->n_food - 1 ];
+			state->n_food--;
 		}
 		else
 		{
