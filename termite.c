@@ -198,7 +198,8 @@ gboolean termite_process_command (Rules *rules,
 		guint owner = atoi (args[3]);
 		Tile *tile = map_get_tile (state->map, row, col);
 		tile_set_type (tile, TILE_TYPE_LAND);
-		// TODO: set hill and owner
+		tile->flags |= TILE_HAS_HILL;
+		tile->with.hill.owner = owner;
 	}
 	else if (strcmp (args[0], "ready") == 0)
 	{

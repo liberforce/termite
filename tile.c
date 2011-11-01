@@ -23,10 +23,9 @@ gchar tile_get_ascii_type (Tile *tile)
 	{
 		case TILE_TYPE_LAND:
 		{
-			// TODO: handle hill
-			// if (tile->flags & TILE_HAS_HILL)
-			//	return TILE_HILL (tile->with.hill.owner);
-			// else
+			if (tile->flags & TILE_HAS_HILL)
+				return TILE_HILL (tile->with.hill.owner);
+			else
 				return TILE_LAND;
 		}
 

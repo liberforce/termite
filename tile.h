@@ -3,6 +3,7 @@
 
 #include "types.h"
 #include "ant.h"
+#include "hill.h"
 
 typedef enum
 {
@@ -23,6 +24,7 @@ typedef struct tile
 	union 
 	{
 		Ant ant;
+		Hill hill;
 	} with; 
 
 } Tile;
