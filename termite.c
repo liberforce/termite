@@ -87,7 +87,7 @@ void termite_init (Rules *rules,
 	assert (state->map == NULL);
 
 	// Create the empty map
-	state->map = map_new (rules->rows, rules->cols, TILE_UNSEEN);
+	state->map = map_new (rules->rows, rules->cols, TILE_TYPE_UNSEEN);
 
 	// Inform the server we're ready to play
 	fprintf (stdout, "go\n");
@@ -98,15 +98,15 @@ void termite_init (Rules *rules,
 void termite_cleanup_map (Rules *rules,
 		State *state)
 {
-	gchar *start = map_get_buffer (state->map);
-	gchar *end = start + map_get_length (state->map);
+	Tile *tile = map_get_buffer (state->map);
+	Tile *end = tile + map_get_n_elements (state->map);
 
 	do
 	{
-		gchar tile = *start;
-		if (tile != TILE_UNSEEN && tile != TILE_WATER)
-			*start = TILE_LAND;
-	} while (++start < end);
+		if (tile_get_type (tile) != TILE_TYPE_UNSEEN 
+				&& tile_get_type (tile) != TILE_TYPE_WATER)
+			tile_set_type (tile, TILE_TYPE_LAND);
+	} while (++tile < end);
 }
 
 gchar termite_choose_ant_direction (Rules *rules,
@@ -170,21 +170,25 @@ gboolean termite_process_command (Rules *rules,
 		guint row = atoi (args[1]);
 		guint col = atoi (args[2]);
 		guint owner = atoi (args[3]);
-		map_set_tile (state->map, row, col, TILE_ANT(owner));
+		Tile *tile = map_get_tile (state->map, row, col);
+		tile_set_type (tile, TILE_TYPE_ANT);
+		ant_set_owner (&tile->with.ant, owner);
 	}
 	else if (strcmp (args[0], "f") == 0)
 	{
 		assert (n_args == 3);
 		guint row = atoi (args[1]);
 		guint col = atoi (args[2]);
-		map_set_tile (state->map, row, col, TILE_FOOD);
+		Tile *tile = map_get_tile (state->map, row, col);
+		tile_set_type (tile, TILE_TYPE_FOOD);
 	}
 	else if (strcmp (args[0], "w") == 0)
 	{
 		assert (n_args == 3);
 		guint row = atoi (args[1]);
 		guint col = atoi (args[2]);
-		map_set_tile (state->map, row, col, TILE_WATER);
+		Tile *tile = map_get_tile (state->map, row, col);
+		tile_set_type (tile, TILE_TYPE_WATER);
 	}
 	else if (strcmp (args[0], "h") == 0)
 	{
@@ -192,7 +196,9 @@ gboolean termite_process_command (Rules *rules,
 		guint row = atoi (args[1]);
 		guint col = atoi (args[2]);
 		guint owner = atoi (args[3]);
-		map_set_tile (state->map, row, col, TILE_HILL(owner));
+		Tile *tile = map_get_tile (state->map, row, col);
+		tile_set_type (tile, TILE_TYPE_LAND);
+		// TODO: set hill and owner
 	}
 	else if (strcmp (args[0], "ready") == 0)
 	{

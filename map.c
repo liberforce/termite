@@ -8,41 +8,53 @@
 
 struct map
 {
-	gchar *data;
+	Tile *tiles;
 	guint n_rows;
 	guint n_cols;
-	guint length;
+	guint n_elements;
 };
 
-inline Map *map_new (guint n_rows, guint n_cols, gchar filler)
+inline Map *map_new (guint n_rows, guint n_cols, TileType filler)
 {
 	Map *map = calloc (1, sizeof (Map));
+	guint i, j;
 	assert (map != NULL);
 	map->n_rows = n_rows;
 	map->n_cols = n_cols;
-	map->length = n_cols * n_rows;
-	map->data = malloc (map->length * sizeof (gchar));
-	memset (map->data, filler, map->length);
+	map->n_elements = n_cols * n_rows;
+	map->tiles = malloc (map->n_elements * sizeof (Tile));
+
+	for (i = 0; i < n_rows; i++)
+	{
+		for (j = 0; j < n_cols; j++)
+		{
+			Tile *t = &map->tiles[i * n_cols + j];
+			t->type = filler;
+			t->row = i;
+			t->col = j;
+		}
+	}
+
 	return map;
 }
 
 inline void map_free (Map *map)
 {
 	assert (map != NULL);
-	free (map->data);
+	free (map->tiles);
 	free (map);
 }
 
-inline gchar * map_get_buffer (Map *map)
+inline Tile * map_get_buffer (Map *map)
 {
 	assert (map != NULL);
-	return map->data;
+	return map->tiles;
 }
 
-inline guint map_get_length (Map *map)
+inline guint map_get_n_elements (Map *map)
 {
 	assert (map != NULL);
-	return map->length;
+	return map->n_elements;
 }
 
 inline guint map_get_n_rows (Map *map)
@@ -57,27 +69,18 @@ inline guint map_get_n_cols (Map *map)
 	return map->n_cols;
 }
 
-inline void map_set_tile (Map *map, gint row, gint col, gchar tile)
+inline Tile * map_get_tile (Map *map, guint row, guint col)
 {
 	assert (map != NULL);
-	assert (map->data != NULL);
+	assert (map->tiles != NULL);
 	assert (row < map->n_rows);
 	assert (col < map->n_cols);
-	map->data[row * map->n_cols + col] = tile;
-}
-
-inline gchar map_get_tile (Map *map, gint row, gint col)
-{
-	assert (map != NULL);
-	assert (map->data != NULL);
-	assert (row < map->n_rows);
-	assert (col < map->n_cols);
-	return map->data[row * map->n_cols + col];
+	return &map->tiles[row * map->n_cols + col];
 }
 
 void map_get_cardinals (Map *map,
-		gint row,
-		gint col,
+		guint row,
+		guint col,
 		struct cardinals *seen)
 {
 	assert (map != NULL);
@@ -116,10 +119,10 @@ void map_get_cardinals (Map *map,
 			right = - (map->n_cols -1);
 	}
 
-	seen->north = map->data[offset + up   ];
-	seen->south = map->data[offset + down ];
-	seen->east  = map->data[offset + right];
-	seen->west  = map->data[offset + left ];
+	seen->north = tile_get_type (&map->tiles[offset + up   ]);
+	seen->south = tile_get_type (&map->tiles[offset + down ]);
+	seen->east  = tile_get_type (&map->tiles[offset + right]);
+	seen->west  = tile_get_type (&map->tiles[offset + left ]);
 }
 
 #ifndef NDEBUG
@@ -133,7 +136,8 @@ inline void map_dump (Map *map)
 	{
 		for (j = 0; j < map->n_cols; j++)
 		{
-			fprintf (stderr, "%c ", map_get_tile (map, i, j));
+			Tile *tile = map_get_tile (map, i, j);
+			fprintf (stderr, "%c ", tile_get_ascii_type (tile));
 		}
 		fprintf (stderr, "\n");
 	}

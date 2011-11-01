@@ -2,33 +2,32 @@
 #define MAP_H
 
 #include "types.h"
+#include "tile.h"
 
 struct cardinals
 {
-	gchar north;
-	gchar south;
-	gchar east;
-	gchar west;
+	TileType north;
+	TileType south;
+	TileType east;
+	TileType west;
 };
 
 typedef struct map Map;
 
-Map *map_new (guint n_rows, guint n_cols, gchar filler); 
+Map *map_new (guint n_rows, 
+		guint n_cols, 
+		TileType filler);
 void map_free (Map *map);
-gchar * map_get_buffer (Map *map);
-guint map_get_length (Map *map);
+Tile * map_get_buffer (Map *map);
+guint map_get_n_elements (Map *map);
 guint map_get_n_rows (Map *map);
 guint map_get_n_cols (Map *map);
-void map_set_tile (Map *map, 
-		gint row, 
-		gint col, 
-		gchar tile);
-gchar map_get_tile (Map *map, 
-		gint row, 
-		gint col);
+Tile * map_get_tile (Map *map, 
+		guint row, 
+		guint col);
 void map_get_cardinals (Map *map,
-		gint row,
-		gint col,
+		guint row,
+		guint col,
 		struct cardinals *seen);
 
 #ifndef NDEBUG

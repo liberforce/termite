@@ -10,6 +10,9 @@ typedef unsigned char guint8;
 typedef int gint;
 typedef unsigned int guint;
 
+typedef short gint16;
+typedef unsigned short guint16;
+
 typedef int gint32;
 typedef unsigned int guint32;
 
