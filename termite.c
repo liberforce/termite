@@ -38,6 +38,12 @@ void termite_play_turn (Rules *rules,
 
 		if (food != NULL)
 		{
+			g_debug ("ant at [%d,%d] looking for food at [%d,%d]\n",
+					ant->row,
+					ant->col,
+					food->row,
+					food->col);
+
 			// Find path to go there !
 			if (ant->row < food->row)
 				dir = DIR_SOUTH;
@@ -46,7 +52,7 @@ void termite_play_turn (Rules *rules,
 			else if (ant->col < food->col)
 				dir = DIR_EAST;
 			else if (ant->col > food->col)
-				dir = DIR_EAST;
+				dir = DIR_WEST;
 		}
 		else
 		{
@@ -60,6 +66,7 @@ void termite_play_turn (Rules *rules,
 	}
 
 	state->n_ants = 0;
+	state->n_food = 0;
 
 	// Inform the server we finished sending our actions for the turn
 	fprintf (stdout, "go\n");
@@ -79,7 +86,7 @@ void termite_move_ant (Rules *rules,
 	gint col = tile_get_col (tile);
 
 	fprintf (stdout, "o %u %u %c\n", row, col, dir);
-	g_debug ("o %u %u %c\n", row, col, dir);
+	g_debug ("BOT: o %u %u %c\n", row, col, dir);
  
 	switch (dir)
 	{
