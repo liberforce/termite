@@ -45,6 +45,10 @@ void tile_set_type (Tile *tile,
 
 TileType tile_get_type (Tile *tile);
 gchar tile_get_ascii_type (Tile *tile);
+guint tile_get_col (Tile *tile);
+guint tile_get_row (Tile *tile);
+void tile_set_col (Tile *tile, guint col);
+void tile_set_row (Tile *tile, guint row);
 
 #endif // TILE_H
 

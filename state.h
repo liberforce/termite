@@ -15,8 +15,8 @@ typedef struct state
 	guint n_turn;         // Current turn
 	Map *map;
 
-	Ant *my_ants;
-	guint my_count;
+	Tile **ants;
+	guint n_ants;
 
 	Ant *enemy_ants;
 	guint enemy_count;

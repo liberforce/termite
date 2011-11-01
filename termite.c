@@ -17,15 +17,15 @@ void termite_play_turn (Rules *rules,
 	map_dump (state->map);
 
 	// Chose moves for each ant
-	for (i = 0; i < state->my_count; ++i) 
+	for (i = 0; i < state->n_ants; ++i) 
 	{
 		// the location within the map array where our ant is currently
-		Ant *ant = &state->my_ants[i];
-		char dir = termite_choose_ant_direction (rules, state, ant);
+		Tile *tile = state->ants[i];
+		char dir = termite_choose_ant_direction (rules, state, tile);
 
 		// Now we do our move
 		if (dir != DIR_NONE)
-			termite_move_ant (rules, state, ant, dir);
+			termite_move_ant (rules, state, tile, dir);
 	}
 
 	// Inform the server we finished sending our actions for the turn
@@ -38,43 +38,48 @@ void termite_play_turn (Rules *rules,
 
 void termite_move_ant (Rules *rules,
 		State* state,
-		Ant* ant,
+		Tile* tile,
 		gchar dir) 
 {
-	gint old_row = ant_get_row (ant);
-	gint old_col = ant_get_col (ant);
+	assert (tile_get_type (tile) == TILE_TYPE_ANT);
+	gint row = tile_get_row (tile);
+	gint col = tile_get_col (tile);
 
-	fprintf (stdout, "O %i %i %c\n", old_row, old_col, dir);
-	g_debug ("O %i %i %c\n", old_row, old_col, dir);
-
-	switch (dir) 
+	fprintf (stdout, "o %u %u %c\n", row, col, dir);
+	g_debug ("o %u %u %c\n", row, col, dir);
+ 
+	switch (dir)
 	{
 		case 'N':
-			ant_set_row (ant, old_row - 1);
+			--row;
 			break;
 		case 'E':
-			ant_set_col (ant, old_col + 1);
+			++col;
 			break;
 		case 'S':
-			ant_set_row (ant, old_row + 1);
+			++row;
 			break;
 		case 'W':
-			ant_set_col (ant, old_col - 1);
+			--col;
 			break;
 	}
 
 	guint n_rows = map_get_n_rows (state->map);
 	guint n_cols = map_get_n_cols (state->map);
 
-	if (ant_get_row (ant) == n_rows)
-		ant_set_row (ant, 0);
-	else if (ant_get_row (ant) == -1)
-		ant_set_row (ant, n_rows - 1);
+	if (row == n_rows)
+		row = 0;
+	else if (row == -1)
+		row = n_rows - 1;
 
-	if (ant_get_col (ant) == n_cols)
-		ant_set_col (ant, 0);
-	else if (ant_get_col (ant) == -1)
-		ant_set_col (ant, n_cols - 1);
+	if (col == n_cols)
+		col = 0;
+	else if (col == -1)
+		col = n_cols - 1;
+
+	Tile *next_tile = map_get_tile (state->map, row, col);
+	next_tile->with.ant = tile->with.ant;
+	tile_set_type (tile, TILE_TYPE_LAND);
 }
 
 // initializes the bot on the very first turn using given rules
@@ -111,24 +116,24 @@ void termite_cleanup_map (Rules *rules,
 
 gchar termite_choose_ant_direction (Rules *rules,
 		State *state,
-		Ant *ant)
+		Tile *tile)
 {
-	assert (ant != NULL);
+	assert (tile != NULL);
 	Map *map = state->map;
 
 	gchar dir = DIR_NONE;
 	struct cardinals look = { 0 };
 
-	map_get_cardinals (map, ant_get_row (ant), ant_get_col (ant), &look);
+	map_get_cardinals (map, tile_get_row (tile), tile_get_col (tile), &look);
 
 	// cycle through the directions, pick one that works
-	if (look.north != TILE_WATER)
+	if (look.north != TILE_TYPE_WATER)
 		dir = DIR_NORTH;
-	else if (look.east != TILE_WATER)
+	else if (look.east != TILE_TYPE_WATER)
 		dir = DIR_EAST;
-	else if (look.south != TILE_WATER)
+	else if (look.south != TILE_TYPE_WATER)
 		dir = DIR_SOUTH;
-	else if (look.west != TILE_WATER)
+	else if (look.west != TILE_TYPE_WATER)
 		dir = DIR_WEST;
 
 	return dir;

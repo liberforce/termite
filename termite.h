@@ -26,12 +26,12 @@ void termite_play_turn (Rules *rules,
 
 void termite_move_ant (Rules *rules,
 		State* state, 
-		Ant* ant, 
+		Tile* tile, 
 		gchar dir);
 
 gchar termite_choose_ant_direction (Rules *rules,
 		State *state,
-		Ant *ant);
+		Tile *tile);
 
 gboolean termite_process_command (Rules *rules,
 		State *state,

@@ -6,19 +6,13 @@
 typedef struct ant 
 {
 	guint id;
-	guint row;
-	guint col;
 	guint owner;
 	gchar direction;
 } Ant;
 
-gint ant_get_col (Ant *ant);
-gint ant_get_row (Ant *ant);
 guint ant_get_owner (Ant *ant);
 gchar ant_get_direction (Ant *ant);
 
-void ant_set_col (Ant *ant, gint col);
-void ant_set_row (Ant *ant, gint row);
 void ant_set_owner (Ant *ant, guint player_id);
 void ant_set_direction (Ant *ant, gchar direction);
 

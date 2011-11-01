@@ -3,18 +3,43 @@
 
 #include "tile.h"
 
-void tile_set_type (Tile *tile, 
+inline void tile_set_type (Tile *tile, 
 		TileType type)
 {
 	assert (tile != NULL);
 	tile->type = type;
 }
 
-TileType tile_get_type (Tile *tile)
+inline TileType tile_get_type (Tile *tile)
 {
 	assert (tile != NULL);
 	return tile->type;
 }
+
+inline guint tile_get_col (Tile *tile)
+{
+	assert (tile != NULL);
+	return tile->col;
+}
+
+inline guint tile_get_row (Tile *tile)
+{
+	assert (tile != NULL);
+	return tile->row;
+}
+
+inline void tile_set_col (Tile *tile, guint col)
+{
+	assert (tile != NULL);
+	tile->col = col;
+}
+
+inline void tile_set_row (Tile *tile, guint row)
+{
+	assert (tile != NULL);
+	tile->row = row;
+}
+
 
 gchar tile_get_ascii_type (Tile *tile)
 {
