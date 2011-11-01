@@ -1,25 +1,26 @@
+#include <math.h>
+#include <stdlib.h>
+
 #include "utils.h"
 
 // returns the absolute value of a number; used in distance function
 
-guint abs (gint x) 
-{
-	return (x >= 0) ? x : -x;
-}
-
-gint max (gint a, gint b)
+inline gint max (gint a, gint b)
 {
 	return (a >= b) ? a : b;
 }
 
-gint min (gint a, gint b)
+inline gint min (gint a, gint b)
 {
 	return (a <= b) ? a : b;
 }
 
-// returns the distance between two items on the grid accounting for map wrapping
-
-guint distance (gint row1, gint col1, gint row2, gint col2, gint n_rows, gint n_cols) 
+inline guint distance_sq (guint row1,
+		guint col1,
+		guint row2,
+		guint col2,
+		guint n_rows,
+		guint n_cols) 
 {
 	gint dr, dc;
 	gint abs1, abs2;
@@ -32,6 +33,23 @@ guint distance (gint row1, gint col1, gint row2, gint col2, gint n_rows, gint n_
 	abs2 = n_cols - abs(col1 - col2);
 	dc = min (abs1, abs2);
 
-	return sqrt(dr * dr + dc * dc);
+	return dr * dr + dc * dc;
+}
+
+// returns the distance between two items on the grid accounting for map wrapping
+
+inline guint distance (guint row1, 
+		guint col1, 
+		guint row2, 
+		guint col2, 
+		guint n_rows, 
+		guint n_cols) 
+{
+	return sqrt (distance_sq (row1, 
+				col1, 
+				row2, 
+				col2, 
+				n_rows, 
+				n_cols));
 }
 

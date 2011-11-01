@@ -30,6 +30,11 @@ void map_get_cardinals (Map *map,
 		guint col,
 		struct cardinals *seen);
 
+gboolean map_is_in_range (Map *map,
+		Tile *tile, 
+		Tile *other,
+		guint max_range_sq);
+
 #ifndef NDEBUG
 void map_dump (Map *map);
 #else

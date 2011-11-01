@@ -4,6 +4,7 @@
 #include <string.h>    // for memset
 
 #include "map.h"
+#include "utils.h"
 #include "debug.h"
 
 struct map
@@ -123,6 +124,23 @@ void map_get_cardinals (Map *map,
 	seen->south = tile_get_type (&map->tiles[offset + down ]);
 	seen->east  = tile_get_type (&map->tiles[offset + right]);
 	seen->west  = tile_get_type (&map->tiles[offset + left ]);
+}
+
+inline gboolean map_is_in_range (Map *map,
+		Tile *tile, 
+		Tile *other,
+		guint max_range_sq)
+{
+	assert (map != NULL);
+	assert (tile != NULL);
+	assert (other != NULL);
+
+	return distance_sq (tile_get_row (tile),
+			tile_get_col (tile),
+			tile_get_row (other),
+			tile_get_col (other),
+			map_get_n_rows (map),
+			map_get_n_cols (map)) <= max_range_sq;
 }
 
 #ifndef NDEBUG
