@@ -8,7 +8,7 @@ ${there}/playgame.py                                        \
 	--nolaunch                                          \
 	-e                                                  \
 	--log_dir ${there}/logs                             \
-	--turns 30                                          \
+	--turns 300                                         \
 	--map_file ${there}/maps/example/tutorial1.map      \
 	"$@"                                                \
 	termite                                             \
