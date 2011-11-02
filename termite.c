@@ -14,27 +14,32 @@ void termite_play_turn (Rules *rules,
 {
 	guint i;
 
-	map_dump (state->map);
-
 	while (state->n_ants > 0)
 	{
 		gchar dir = DIR_NONE;
-		guint distance_sq = G_MAX_UINT;
-		Tile *food = state->food[state->n_food - 1];
+		guint distance_sq;
+		Tile *food = NULL;
 		Tile *ant = NULL;
 		gint ant_index = -1;
 
 		// Find nearest ant for that food
-		for (i = 0; i < state->n_ants; ++i) 
+		if (state->n_food > 0)
+			food = state->food[state->n_food - 1];
+
+		if (food != NULL)
 		{
-			guint d = map_distance_sq (state->map,
-					state->ants[i],
-					food);
-			if (d < distance_sq)
+			distance_sq = G_MAX_UINT;
+			for (i = 0; i < state->n_ants; ++i) 
 			{
-				distance_sq = d;
-				ant = state->ants[i];
-				ant_index = i;
+				guint d = map_distance_sq (state->map,
+						state->ants[i],
+						food);
+				if (d < distance_sq)
+				{
+					distance_sq = d;
+					ant = state->ants[i];
+					ant_index = i;
+				}
 			}
 		}
 
@@ -43,6 +48,7 @@ void termite_play_turn (Rules *rules,
 			gint food_index = -1;
 
 			// Find nearest food for that ant
+			distance_sq = G_MAX_UINT;
 			for (i = 0; i < state->n_food; ++i) 
 			{
 				guint d = map_distance_sq (state->map,
@@ -243,6 +249,7 @@ gboolean termite_process_command (Rules *rules,
 	if (strcmp (args[0], "go") == 0)
 	{
 		assert (n_args == 1);
+		map_dump (state->map);
 		termite_play_turn (rules, state);
 		termite_cleanup_map (rules, state);
 	}
