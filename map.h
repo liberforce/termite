@@ -6,10 +6,10 @@
 
 struct cardinals
 {
-	TileType north;
-	TileType south;
-	TileType east;
-	TileType west;
+	Tile *north;
+	Tile *south;
+	Tile *east;
+	Tile *west;
 };
 
 typedef struct map Map;

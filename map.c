@@ -120,10 +120,10 @@ void map_get_cardinals (Map *map,
 			right = - (map->n_cols -1);
 	}
 
-	seen->north = tile_get_type (&map->tiles[offset + up   ]);
-	seen->south = tile_get_type (&map->tiles[offset + down ]);
-	seen->east  = tile_get_type (&map->tiles[offset + right]);
-	seen->west  = tile_get_type (&map->tiles[offset + left ]);
+	seen->north = &map->tiles[offset + up   ];
+	seen->south = &map->tiles[offset + down ];
+	seen->east  = &map->tiles[offset + right];
+	seen->west  = &map->tiles[offset + left ];
 }
 
 inline gboolean map_tile_in_range (Map *map,
