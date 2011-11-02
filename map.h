@@ -35,6 +35,10 @@ gboolean map_tile_in_range (Map *map,
 		Tile *other,
 		guint max_range_sq);
 
+guint map_distance_sq (Map *map,
+		Tile *tile, 
+		Tile *other);
+
 #ifndef NDEBUG
 void map_dump (Map *map);
 #else

@@ -131,6 +131,15 @@ inline gboolean map_tile_in_range (Map *map,
 		Tile *other,
 		guint max_range_sq)
 {
+	return map_distance_sq (map,
+			tile,
+			other) <= max_range_sq;
+}
+
+inline guint map_distance_sq (Map *map,
+		Tile *tile, 
+		Tile *other)
+{
 	assert (map != NULL);
 	assert (tile != NULL);
 	assert (other != NULL);
@@ -140,7 +149,7 @@ inline gboolean map_tile_in_range (Map *map,
 			tile_get_row (other),
 			tile_get_col (other),
 			map_get_n_rows (map),
-			map_get_n_cols (map)) <= max_range_sq;
+			map_get_n_cols (map));
 }
 
 #ifndef NDEBUG

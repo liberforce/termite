@@ -24,4 +24,6 @@ typedef int gboolean;
 #define TRUE  1
 #define FALSE 0
 
+#define G_MAX_UINT ((unsigned int) 0xffffffff)
+
 #endif // TYPES_H

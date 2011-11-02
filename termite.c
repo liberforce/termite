@@ -22,17 +22,20 @@ void termite_play_turn (Rules *rules,
 		Tile *ant = state->ants[i];
 		Tile *food = NULL;
 		gchar dir = DIR_NONE;
-
-		// Find if that ant is near food
+		guint distance_sq = G_MAX_UINT;
+		gint food_index = -1;
+		
+		// Find nearest food for that ant
 		for (j = 0; j < state->n_food; ++j)
 		{
-			if (map_tile_in_range (state->map,
+			guint d = map_distance_sq (state->map,
 						ant,
-						state->food[j],
-						rules->viewradius_sq))
+						state->food[j]);
+			if (d < distance_sq)
 			{
+				distance_sq = d;
 				food = state->food[j];
-				break;
+				food_index = j;
 			}
 		}
 
@@ -57,7 +60,7 @@ void termite_play_turn (Rules *rules,
 			// "Forget" that food to make sure several ants won't 
 			// try to get there at the same time
 			// The last item is moved there
-			state->food[j] = state->food[state->n_food - 1 ];
+			state->food[food_index] = state->food[state->n_food - 1];
 			state->n_food--;
 		}
 		else
@@ -162,7 +165,6 @@ void termite_cleanup_map (Rules *rules,
 	do
 	{
 		if (tile_get_type (tile) != TILE_TYPE_UNSEEN 
-				&& tile_get_type (tile) != TILE_TYPE_FOOD 
 				&& tile_get_type (tile) != TILE_TYPE_WATER)
 			tile_set_type (tile, TILE_TYPE_LAND);
 	} while (++tile < end);
