@@ -6,7 +6,6 @@
 #include "termite.h"
 #include "ant.h"
 #include "map.h"
-#include "tile.h"
 #include "debug.h"
 
 void termite_play_turn (Rules *rules,

@@ -3,7 +3,7 @@
 
 #include "rules.h"
 #include "state.h"
-#include "ant.h"
+#include "tile.h"
 
 // Possible directions
 #define DIR_NORTH 'N'
