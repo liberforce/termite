@@ -67,14 +67,17 @@ void termite_play_turn (Rules *rules,
 					food->row,
 					food->col);
 
+			struct cardinals look = { 0 };
+			map_get_cardinals (state->map, tile_get_row (ant), tile_get_col (ant), &look);
+
 			// Find path to go there !
-			if (ant->row < food->row)
+			if (ant->row < food->row && look.south != TILE_TYPE_WATER)
 				dir = DIR_SOUTH;
-			else if (ant->row > food->row)
+			else if (ant->row > food->row && look.north != TILE_TYPE_WATER)
 				dir = DIR_NORTH;
-			else if (ant->col < food->col)
+			else if (ant->col < food->col && look.east != TILE_TYPE_WATER)
 				dir = DIR_EAST;
-			else if (ant->col > food->col)
+			else if (ant->col > food->col && look.west != TILE_TYPE_WATER)
 				dir = DIR_WEST;
 
 			// "Forget" that food to make sure several ants won't 
