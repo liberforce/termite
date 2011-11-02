@@ -12,35 +12,50 @@
 void termite_play_turn (Rules *rules,
 		State *state)
 {
-	guint i, j;
+	guint i;
 
 	map_dump (state->map);
 
-	// Chose moves for each ant
-	for (i = 0; i < state->n_ants; ++i) 
+	while (state->n_ants > 0)
 	{
-		Tile *ant = state->ants[i];
-		Tile *food = NULL;
 		gchar dir = DIR_NONE;
 		guint distance_sq = G_MAX_UINT;
-		gint food_index = -1;
-		
-		// Find nearest food for that ant
-		for (j = 0; j < state->n_food; ++j)
+		Tile *food = state->food[state->n_food - 1];
+		Tile *ant = NULL;
+		gint ant_index = -1;
+
+		// Find nearest ant for that food
+		for (i = 0; i < state->n_ants; ++i) 
 		{
 			guint d = map_distance_sq (state->map,
-						ant,
-						state->food[j]);
+					state->ants[i],
+					food);
 			if (d < distance_sq)
 			{
 				distance_sq = d;
-				food = state->food[j];
-				food_index = j;
+				ant = state->ants[i];
+				ant_index = i;
 			}
 		}
 
-		if (food != NULL)
+		if (ant != NULL)
 		{
+			gint food_index = -1;
+
+			// Find nearest food for that ant
+			for (i = 0; i < state->n_food; ++i) 
+			{
+				guint d = map_distance_sq (state->map,
+						ant,
+						state->food[i]);
+				if (d < distance_sq)
+				{
+					distance_sq = d;
+					food = state->food[i];
+					food_index = i;
+				}
+			}
+
 			g_debug ("ant at [%d,%d] looking for food at [%d,%d]\n",
 					ant->row,
 					ant->col,
@@ -59,19 +74,25 @@ void termite_play_turn (Rules *rules,
 
 			// "Forget" that food to make sure several ants won't 
 			// try to get there at the same time
-			// The last item is moved there
+			assert (food_index >= 0);
 			state->food[food_index] = state->food[state->n_food - 1];
 			state->n_food--;
 		}
 		else
 		{
 			// Exploration
+			ant_index = state->n_ants - 1;
+			ant = state->ants[ant_index];
 			dir = termite_explore (rules, state, ant);
 		}
 
 		// Now we do our move
 		if (dir != DIR_NONE)
 			termite_move_ant (rules, state, ant, dir);
+
+		assert (ant_index >= 0);
+		state->ants[ant_index] = state->ants[state->n_ants - 1];
+		state->n_ants--;
 	}
 
 	state->n_ants = 0;
