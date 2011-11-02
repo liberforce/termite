@@ -1,4 +1,6 @@
 #!/bin/sh
 this_script_dir="$(cd $(dirname $0) && pwd)"
-java -jar ${this_script_dir}/visualizer.jar $1
+there="${this_script_dir}/../tools"
+
+java -jar ${there}/visualizer.jar logs/$1.replay
 

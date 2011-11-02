@@ -1,6 +1,6 @@
 #! /bin/sh
 this_script_dir=$(cd $(dirname $0) && pwd)
-there="${this_script_dir}/tools"
+there="${this_script_dir}/../tools"
 
 ${there}/playgame.py                                        \
 	--player_seed 42                                    \
