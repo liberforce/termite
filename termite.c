@@ -71,20 +71,31 @@ void termite_play_turn (Rules *rules,
 			map_get_cardinals (state->map, tile_get_row (ant), tile_get_col (ant), &look);
 
 			// Find path to go there !
-			if (ant->row < food->row && tile_get_type (look.south) != TILE_TYPE_WATER)
+			if (ant->row < food->row
+					&& tile_get_type (look.south) != TILE_TYPE_WATER
+					&& tile_get_type (look.south) != TILE_TYPE_ANT)
 				dir = DIR_SOUTH;
-			else if (ant->row > food->row && tile_get_type (look.north) != TILE_TYPE_WATER)
+			else if (ant->row > food->row
+					&& tile_get_type (look.north) != TILE_TYPE_WATER
+					&& tile_get_type (look.north) != TILE_TYPE_ANT)
 				dir = DIR_NORTH;
-			else if (ant->col < food->col && tile_get_type (look.east) != TILE_TYPE_WATER)
+			else if (ant->col < food->col
+					&& tile_get_type (look.east) != TILE_TYPE_WATER
+					&& tile_get_type (look.east) != TILE_TYPE_ANT)
 				dir = DIR_EAST;
-			else if (ant->col > food->col && tile_get_type (look.west) != TILE_TYPE_WATER)
+			else if (ant->col > food->col
+					&& tile_get_type (look.west) != TILE_TYPE_WATER
+					&& tile_get_type (look.west) != TILE_TYPE_WATER)
 				dir = DIR_WEST;
 
 			// "Forget" that food to make sure several ants won't 
 			// try to get there at the same time
-			assert (food_index >= 0);
-			state->food[food_index] = state->food[state->n_food - 1];
-			state->n_food--;
+			if (dir != DIR_NONE)
+			{
+				assert (food_index >= 0);
+				state->food[food_index] = state->food[state->n_food - 1];
+				state->n_food--;
+			}
 		}
 		else
 		{
@@ -96,7 +107,9 @@ void termite_play_turn (Rules *rules,
 
 		// Now we do our move
 		if (dir != DIR_NONE)
+		{
 			termite_move_ant (rules, state, ant, dir);
+		}
 
 		assert (ant_index >= 0);
 		state->ants[ant_index] = state->ants[state->n_ants - 1];
@@ -155,9 +168,11 @@ void termite_move_ant (Rules *rules,
 	else if (col == -1)
 		col = n_cols - 1;
 
-	Tile *next_tile = map_get_tile (state->map, row, col);
-	next_tile->with.ant = tile->with.ant;
 	tile_set_type (tile, TILE_TYPE_LAND);
+
+	Tile *next_tile = map_get_tile (state->map, row, col);
+	tile_set_type (next_tile, TILE_TYPE_ANT);
+	next_tile->with.ant = tile->with.ant;
 }
 
 // initializes the bot on the very first turn using given rules
