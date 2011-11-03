@@ -12,11 +12,8 @@ typedef struct state
 	Tile **ants;
 	guint n_ants;
 
-	Ant *enemy_ants;
-	guint enemy_count;
-
-	Ant *dead_ants;
-	guint dead_count;
+	Tile **hills;
+	guint n_hills;
 
 	Tile **food;
 	guint n_food;

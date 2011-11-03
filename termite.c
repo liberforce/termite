@@ -108,9 +108,6 @@ void termite_play_turn (Rules *rules,
 		state->n_ants--;
 	}
 
-	state->n_ants = 0;
-	state->n_food = 0;
-
 	// Inform the server we finished sending our actions for the turn
 	fprintf (stdout, "go\n");
 	fflush (stdout);
@@ -187,6 +184,10 @@ void termite_init (Rules *rules,
 	state->food = calloc (rules->rows * rules->cols, sizeof (Tile *));
 	state->n_food = 0;
 
+	// 26 players at most
+	state->hills = calloc (26, sizeof (Tile *));
+	state->n_hills = 0;
+
 	// Inform the server we're ready to play
 	fprintf (stdout, "go\n");
 	fflush (stdout);
@@ -203,8 +204,15 @@ void termite_cleanup_map (Rules *rules,
 	{
 		if (tile_get_type (tile) != TILE_TYPE_UNSEEN 
 				&& tile_get_type (tile) != TILE_TYPE_WATER)
+		{
 			tile_set_type (tile, TILE_TYPE_LAND);
+			tile_set_flags (tile, tile_get_flags (tile) & ~TILE_HAS_HILL);
+		}
 	} while (++tile < end);
+
+	state->n_ants = 0;
+	state->n_food = 0;
+	state->n_hills = 0;
 }
 
 gchar termite_explore (Rules *rules,
@@ -303,6 +311,7 @@ gboolean termite_process_command (Rules *rules,
 		tile_set_type (tile, TILE_TYPE_LAND);
 		tile->flags |= TILE_HAS_HILL;
 		tile->with.hill.owner = owner;
+		state->hills[state->n_hills++] = tile;
 	}
 	else if (strcmp (args[0], "ready") == 0)
 	{

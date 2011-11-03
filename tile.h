@@ -36,6 +36,9 @@ void tile_set_type (Tile *tile,
 
 TileType tile_get_type (Tile *tile);
 gboolean tile_is_free (Tile *tile);
+gboolean tile_is_ennemy_hill (Tile *tile);
+void tile_set_flags (Tile *tile, guint16 flags);
+guint16 tile_get_flags (Tile *tile);
 gchar tile_get_ascii_type (Tile *tile);
 guint tile_get_col (Tile *tile);
 guint tile_get_row (Tile *tile);

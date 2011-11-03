@@ -32,6 +32,12 @@ inline gboolean tile_is_free (Tile *tile)
 	return (tile->type != TILE_TYPE_WATER && tile->type != TILE_TYPE_ANT);
 }
 
+inline gboolean tile_is_ennemy_hill (Tile *tile)
+{
+	assert (tile != NULL);
+	return (tile->flags & TILE_HAS_HILL && tile->with.hill.owner != 0);
+}
+
 inline guint tile_get_col (Tile *tile)
 {
 	assert (tile != NULL);
@@ -42,6 +48,19 @@ inline guint tile_get_row (Tile *tile)
 {
 	assert (tile != NULL);
 	return tile->row;
+}
+
+inline void tile_set_flags (Tile *tile,
+		guint16 flags)
+{
+	assert (tile != NULL);
+	tile->flags = flags;
+}
+
+inline guint16 tile_get_flags (Tile *tile)
+{
+	assert (tile != NULL);
+	return tile->flags;
 }
 
 inline void tile_set_col (Tile *tile, guint col)
