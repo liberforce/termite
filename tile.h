@@ -35,6 +35,7 @@ void tile_set_type (Tile *tile,
 		TileType type);
 
 TileType tile_get_type (Tile *tile);
+gboolean tile_is_free (Tile *tile);
 gchar tile_get_ascii_type (Tile *tile);
 guint tile_get_col (Tile *tile);
 guint tile_get_row (Tile *tile);

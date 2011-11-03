@@ -26,6 +26,12 @@ inline TileType tile_get_type (Tile *tile)
 	return tile->type;
 }
 
+inline gboolean tile_is_free (Tile *tile)
+{
+	assert (tile != NULL);
+	return (tile->type != TILE_TYPE_WATER && tile->type != TILE_TYPE_ANT);
+}
+
 inline guint tile_get_col (Tile *tile)
 {
 	assert (tile != NULL);

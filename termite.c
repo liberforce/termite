@@ -71,21 +71,13 @@ void termite_play_turn (Rules *rules,
 			map_get_cardinals (state->map, tile_get_row (ant), tile_get_col (ant), &look);
 
 			// Find path to go there !
-			if (ant->row < food->row
-					&& tile_get_type (look.south) != TILE_TYPE_WATER
-					&& tile_get_type (look.south) != TILE_TYPE_ANT)
+			if (ant->row < food->row && tile_is_free (look.south))
 				dir = DIR_SOUTH;
-			else if (ant->row > food->row
-					&& tile_get_type (look.north) != TILE_TYPE_WATER
-					&& tile_get_type (look.north) != TILE_TYPE_ANT)
+			else if (ant->row > food->row && tile_is_free (look.north))
 				dir = DIR_NORTH;
-			else if (ant->col < food->col
-					&& tile_get_type (look.east) != TILE_TYPE_WATER
-					&& tile_get_type (look.east) != TILE_TYPE_ANT)
+			else if (ant->col < food->col && tile_is_free (look.east))
 				dir = DIR_EAST;
-			else if (ant->col > food->col
-					&& tile_get_type (look.west) != TILE_TYPE_WATER
-					&& tile_get_type (look.west) != TILE_TYPE_WATER)
+			else if (ant->col > food->col && tile_is_free (look.west))
 				dir = DIR_WEST;
 
 			// "Forget" that food to make sure several ants won't 
@@ -228,13 +220,13 @@ gchar termite_explore (Rules *rules,
 	map_get_cardinals (map, tile_get_row (tile), tile_get_col (tile), &look);
 
 	// cycle through the directions, pick one that works
-	if (tile_get_type (look.north) != TILE_TYPE_WATER && tile_get_type (look.north) != TILE_TYPE_ANT)
+	if (tile_is_free (look.north))
 		dir = DIR_NORTH;
-	else if (tile_get_type (look.east) != TILE_TYPE_WATER && tile_get_type (look.east) != TILE_TYPE_ANT)
+	else if (tile_is_free (look.east))
 		dir = DIR_EAST;
-	else if (tile_get_type (look.south) != TILE_TYPE_WATER && tile_get_type (look.south) != TILE_TYPE_ANT)
+	else if (tile_is_free (look.south))
 		dir = DIR_SOUTH;
-	else if (tile_get_type (look.west) != TILE_TYPE_WATER && tile_get_type (look.west) != TILE_TYPE_ANT)
+	else if (tile_is_free (look.west))
 		dir = DIR_WEST;
 
 	return dir;
