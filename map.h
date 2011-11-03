@@ -39,6 +39,10 @@ guint map_distance_sq (Map *map,
 		Tile *tile, 
 		Tile *other);
 
+guint map_get_manhattan_distance (Map *map,
+		Tile *tile, 
+		Tile *other);
+
 #ifndef NDEBUG
 void map_dump (Map *map);
 #else

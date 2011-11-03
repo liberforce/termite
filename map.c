@@ -152,6 +152,22 @@ inline guint map_distance_sq (Map *map,
 			map_get_n_cols (map));
 }
 
+inline guint map_get_manhattan_distance (Map *map,
+		Tile *tile, 
+		Tile *other)
+{
+	assert (map != NULL);
+	assert (tile != NULL);
+	assert (other != NULL);
+
+	return manhattan_distance (tile_get_row (tile),
+			tile_get_col (tile),
+			tile_get_row (other),
+			tile_get_col (other),
+			map_get_n_rows (map),
+			map_get_n_cols (map));
+}
+
 #ifndef NDEBUG
 inline void map_dump (Map *map)
 {

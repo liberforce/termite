@@ -16,7 +16,7 @@ void termite_play_turn (Rules *rules,
 	while (state->n_ants > 0)
 	{
 		gchar dir = DIR_NONE;
-		guint distance_sq;
+		guint distance; // Manhattan distance
 		Tile *food = NULL;
 		Tile *ant = NULL;
 		gint ant_index = -1;
@@ -27,15 +27,15 @@ void termite_play_turn (Rules *rules,
 
 		if (food != NULL)
 		{
-			distance_sq = G_MAX_UINT;
+			distance = G_MAX_UINT;
 			for (i = 0; i < state->n_ants; ++i) 
 			{
-				guint d = map_distance_sq (state->map,
+				guint d = map_get_manhattan_distance (state->map,
 						state->ants[i],
 						food);
-				if (d < distance_sq)
+				if (d < distance)
 				{
-					distance_sq = d;
+					distance = d;
 					ant = state->ants[i];
 					ant_index = i;
 				}
@@ -47,15 +47,15 @@ void termite_play_turn (Rules *rules,
 			gint food_index = -1;
 
 			// Find nearest food for that ant
-			distance_sq = G_MAX_UINT;
+			distance = G_MAX_UINT;
 			for (i = 0; i < state->n_food; ++i) 
 			{
-				guint d = map_distance_sq (state->map,
+				guint d = map_get_manhattan_distance (state->map,
 						ant,
 						state->food[i]);
-				if (d < distance_sq)
+				if (d < distance)
 				{
-					distance_sq = d;
+					distance = d;
 					food = state->food[i];
 					food_index = i;
 				}
