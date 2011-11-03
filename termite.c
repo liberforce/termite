@@ -171,6 +171,7 @@ void termite_move_ant (Rules *rules,
 	tile_set_type (tile, TILE_TYPE_LAND);
 
 	Tile *next_tile = map_get_tile (state->map, row, col);
+	assert (tile_get_type (next_tile) != TILE_TYPE_ANT);
 	tile_set_type (next_tile, TILE_TYPE_ANT);
 	next_tile->with.ant = tile->with.ant;
 }
@@ -231,7 +232,7 @@ gchar termite_explore (Rules *rules,
 		dir = DIR_NORTH;
 	else if (tile_get_type (look.east) != TILE_TYPE_WATER && tile_get_type (look.east) != TILE_TYPE_ANT)
 		dir = DIR_EAST;
-	else if (tile_get_type (look.south) != TILE_TYPE_WATER && tile_get_type (look.east) != TILE_TYPE_ANT)
+	else if (tile_get_type (look.south) != TILE_TYPE_WATER && tile_get_type (look.south) != TILE_TYPE_ANT)
 		dir = DIR_SOUTH;
 	else if (tile_get_type (look.west) != TILE_TYPE_WATER && tile_get_type (look.west) != TILE_TYPE_ANT)
 		dir = DIR_WEST;
