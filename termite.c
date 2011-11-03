@@ -163,6 +163,9 @@ void termite_move_ant (Rules *rules,
 	assert (tile_get_type (next_tile) != TILE_TYPE_ANT);
 	tile_set_type (next_tile, TILE_TYPE_ANT);
 	next_tile->with.ant = tile->with.ant;
+
+	// Remember chosen direction (useful for exploration)
+	tile_set_direction (next_tile, dir);
 }
 
 // initializes the bot on the very first turn using given rules
@@ -220,8 +223,8 @@ gchar termite_explore (Rules *rules,
 		Tile *tile)
 {
 	assert (tile != NULL);
-	Map *map = state->map;
 
+	Map *map = state->map;
 	gchar dir = DIR_NONE;
 	struct cardinals look = { NULL };
 
@@ -327,6 +330,7 @@ gboolean termite_process_command (Rules *rules,
 	{
 		assert (n_args == 2);
 		rules->seed = atoll (args[1]);
+		srand (rules->seed);
 	}
 	else if (strcmp (args[0], "attackradius2") == 0)
 	{
