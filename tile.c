@@ -29,7 +29,9 @@ inline TileType tile_get_type (Tile *tile)
 inline gboolean tile_is_free (Tile *tile)
 {
 	assert (tile != NULL);
-	return (tile->type != TILE_TYPE_WATER && tile->type != TILE_TYPE_ANT);
+	return (tile->type != TILE_TYPE_WATER 
+			&& tile->type != TILE_TYPE_ANT 
+			&& tile->type != TILE_TYPE_FOOD);
 }
 
 inline gboolean tile_is_ennemy_hill (Tile *tile)
