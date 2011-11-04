@@ -27,6 +27,7 @@ void termite_play_turn (Rules *rules,
 
 		if (food != NULL)
 		{
+			g_debug ("Food = [%d,%d], searching nearest ant...\n", food->row, food->col);
 			distance = G_MAX_UINT;
 			for (i = 0; i < state->n_ants; ++i) 
 			{
@@ -39,6 +40,7 @@ void termite_play_turn (Rules *rules,
 					ant = state->ants[i];
 					ant_index = i;
 				}
+				g_debug ("Distance to ant [%d,%d] = %d (closest = %d)\n", state->ants[i]->row, state->ants[i]->col, d, distance);
 			}
 		}
 
@@ -252,7 +254,6 @@ gchar termite_explore (Rules *rules,
 
 	if (n_free_tiles == 4)
 	{
-		g_debug ("last_dir = %d\n", last_dir);
 		if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 70, 10, 10, 10);
 		if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 10, 70, 10, 10);
 		if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 10, 10, 70, 10);
