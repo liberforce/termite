@@ -1,5 +1,6 @@
 #include <math.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include "utils.h"
 
@@ -63,13 +64,14 @@ inline guint manhattan_distance (guint row1,
 	gint dr, dc;
 	gint abs1, abs2;
 
-	abs1 = abs(row1 - row2);
-	abs2 = n_rows - abs(row1 - row2);
+	abs1 = abs((gint)row1 - (gint)row2);
+	abs2 = n_rows - abs((gint)row1 - (gint)row2);
 	dr = min (abs1, abs2);
 
-	abs1 = abs(col1 - col2);
-	abs2 = n_cols - abs(col1 - col2);
+	abs1 = abs((gint)col1 - (gint)col2);
+	abs2 = n_cols - abs ((gint)col1 - (gint)col2);
 	dc = min (abs1, abs2);
 
+	assert (dr + dc >= 0);
 	return dr + dc;
 }
