@@ -5,6 +5,13 @@
 #include "ant.h"
 #include "hill.h"
 
+// Possible directions
+#define DIR_NORTH 'N'
+#define DIR_EAST  'E'
+#define DIR_SOUTH 'S'
+#define DIR_WEST  'W'
+#define DIR_NONE  'X'
+
 typedef enum
 {
 	TILE_TYPE_LAND = 0,
@@ -44,6 +51,11 @@ guint tile_get_col (Tile *tile);
 guint tile_get_row (Tile *tile);
 void tile_set_col (Tile *tile, guint col);
 void tile_set_row (Tile *tile, guint row);
+gchar tile_get_random_direction (Tile *tile,
+		guint8 north,
+		guint8 south,
+		guint8 east,
+		guint8 west);
 
 #endif // TILE_H
 

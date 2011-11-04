@@ -5,13 +5,6 @@
 #include "state.h"
 #include "tile.h"
 
-// Possible directions
-#define DIR_NORTH 'N'
-#define DIR_EAST  'E'
-#define DIR_SOUTH 'S'
-#define DIR_WEST  'W'
-#define DIR_NONE  'X'
-
 void termite_init (Rules *rules,
 		State *state);
 

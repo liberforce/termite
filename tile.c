@@ -75,6 +75,52 @@ inline void tile_set_row (Tile *tile, guint row)
 	tile->row = row;
 }
 
+// Probabilities in the range [0; 10]
+gchar tile_get_random_direction (Tile *tile,
+		guint8 north,
+		guint8 south,
+		guint8 east,
+		guint8 west)
+{
+	assert (tile != NULL);
+	assert (north <= 10);
+	assert (south <= 10);
+	assert (east  <= 10);
+	assert (west  <= 10);
+	assert ((north + south + east + west) == 10);
+	static const gint odds[11] = 
+	{ 
+		0,               // <  0%
+		RAND_MAX * 0.1,  // < 10%
+		RAND_MAX * 0.2,  // < 20%
+		RAND_MAX * 0.3,  // < 30%
+		RAND_MAX * 0.4,  // < 40%
+		RAND_MAX * 0.5,  // < 50%
+		RAND_MAX * 0.6,  // < 60%
+		RAND_MAX * 0.7,  // < 70%
+		RAND_MAX * 0.8,  // < 80%
+		RAND_MAX * 0.9,  // < 90%
+		RAND_MAX,        // < 100%
+	};
+
+	south += north;
+	east  += south;
+	west  += east;
+
+	gint r = rand ();
+
+	if (r < odds[north])
+		return DIR_NORTH;
+	else if (r < odds[south])
+		return DIR_SOUTH;
+	else if (r < odds[east])
+		return DIR_EAST;
+	else if (r < odds[west])
+		return DIR_WEST;
+
+	return DIR_NONE;
+}
+
 gchar tile_get_ascii_type (Tile *tile)
 {
 	assert (tile != NULL);

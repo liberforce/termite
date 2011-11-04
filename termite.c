@@ -95,6 +95,10 @@ void termite_play_turn (Rules *rules,
 			ant_index = state->n_ants - 1;
 			ant = state->ants[ant_index];
 			dir = termite_explore (rules, state, ant);
+			g_debug ("ant at [%d,%d] wandering towards %c\n",
+					ant->row,
+					ant->col,
+					dir);
 		}
 
 		// Now we do our move
@@ -165,7 +169,7 @@ void termite_move_ant (Rules *rules,
 	next_tile->with.ant = tile->with.ant;
 
 	// Remember chosen direction (useful for exploration)
-	tile_set_direction (next_tile, dir);
+	ant_set_direction (&next_tile->with.ant, dir);
 }
 
 // initializes the bot on the very first turn using given rules
@@ -225,22 +229,121 @@ gchar termite_explore (Rules *rules,
 	assert (tile != NULL);
 
 	Map *map = state->map;
-	gchar dir = DIR_NONE;
+	gboolean n, s, e, w;
+	guint8 n_free_tiles = 0;
+	gchar last_dir = ant_get_direction (&tile->with.ant);
 	struct cardinals look = { NULL };
 
 	map_get_cardinals (map, tile_get_row (tile), tile_get_col (tile), &look);
 
-	// cycle through the directions, pick one that works
-	if (tile_is_free (look.north))
-		dir = DIR_NORTH;
-	else if (tile_is_free (look.east))
-		dir = DIR_EAST;
-	else if (tile_is_free (look.south))
-		dir = DIR_SOUTH;
-	else if (tile_is_free (look.west))
-		dir = DIR_WEST;
+	n = tile_is_free (look.north);
+	s = tile_is_free (look.south);
+	e = tile_is_free (look.east);
+	w = tile_is_free (look.west);
+	
+	n_free_tiles = n + s +e + w;
 
-	return dir;
+	if (n_free_tiles == 4)
+	{
+		if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 7, 1, 1, 1);
+		if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 1, 7, 1, 1);
+		if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 1, 1, 7, 1);
+		if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 1, 1, 1, 7);
+	}
+	else if (n_free_tiles == 3)
+	{
+		if (n && s && e)
+		{
+			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 7, 1, 2, 0);
+			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 1, 7, 2, 0);
+			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 1, 1, 8, 0);
+			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 4, 4, 2, 0);
+		}
+		else if (n && s && w)
+		{
+			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 7, 1, 0, 2);
+			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 1, 7, 0, 2);
+			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 4, 4, 0, 2);
+			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 1, 1, 0, 8);
+		}
+		else if (s && e && w)
+		{
+			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 0, 2, 4, 4);
+			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 0, 8, 1, 1);
+			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 0, 2, 7, 1);
+			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 0, 2, 1, 7);
+		}
+		else if (n && e && w)
+		{
+			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 8, 0, 1, 1);
+			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 2, 0, 4, 4);
+			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 2, 0, 7, 1);
+			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 2, 0, 1, 7);
+		}
+	}
+	else if (n_free_tiles == 2)
+	{
+		if (n && s)
+		{
+			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 9, 1, 0, 0);
+			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 1, 9, 0, 0);
+			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 5, 5, 0, 0);
+			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 5, 5, 0, 0);
+		}
+		else if (e && w)
+		{
+			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 0, 0, 5, 5);
+			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 0, 0, 5, 5);
+			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 0, 0, 9, 1);
+			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 0, 0, 1, 9);
+		}
+		else if (e && s)
+		{
+			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 0, 1, 9, 0);
+			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 0, 8, 2, 0);
+			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 0, 2, 8, 0);
+			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 0, 9, 1, 0);
+		}
+		else if (s && w)
+		{
+			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 0, 1, 0, 9);
+			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 0, 8, 0, 2);
+			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 0, 9, 0, 1);
+			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 0, 2, 0, 8);
+		}
+		else if (n && e)
+		{
+			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 8, 0, 2, 0);
+			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 1, 0, 9, 0);
+			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 2, 0, 8, 0);
+			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 9, 0, 1, 0);
+		}
+		else if (s && e)
+		{
+			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 0, 1, 9, 0);
+			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 0, 8, 2, 0);
+			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 0, 2, 8, 0);
+			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 0, 9, 1, 0);
+		}
+		else if (n && w)
+		{
+			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 8, 0, 0, 2);
+			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 1, 0, 0, 9);
+			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 9, 0, 0, 1);
+			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 2, 0, 0, 8);
+		}
+	}
+	else if (n_free_tiles == 1)
+	{
+		if (n) return DIR_NORTH;
+		else if (s) return DIR_SOUTH;
+		else if (e) return DIR_EAST;
+		else if (w) return DIR_WEST;
+	}
+
+	// Unlikely but may happen when surrounded by ants 
+	// if (n_free_tiles == 0)
+	return DIR_NONE;
 }
 
 gboolean termite_process_command (Rules *rules,
