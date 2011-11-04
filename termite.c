@@ -243,94 +243,114 @@ gchar termite_explore (Rules *rules,
 	
 	n_free_tiles = n + s +e + w;
 
+	// Pick a direction at random to avoid ants stay blocked on hill
+	if (last_dir != DIR_NORTH
+			&& last_dir != DIR_SOUTH
+			&& last_dir != DIR_EAST
+			&& last_dir != DIR_WEST)
+		last_dir =  tile_get_random_direction (tile, 25, 25, 25, 25);
+
 	if (n_free_tiles == 4)
 	{
-		if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 7, 1, 1, 1);
-		if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 1, 7, 1, 1);
-		if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 1, 1, 7, 1);
-		if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 1, 1, 1, 7);
+		g_debug ("last_dir = %d\n", last_dir);
+		if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 70, 10, 10, 10);
+		if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 10, 70, 10, 10);
+		if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 10, 10, 70, 10);
+		if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 10, 10, 10, 70);
+		assert (0);
 	}
 	else if (n_free_tiles == 3)
 	{
 		if (n && s && e)
 		{
-			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 7, 1, 2, 0);
-			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 1, 7, 2, 0);
-			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 1, 1, 8, 0);
-			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 4, 4, 2, 0);
+			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 70, 10, 20, 0);
+			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 10, 70, 20, 0);
+			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 10, 10, 80, 0);
+			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 40, 40, 20, 0);
+			assert (0);
 		}
 		else if (n && s && w)
 		{
-			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 7, 1, 0, 2);
-			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 1, 7, 0, 2);
-			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 4, 4, 0, 2);
-			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 1, 1, 0, 8);
+			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 70, 10, 0, 20);
+			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 10, 70, 0, 20);
+			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 40, 40, 0, 20);
+			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 10, 10, 0, 80);
+			assert (0);
 		}
 		else if (s && e && w)
 		{
-			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 0, 2, 4, 4);
-			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 0, 8, 1, 1);
-			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 0, 2, 7, 1);
-			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 0, 2, 1, 7);
+			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 0, 20, 40, 40);
+			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 0, 80, 10, 10);
+			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 0, 20, 70, 10);
+			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 0, 20, 10, 70);
+			assert (0);
 		}
 		else if (n && e && w)
 		{
-			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 8, 0, 1, 1);
-			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 2, 0, 4, 4);
-			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 2, 0, 7, 1);
-			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 2, 0, 1, 7);
+			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 80, 0, 10, 10);
+			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 20, 0, 40, 40);
+			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 20, 0, 70, 10);
+			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 20, 0, 10, 70);
+			assert (0);
 		}
 	}
 	else if (n_free_tiles == 2)
 	{
 		if (n && s)
 		{
-			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 9, 1, 0, 0);
-			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 1, 9, 0, 0);
-			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 5, 5, 0, 0);
-			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 5, 5, 0, 0);
+			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 90, 10, 0, 0);
+			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 10, 90, 0, 0);
+			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 50, 50, 0, 0);
+			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 50, 50, 0, 0);
+			assert (0);
 		}
 		else if (e && w)
 		{
-			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 0, 0, 5, 5);
-			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 0, 0, 5, 5);
-			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 0, 0, 9, 1);
-			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 0, 0, 1, 9);
+			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 0, 0, 50, 50);
+			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 0, 0, 50, 50);
+			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 0, 0, 90, 10);
+			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 0, 0, 10, 90);
+			assert (0);
 		}
 		else if (e && s)
 		{
-			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 0, 1, 9, 0);
-			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 0, 8, 2, 0);
-			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 0, 2, 8, 0);
-			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 0, 9, 1, 0);
+			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 0, 10, 90, 0);
+			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 0, 80, 20, 0);
+			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 0, 20, 80, 0);
+			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 0, 90, 10, 0);
+			assert (0);
 		}
 		else if (s && w)
 		{
-			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 0, 1, 0, 9);
-			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 0, 8, 0, 2);
-			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 0, 9, 0, 1);
-			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 0, 2, 0, 8);
+			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 0, 10, 0, 90);
+			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 0, 80, 0, 20);
+			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 0, 90, 0, 10);
+			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 0, 20, 0, 80);
+			assert (0);
 		}
 		else if (n && e)
 		{
-			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 8, 0, 2, 0);
-			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 1, 0, 9, 0);
-			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 2, 0, 8, 0);
-			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 9, 0, 1, 0);
+			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 80, 0, 20, 0);
+			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 10, 0, 90, 0);
+			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 20, 0, 80, 0);
+			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 90, 0, 10, 0);
+			assert (0);
 		}
 		else if (s && e)
 		{
-			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 0, 1, 9, 0);
-			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 0, 8, 2, 0);
-			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 0, 2, 8, 0);
-			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 0, 9, 1, 0);
+			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 0, 10, 90, 0);
+			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 0, 80, 20, 0);
+			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 0, 20, 80, 0);
+			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 0, 90, 10, 0);
+			assert (0);
 		}
 		else if (n && w)
 		{
-			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 8, 0, 0, 2);
-			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 1, 0, 0, 9);
-			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 9, 0, 0, 1);
-			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 2, 0, 0, 8);
+			if (last_dir == DIR_NORTH) return tile_get_random_direction (tile, 80, 0, 0, 20);
+			if (last_dir == DIR_SOUTH) return tile_get_random_direction (tile, 10, 0, 0, 90);
+			if (last_dir == DIR_EAST)  return tile_get_random_direction (tile, 90, 0, 0, 10);
+			if (last_dir == DIR_WEST)  return tile_get_random_direction (tile, 20, 0, 0, 80);
+			assert (0);
 		}
 	}
 	else if (n_free_tiles == 1)
@@ -339,10 +359,15 @@ gchar termite_explore (Rules *rules,
 		else if (s) return DIR_SOUTH;
 		else if (e) return DIR_EAST;
 		else if (w) return DIR_WEST;
+		assert (0);
 	}
 
 	// Unlikely but may happen when surrounded by ants 
-	// if (n_free_tiles == 0)
+	if (n_free_tiles == 0)
+		return DIR_NONE;
+
+	// We should never get here!
+	assert (0);
 	return DIR_NONE;
 }
 
