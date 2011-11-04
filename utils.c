@@ -54,6 +54,7 @@ inline guint distance (guint row1,
 				n_cols));
 }
 
+// Shortest wrapped distance between tiles
 inline guint manhattan_distance (guint row1,
 		guint col1,
 		guint row2,
@@ -61,17 +62,17 @@ inline guint manhattan_distance (guint row1,
 		guint n_rows,
 		guint n_cols)
 {
-	gint dr, dc;
-	gint abs1, abs2;
-
-	abs1 = abs((gint)row1 - (gint)row2);
-	abs2 = n_rows - abs((gint)row1 - (gint)row2);
-	dr = min (abs1, abs2);
-
-	abs1 = abs((gint)col1 - (gint)col2);
-	abs2 = n_cols - abs ((gint)col1 - (gint)col2);
-	dc = min (abs1, abs2);
-
-	assert (dr + dc >= 0);
-	return dr + dc;
+	return (abs (wrapped_vector (row1, row2, n_rows)) 
+		+ abs (wrapped_vector (col1, col2, n_cols)));
 }
+
+// Pass all rows, or all cols
+inline gint wrapped_vector (guint rc1,
+		guint rc2,
+		guint n_rcs)
+{
+	gint d1 = (gint)rc1 - (gint)rc2;
+	gint d2 = n_rcs - d1;
+	return (abs (d1) < abs (d2)) ? d1 : d2;
+}
+
