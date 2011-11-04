@@ -3,6 +3,7 @@
 
 #include "ant.h"
 #include "map.h"
+#include "pathfinder.h"
 
 typedef struct state
 {
@@ -17,6 +18,8 @@ typedef struct state
 
 	Tile **food;
 	guint n_food;
+
+	PathFinder *pf;
 } State;
 
 void state_set_turn (State *state,

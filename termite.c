@@ -78,18 +78,8 @@ void termite_play_turn (Rules *rules,
 					food->row,
 					food->col);
 
-			struct cardinals look = { 0 };
-			map_get_cardinals (state->map, tile_get_row (ant), tile_get_col (ant), &look);
-
 			// Find path to go there !
-			if (ant->row < food->row && tile_is_free (look.south))
-				dir = DIR_SOUTH;
-			else if (ant->row > food->row && tile_is_free (look.north))
-				dir = DIR_NORTH;
-			else if (ant->col < food->col && tile_is_free (look.east))
-				dir = DIR_EAST;
-			else if (ant->col > food->col && tile_is_free (look.west))
-				dir = DIR_WEST;
+			dir = pathfinder_get_closest_direction (state->pf, ant, food); 
 
 			// "Forget" that food to make sure several ants won't 
 			// try to get there at the same time
@@ -205,6 +195,10 @@ void termite_init (Rules *rules,
 	// 26 players at most
 	state->hills = calloc (26, sizeof (Tile *));
 	state->n_hills = 0;
+
+	// Our pathfinder
+	state->pf = pathfinder_new ();
+	pathfinder_set_map (state->pf, state->map);
 
 	// Inform the server we're ready to play
 	fprintf (stdout, "go\n");
