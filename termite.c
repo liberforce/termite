@@ -40,7 +40,11 @@ void termite_play_turn (Rules *rules,
 					ant = state->ants[i];
 					ant_index = i;
 				}
-				g_debug ("Distance to ant [%d,%d] = %d (closest = %d)\n", state->ants[i]->row, state->ants[i]->col, d, distance);
+				g_debug ("Distance to ant [%d,%d] = %d (closest = %d)\n",
+						state->ants[i]->row,
+						state->ants[i]->col,
+						d,
+						distance);
 			}
 		}
 
@@ -49,6 +53,7 @@ void termite_play_turn (Rules *rules,
 			gint food_index = -1;
 
 			// Find nearest food for that ant
+			g_debug ("Ant = [%d,%d], searching nearest food...\n", ant->row, ant->col);
 			distance = G_MAX_UINT;
 			for (i = 0; i < state->n_food; ++i) 
 			{
@@ -61,8 +66,12 @@ void termite_play_turn (Rules *rules,
 					food = state->food[i];
 					food_index = i;
 				}
+				g_debug ("Distance to food [%d,%d] = %d (closest = %d)\n",
+						state->food[i]->row,
+						state->food[i]->col,
+						d,
+						distance);
 			}
-
 			g_debug ("ant at [%d,%d] looking for food at [%d,%d]\n",
 					ant->row,
 					ant->col,
