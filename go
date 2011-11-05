@@ -1,11 +1,14 @@
 #! /bin/sh
 this_script_dir=$(cd $(dirname $0) && pwd)
 there="${this_script_dir}/../tools"
+game_id=$1
+shift
 
 ${there}/playgame.py                                        \
 	--player_seed 42                                    \
 	--end_wait=0.25                                     \
 	--nolaunch                                          \
+	-g $game_id                                         \
 	-R                                                  \
 	-I                                                  \
 	-O                                                  \
