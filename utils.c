@@ -72,7 +72,7 @@ inline gint wrapped_vector (guint rc1,
 		guint n_rcs)
 {
 	gint d1 = (gint)rc2 - (gint)rc1;
-	gint d2 = n_rcs - d1;
+	gint d2 = (rc1 > rc2) ? n_rcs + d1 : d1 - n_rcs;
 	return (abs (d1) < abs (d2)) ? d1 : d2;
 }
 
