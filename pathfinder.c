@@ -39,8 +39,6 @@ inline gchar pathfinder_get_closest_direction (PathFinder* pf,
 	gint dr = wrapped_vector (tile_get_row (tile), tile_get_row (target), map_get_n_rows (pf->map));
 	gint dc = wrapped_vector (tile_get_col (tile), tile_get_col (target), map_get_n_cols (pf->map));
 
-	g_debug ("delta row = %d, delta col = %d\n", dr, dc);
-
 	if (tile_is_free (look.north)
 	    	&& dr < 0)
 		dir = DIR_NORTH;
