@@ -12,92 +12,94 @@ void termite_play_turn (Rules *rules,
 		State *state)
 {
 	guint i;
+	gint food_index, ant_index;
+	guint distance; // Manhattan distance
+	Tile *food;
+	Tile *ant;
+	gchar dir;
 
 	while (state->n_ants > 0)
 	{
-		gchar dir = DIR_NONE;
-		guint distance; // Manhattan distance
-		Tile *food = NULL;
-		Tile *ant = NULL;
-		gint ant_index = -1;
-		gint food_index = -1;
+		// Pre-select first ant
+		ant_index = 0;
+		ant = state->ants[ant_index];
 
-		// Find nearest ant for that food
-		if (state->n_food > 0)
-		{
-			food_index = state->n_food - 1;
-			food = state->food[state->n_food - 1];
-		}
+		// Pre-select no food
+		food_index = -1;
+		food = NULL;
 
-		if (food != NULL)
+		dir = DIR_NONE;
+
+		if (dir == DIR_NONE && state->n_food > 0)
 		{
-			g_debug ("Food = [%d,%d], searching nearest ant...\n", food->row, food->col);
-			distance = G_MAX_UINT;
-			for (i = 0; i < state->n_ants; ++i) 
+			if (state->n_food < state->n_ants)
 			{
-				guint d = map_get_manhattan_distance (state->map,
-						state->ants[i],
-						food);
-				if (d < distance)
+				// Select first food item
+				food_index = 0;
+				food = state->food[food_index];
+
+				// Find nearest ant for that food
+				g_debug ("Food = [%d,%d], searching nearest ant...\n", food->row, food->col);
+				distance = G_MAX_UINT;
+				for (i = 0; i < state->n_ants; ++i) 
 				{
-					distance = d;
-					ant = state->ants[i];
-					ant_index = i;
+					guint d = map_get_manhattan_distance (state->map,
+							state->ants[i],
+							food);
+					if (d < distance)
+					{
+						distance = d;
+						ant = state->ants[i];
+						ant_index = i;
+					}
+					g_debug ("Distance to ant [%d,%d] = %d (closest = %d)\n",
+							state->ants[i]->row,
+							state->ants[i]->col,
+							d,
+							distance);
 				}
-				g_debug ("Distance to ant [%d,%d] = %d (closest = %d)\n",
-						state->ants[i]->row,
-						state->ants[i]->col,
-						d,
-						distance);
 			}
-		}
-
-		if (ant != NULL)
-		{
-			// Find nearest food for that ant
-			g_debug ("Ant = [%d,%d], searching nearest food...\n", ant->row, ant->col);
-
-			// distance is not reinitialized to favor currently selected food
-			for (i = 0; i < state->n_food; ++i) 
+			else
 			{
-				guint d = map_get_manhattan_distance (state->map,
-						ant,
-						state->food[i]);
-				if (d < distance)
+				// Find nearest food for that ant
+				g_debug ("Ant = [%d,%d], searching nearest food...\n", ant->row, ant->col);
+
+				distance = G_MAX_UINT;
+				for (i = 0; i < state->n_food; ++i) 
 				{
-					distance = d;
-					food = state->food[i];
-					food_index = i;
+					guint d = map_get_manhattan_distance (state->map,
+							ant,
+							state->food[i]);
+					if (d < distance)
+					{
+						distance = d;
+						food = state->food[i];
+						food_index = i;
+					}
+					g_debug ("Distance to food [%d,%d] = %d (closest = %d)\n",
+							state->food[i]->row,
+							state->food[i]->col,
+							d,
+							distance);
 				}
-				g_debug ("Distance to food [%d,%d] = %d (closest = %d)\n",
-						state->food[i]->row,
-						state->food[i]->col,
-						d,
-						distance);
 			}
+
+			assert (food != NULL);
+			assert (ant != NULL);
+
 			g_debug ("ant at [%d,%d] looking for food at [%d,%d]\n",
-					ant->row,
-					ant->col,
-					food->row,
-					food->col);
+					tile_get_row (ant),
+					tile_get_col (ant),
+					tile_get_row (food),
+					tile_get_col (food));
 
 			// Find path to go there !
 			dir = pathfinder_get_closest_direction (state->pf, ant, food); 
-
-			// "Forget" that food to make sure several ants won't 
-			// try to get there at the same time
-			if (dir != DIR_NONE)
-			{
-				assert (food_index >= 0);
-				state->food[food_index] = state->food[state->n_food - 1];
-				state->n_food--;
-			}
 		}
-		else
+
+		if (dir == DIR_NONE)
 		{
-			// Exploration
-			ant_index = state->n_ants - 1;
-			ant = state->ants[ant_index];
+			assert (ant != NULL);
 			dir = termite_explore (rules, state, ant);
 			g_debug ("ant at [%d,%d] wandering towards %c\n",
 					ant->row,
@@ -105,15 +107,28 @@ void termite_play_turn (Rules *rules,
 					dir);
 		}
 
-		// Now we do our move
+		// Now we send our move
 		if (dir != DIR_NONE)
 		{
 			termite_move_ant (rules, state, ant, dir);
 		}
 
-		assert (ant_index >= 0);
-		state->ants[ant_index] = state->ants[state->n_ants - 1];
-		state->n_ants--;
+		if (food != NULL)
+		{
+			assert (food_index >= 0);
+			// Remove that food item from the candidates list
+			// Prevents several ants from chasing the same food
+			state->food[food_index] = state->food[state->n_food - 1];
+			state->n_food--;
+		}
+
+		if (ant != NULL)
+		{
+			assert (ant_index >= 0);
+			// Remove that ant from the candidates list
+			state->ants[ant_index] = state->ants[state->n_ants - 1];
+			state->n_ants--;
+		}
 	}
 
 	// Inform the server we finished sending our actions for the turn
