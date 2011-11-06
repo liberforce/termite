@@ -193,8 +193,8 @@ void termite_move_ant (Rules *rules,
 		gchar dir) 
 {
 	assert (tile_get_type (tile) == TILE_TYPE_ANT);
-	gint row = tile_get_row (tile);
-	gint col = tile_get_col (tile);
+	guint row = tile_get_row (tile);
+	guint col = tile_get_col (tile);
 
 	fprintf (stdout, "o %u %u %c\n", row, col, dir);
 	g_debug ("BOT: o %u %u %c\n", row, col, dir);
@@ -220,12 +220,12 @@ void termite_move_ant (Rules *rules,
 
 	if (row == n_rows)
 		row = 0;
-	else if (row == -1)
+	else if (row == G_MAX_UINT)
 		row = n_rows - 1;
 
 	if (col == n_cols)
 		col = 0;
-	else if (col == -1)
+	else if (col == G_MAX_UINT)
 		col = n_cols - 1;
 
 	tile_set_type (tile, TILE_TYPE_LAND);
@@ -303,7 +303,7 @@ gchar termite_explore (Rules *rules,
 	gboolean n, s, e, w;
 	guint8 n_free_tiles = 0;
 	gchar last_dir = ant_get_direction (&tile->with.ant);
-	struct cardinals look = { NULL };
+	struct cardinals look = { NULL, NULL, NULL, NULL };
 
 	map_get_cardinals (map, tile_get_row (tile), tile_get_col (tile), &look);
 

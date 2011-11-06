@@ -199,7 +199,7 @@ gchar tile_get_random_direction (Tile *tile,
 	east  += south;
 	west  += east;
 
-	gint r = rand ();
+	guint r = rand ();
 
 	// We need to handle the case when r == 0 and r == RAND_MAX
 	// West uses inferior or equal to avoid RAND_MAX not being handled

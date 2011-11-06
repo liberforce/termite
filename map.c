@@ -172,7 +172,7 @@ inline guint map_get_manhattan_distance (Map *map,
 inline void map_dump (Map *map)
 {
 	assert (map != NULL);
-	gint i, j;
+	guint i, j;
 
 	g_debug ("\n");
 	for (i = 0; i < map->n_rows; i++)

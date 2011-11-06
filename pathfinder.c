@@ -33,7 +33,7 @@ inline gchar pathfinder_get_closest_direction (PathFinder* pf,
 	assert (target != NULL);
 
 	gchar dir = DIR_NONE;
-	struct cardinals look = { NULL };
+	struct cardinals look = { NULL, NULL, NULL, NULL };
 	map_get_cardinals (pf->map, tile_get_row (tile), tile_get_col (tile), &look);
 
 	gint dr = wrapped_vector (tile_get_row (tile), tile_get_row (target), map_get_n_rows (pf->map));
