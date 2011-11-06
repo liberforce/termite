@@ -8,7 +8,7 @@ LDFLAGS=-O0 -lm
 #CFLAGS=-O3 -funroll-loops -c -Wall -DNDEBUG
 #LDFLAGS=-O2 -lm
 
-SOURCES=MyBot.c termite.c ant.c map.c utils.c state.c tile.c pathfinder.c
+SOURCES=MyBot.c termite.c ant.c map.c utils.c state.c tile.c pathfinder.c hill.c
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=termite
 ARCHIVE=$(EXECUTABLE).zip

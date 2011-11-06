@@ -16,8 +16,21 @@ void termite_play_turn (Rules *rules,
 	guint distance; // Manhattan distance
 	Tile *food;
 	Tile *ant;
+	Tile *hill;
 	gchar dir;
 
+	// Keep enemy hills only
+	for (i = 0; i < state->n_hills; ++i) 
+	{
+		Tile *tile = state->hills[i];
+		if (hill_get_owner (&tile->with.hill) == 0)
+		{
+			state->hills[i] = state->hills[state->n_hills - 1];
+			state->n_hills--;
+		}
+	}
+
+	// Process each ant
 	while (state->n_ants > 0)
 	{
 		// Pre-select first ant
@@ -28,7 +41,39 @@ void termite_play_turn (Rules *rules,
 		food_index = -1;
 		food = NULL;
 
+		// Pre-select no hill
+		hill = NULL;
+
 		dir = DIR_NONE;
+
+		// Look for enemy hills to destroy
+		if (dir == DIR_NONE && state->n_hills > 0)
+		{
+			// Find nearest enemy hill for that ant
+			g_debug ("Ant = [%d,%d], searching nearest hill...\n", ant->row, ant->col);
+			
+			distance = G_MAX_UINT;
+			for (i = 0; i < state->n_hills; ++i) 
+			{
+				guint d = map_get_manhattan_distance (state->map,
+						ant,
+						state->hills[i]);
+				if (d < distance)
+				{
+					distance = d;
+					hill = state->hills[i];
+					ant_index = i;
+				}
+				g_debug ("Distance to hill [%d,%d] = %d (closest = %d)\n",
+						state->hills[i]->row,
+						state->hills[i]->col,
+						d,
+						distance);
+			}
+
+			// Find path to go there !
+			dir = pathfinder_get_closest_direction (state->pf, ant, hill); 
+		}
 
 		if (dir == DIR_NONE && state->n_food > 0)
 		{
@@ -129,6 +174,9 @@ void termite_play_turn (Rules *rules,
 			state->ants[ant_index] = state->ants[state->n_ants - 1];
 			state->n_ants--;
 		}
+
+		// We don't handle hills the same way as food, so that several 
+		// ants can chase the same hill
 	}
 
 	// Inform the server we finished sending our actions for the turn
