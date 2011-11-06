@@ -280,8 +280,8 @@ void termite_cleanup_map (Rules *rules,
 
 	do
 	{
-		if (tile_get_type (tile) != TILE_TYPE_UNSEEN 
-				&& tile_get_type (tile) != TILE_TYPE_WATER)
+		TileType type = tile_get_type (tile);
+		if (type != TILE_TYPE_UNSEEN && type != TILE_TYPE_WATER)
 		{
 			tile_set_type (tile, TILE_TYPE_LAND);
 			tile_set_flags (tile, tile_get_flags (tile) & ~TILE_HAS_HILL);
