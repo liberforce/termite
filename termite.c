@@ -465,14 +465,7 @@ gboolean termite_process_command (Rules *rules,
 
 	// Determine which action needs to be done
 	// Keep them sorted from most to less frequent
-	if (strcmp (args[0], "go") == 0)
-	{
-		assert (n_args == 1);
-		map_dump (state->map);
-		termite_play_turn (rules, state);
-		termite_cleanup_map (rules, state);
-	}
-	else if (strcmp (args[0], "a") == 0)
+	if (strcmp (args[0], "a") == 0)
 	{
 		assert (n_args == 4);
 		guint row = atoi (args[1]);
@@ -502,6 +495,13 @@ gboolean termite_process_command (Rules *rules,
 		Tile *tile = map_get_tile (state->map, row, col);
 		tile_set_type (tile, TILE_TYPE_WATER);
 	}
+	else if (strcmp (args[0], "go") == 0)
+	{
+		assert (n_args == 1);
+		map_dump (state->map);
+		termite_play_turn (rules, state);
+		termite_cleanup_map (rules, state);
+	}
 	else if (strcmp (args[0], "h") == 0)
 	{
 		assert (n_args == 4);
@@ -514,15 +514,15 @@ gboolean termite_process_command (Rules *rules,
 		tile->with.hill.owner = owner;
 		state->hills[state->n_hills++] = tile;
 	}
-	else if (strcmp (args[0], "ready") == 0)
-	{
-		termite_init (rules, state);
-	}
 	else if (strcmp (args[0], "turn") == 0)
 	{
 		assert (n_args == 2);
 		guint n_turn = atoi (args[1]);
 		state_set_turn (state, n_turn);
+	}
+	else if (strcmp (args[0], "ready") == 0)
+	{
+		termite_init (rules, state);
 	}
 	else if (strcmp (args[0], "playerseed") == 0)
 	{
