@@ -11,7 +11,7 @@
 void termite_play_turn (Rules *rules,
 		State *state)
 {
-	guint i;
+	gint i;
 	gint food_index, ant_index;
 	guint distance; // Manhattan distance
 	Tile *food;
@@ -19,15 +19,13 @@ void termite_play_turn (Rules *rules,
 	Tile *hill;
 	gchar dir;
 
-	// Keep enemy hills only
-	for (i = 0; i < state->n_hills; ++i) 
+	// Keep enemy hills only. We need to iterate from last to first to 
+	// test all items as we remove last element
+	for (i = state->n_hills - 1; i >= 0 ; --i) 
 	{
 		Tile *tile = state->hills[i];
-		if (hill_get_owner (&tile->with.hill) == 0)
-		{
-			state->hills[i] = state->hills[state->n_hills - 1];
+		if (! tile_has_enemy_hill (tile))
 			state->n_hills--;
-		}
 	}
 
 	// Process each ant

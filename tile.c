@@ -34,7 +34,7 @@ inline gboolean tile_is_free (Tile *tile)
 			&& tile->type != TILE_TYPE_FOOD);
 }
 
-inline gboolean tile_is_ennemy_hill (Tile *tile)
+inline gboolean tile_has_enemy_hill (Tile *tile)
 {
 	assert (tile != NULL);
 	return (tile->flags & TILE_HAS_HILL && tile->with.hill.owner != 0);
