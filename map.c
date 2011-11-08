@@ -15,7 +15,7 @@ struct map
 	guint n_elements;
 };
 
-inline Map *map_new (guint n_rows, guint n_cols, TileType filler)
+inline Map *map_new (guint n_rows, guint n_cols)
 {
 	Map *map = calloc (1, sizeof (Map));
 	guint i, j;
@@ -23,14 +23,13 @@ inline Map *map_new (guint n_rows, guint n_cols, TileType filler)
 	map->n_rows = n_rows;
 	map->n_cols = n_cols;
 	map->n_elements = n_cols * n_rows;
-	map->tiles = malloc (map->n_elements * sizeof (Tile));
+	map->tiles = calloc (map->n_elements, sizeof (Tile));
 
 	for (i = 0; i < n_rows; i++)
 	{
 		for (j = 0; j < n_cols; j++)
 		{
 			Tile *t = &map->tiles[i * n_cols + j];
-			t->type = filler;
 			t->row = i;
 			t->col = j;
 		}

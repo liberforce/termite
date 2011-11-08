@@ -190,7 +190,7 @@ void termite_move_ant (Rules *rules,
 		Tile* tile,
 		gchar dir) 
 {
-	assert (tile_get_type (tile) == TILE_TYPE_ANT);
+	assert (tile_is_flag_set (tile, TILE_FLAG_HAS_ANT));
 	guint row = tile_get_row (tile);
 	guint col = tile_get_col (tile);
 
@@ -226,11 +226,13 @@ void termite_move_ant (Rules *rules,
 	else if (col == G_MAX_UINT)
 		col = n_cols - 1;
 
-	tile_set_type (tile, TILE_TYPE_LAND);
+	// The ant moved out of that tile...
+	tile_unset_flag (tile, TILE_FLAG_HAS_ANT);
 
+	// ...to go ont that one
 	Tile *next_tile = map_get_tile (state->map, row, col);
-	assert (tile_get_type (next_tile) != TILE_TYPE_ANT);
-	tile_set_type (next_tile, TILE_TYPE_ANT);
+	assert (! tile_is_flag_set (next_tile, TILE_FLAG_HAS_ANT));
+	tile_set_flag (next_tile, TILE_FLAG_HAS_ANT);
 	next_tile->with.ant = tile->with.ant;
 
 	// Remember chosen direction (useful for exploration)
@@ -247,7 +249,7 @@ void termite_init (Rules *rules,
 	assert (state->map == NULL);
 
 	// Create the empty map
-	state->map = map_new (rules->rows, rules->cols, TILE_TYPE_UNSEEN);
+	state->map = map_new (rules->rows, rules->cols);
 
 	// Allocate max size
 	state->ants = calloc (rules->rows * rules->cols, sizeof (Tile *));
@@ -278,12 +280,7 @@ void termite_cleanup_map (Rules *rules,
 
 	do
 	{
-		TileType type = tile_get_type (tile);
-		if (type != TILE_TYPE_UNSEEN && type != TILE_TYPE_WATER)
-		{
-			tile_set_type (tile, TILE_TYPE_LAND);
-			tile_set_flags (tile, tile_get_flags (tile) & ~TILE_HAS_HILL);
-		}
+		tile_unset_flag (tile, TILE_FLAG_HAS_ANT | TILE_FLAG_HAS_FOOD | TILE_FLAG_IS_SEEN);
 	} while (++tile < end);
 
 	state->n_ants = 0;
@@ -470,11 +467,14 @@ gboolean termite_process_command (Rules *rules,
 		guint col = atoi (args[2]);
 		guint owner = atoi (args[3]);
 		Tile *tile = map_get_tile (state->map, row, col);
-		tile_set_type (tile, TILE_TYPE_ANT);
+		tile_set_flag (tile, TILE_FLAG_HAS_ANT);
 		ant_set_owner (&tile->with.ant, owner);
 
 		if (owner == 0)
+		{
 			state->ants[state->n_ants++] = tile;
+			tile_set_flag (tile, TILE_FLAG_IS_EXPLORED);
+		}
 	}
 	else if (strcmp (args[0], "f") == 0)
 	{
@@ -482,7 +482,7 @@ gboolean termite_process_command (Rules *rules,
 		guint row = atoi (args[1]);
 		guint col = atoi (args[2]);
 		Tile *tile = map_get_tile (state->map, row, col);
-		tile_set_type (tile, TILE_TYPE_FOOD);
+		tile_set_flag (tile, TILE_FLAG_HAS_FOOD);
 		state->food[state->n_food++] = tile;
 	}
 	else if (strcmp (args[0], "w") == 0)
@@ -491,7 +491,7 @@ gboolean termite_process_command (Rules *rules,
 		guint row = atoi (args[1]);
 		guint col = atoi (args[2]);
 		Tile *tile = map_get_tile (state->map, row, col);
-		tile_set_type (tile, TILE_TYPE_WATER);
+		tile_set_flag (tile, TILE_FLAG_IS_WATER);
 	}
 	else if (strcmp (args[0], "go") == 0)
 	{
@@ -507,8 +507,7 @@ gboolean termite_process_command (Rules *rules,
 		guint col = atoi (args[2]);
 		guint owner = atoi (args[3]);
 		Tile *tile = map_get_tile (state->map, row, col);
-		tile_set_type (tile, TILE_TYPE_LAND);
-		tile->flags |= TILE_HAS_HILL;
+		tile_set_flag (tile, TILE_FLAG_HAS_HILL);
 		tile->with.hill.owner = owner;
 		state->hills[state->n_hills++] = tile;
 	}

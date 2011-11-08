@@ -5,6 +5,7 @@
 
 // ascii codes for tile_dump
 #define TILE_LAND                   '.'
+#define TILE_UNEXPLORED             '#'
 #define TILE_UNSEEN                 '?'
 #define TILE_WATER                  '%'
 #define TILE_FOOD                   '*'
@@ -13,31 +14,16 @@
 #define TILE_ANT_ON_HILL(player)   ('A' + player)
 #define TILE_HILL(player)          ('0' + player)
 
-inline void tile_set_type (Tile *tile, 
-		TileType type)
-{
-	assert (tile != NULL);
-	tile->type = type;
-}
-
-inline TileType tile_get_type (Tile *tile)
-{
-	assert (tile != NULL);
-	return tile->type;
-}
-
 inline gboolean tile_is_free (Tile *tile)
 {
 	assert (tile != NULL);
-	return (tile->type != TILE_TYPE_WATER 
-			&& tile->type != TILE_TYPE_ANT 
-			&& tile->type != TILE_TYPE_FOOD);
+	return ((tile->flags & (TILE_FLAG_IS_WATER | TILE_FLAG_HAS_ANT | TILE_FLAG_HAS_FOOD)) == 0);
 }
 
 inline gboolean tile_has_enemy_hill (Tile *tile)
 {
 	assert (tile != NULL);
-	return (tile->flags & TILE_HAS_HILL && tile->with.hill.owner != 0);
+	return (tile->flags & TILE_FLAG_HAS_HILL && tile->with.hill.owner != 0);
 }
 
 inline guint tile_get_col (Tile *tile)
@@ -53,16 +39,37 @@ inline guint tile_get_row (Tile *tile)
 }
 
 inline void tile_set_flags (Tile *tile,
-		guint16 flags)
+		TileFlags flags)
 {
 	assert (tile != NULL);
 	tile->flags = flags;
 }
 
-inline guint16 tile_get_flags (Tile *tile)
+inline TileFlags tile_get_flags (Tile *tile)
 {
 	assert (tile != NULL);
 	return tile->flags;
+}
+
+inline void tile_set_flag (Tile *tile,
+		TileFlags flag)
+{
+	assert (tile != NULL);
+	tile->flags |= flag;
+}
+
+inline void tile_unset_flag (Tile *tile,
+		TileFlags flag)
+{
+	assert (tile != NULL);
+	tile->flags &= ~flag;
+}
+
+inline TileFlags tile_is_flag_set (Tile *tile,
+		TileFlags flag)
+{
+	assert (tile != NULL);
+	return tile->flags & flag;
 }
 
 inline void tile_set_col (Tile *tile, guint col)
@@ -220,39 +227,38 @@ gchar tile_get_random_direction (Tile *tile,
 gchar tile_get_ascii_type (Tile *tile)
 {
 	assert (tile != NULL);
-	switch (tile->type)
+	if (tile_is_flag_set (tile, TILE_FLAG_IS_WATER))
+		return TILE_WATER;
+
+	if (tile_is_flag_set (tile, TILE_FLAG_HAS_FOOD))
+		return TILE_FOOD;
+	
+	if (tile_is_flag_set (tile, TILE_FLAG_HAS_ANT))
 	{
-		case TILE_TYPE_LAND:
-		{
-			if (tile->flags & TILE_HAS_HILL)
-				return TILE_HILL (tile->with.hill.owner);
-			else
-				return TILE_LAND;
-		}
+		if (tile_is_flag_set (tile, TILE_FLAG_HAS_HILL))
+			return TILE_ANT_ON_HILL (tile->with.ant.owner);
+		else
+			return TILE_ANT (tile->with.ant.owner);
 
-		case TILE_TYPE_UNSEEN:
-			return TILE_UNSEEN;
-
-		case TILE_TYPE_WATER:
-			return TILE_WATER;
-
-		case TILE_TYPE_FOOD:
-			return TILE_FOOD;
-
-		case TILE_TYPE_DEAD_ANT:
-			return TILE_DEAD_ANT;
-
-		case TILE_TYPE_ANT:
-		{
-			if (tile->flags & TILE_HAS_HILL)
-				return TILE_ANT_ON_HILL (tile->with.ant.owner);
-			else
-				return TILE_ANT (tile->with.ant.owner);
-		}
-
-		default:
-			assert (0);
-			return '#';
 	}
+	
+	if (tile_is_flag_set (tile, TILE_FLAG_HAS_HILL))
+		return TILE_HILL (tile->with.hill.owner);
+
+	if (! tile_is_flag_set (tile, TILE_FLAG_IS_EXPLORED))
+		return TILE_UNEXPLORED;
+
+	if (!tile_is_flag_set (tile, TILE_FLAG_IS_SEEN))
+		return TILE_UNSEEN;
+
+	if (tile_is_flag_set (tile, TILE_FLAG_HAS_DEAD_ANT))
+		return TILE_DEAD_ANT;
+
+	if (! tile_is_flag_set (tile, TILE_FLAG_IS_WATER))
+		return TILE_LAND;
+
+	// Should never be reached
+	assert (0);
+	return '#';
 }
 

@@ -15,8 +15,7 @@ struct cardinals
 typedef struct map Map;
 
 Map *map_new (guint n_rows, 
-		guint n_cols, 
-		TileType filler);
+		guint n_cols);
 void map_free (Map *map);
 Tile * map_get_buffer (Map *map);
 guint map_get_n_elements (Map *map);
