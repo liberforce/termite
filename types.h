@@ -21,6 +21,8 @@ typedef unsigned long guint64;
 
 typedef int gboolean;
 
+typedef void * gpointer;
+
 #define TRUE  1
 #define FALSE 0
 
