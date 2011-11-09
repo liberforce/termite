@@ -28,6 +28,7 @@ typedef struct tile
 	TileFlags flags;
 	guint row;
 	guint col;
+	guint attractivity;
 	union 
 	{
 		Ant ant;
@@ -55,6 +56,14 @@ gchar tile_get_random_direction (Tile *tile,
 		guint8 south,
 		guint8 east,
 		guint8 west);
+
+void tile_add_attractivity (Tile *tile,
+		gint step);
+
+void tile_set_attractivity (Tile *tile,
+		gint attractivity);
+
+gint tile_get_attractivity (Tile *tile);
 
 #endif // TILE_H
 

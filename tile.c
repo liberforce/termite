@@ -84,6 +84,26 @@ inline void tile_set_row (Tile *tile, guint row)
 	tile->row = row;
 }
 
+inline void tile_add_attractivity (Tile *tile,
+		gint step)
+{
+	assert (tile != NULL);
+	tile->attractivity += step;
+}
+
+inline void tile_set_attractivity (Tile *tile,
+		gint attractivity)
+{
+	assert (tile != NULL);
+	tile->attractivity = attractivity;
+}
+
+inline gint tile_get_attractivity (Tile *tile)
+{
+	assert (tile != NULL);
+	return tile->attractivity;
+}
+
 // Probabilities in the range [0; 100]
 gchar tile_get_random_direction (Tile *tile,
 		guint8 north,
