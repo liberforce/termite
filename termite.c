@@ -134,14 +134,22 @@ void termite_play_turn (Rules *rules,
 			assert (food != NULL);
 			assert (ant != NULL);
 
-			g_debug ("ant at [%d,%d] looking for food at [%d,%d]\n",
-					tile_get_row (ant),
-					tile_get_col (ant),
-					tile_get_row (food),
-					tile_get_col (food));
-
 			// Find path to go there !
 			dir = pathfinder_get_closest_direction (state->pf, ant, food); 
+			if (dir != DIR_NONE)
+			{
+
+				g_debug ("ant at [%d,%d] looking for food at [%d,%d]\n",
+						tile_get_row (ant),
+						tile_get_col (ant),
+						tile_get_row (food),
+						tile_get_col (food));
+			}
+			else
+			{
+				// Prevent marking this food as already being processed
+				food = NULL;
+			}
 		}
 
 		if (dir == DIR_NONE)
