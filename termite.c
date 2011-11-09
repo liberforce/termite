@@ -79,11 +79,13 @@ void termite_play_turn (Rules *rules,
 
 		if (dir == DIR_NONE && state->n_food > 0)
 		{
-			if (state->n_food < state->n_ants)
+			if (state->n_food <= state->n_ants)
 			{
 				// Select first food item
 				food_index = 0;
 				food = state->food[food_index];
+				ant_index = -1;
+				ant = NULL;
 
 				// Find nearest ant for that food
 				g_debug ("Food = [%d,%d], searching nearest ant...\n", food->row, food->col);
