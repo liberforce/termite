@@ -12,7 +12,7 @@ void termite_play_turn (Rules *rules,
 		State *state)
 {
 	guint i;
-	gint food_index, ant_index;
+	gint food_index, ant_index, hill_index;
 	guint distance; // Manhattan distance
 	Tile *food;
 	Tile *ant;
@@ -44,6 +44,7 @@ void termite_play_turn (Rules *rules,
 		food = NULL;
 
 		// Pre-select no hill
+		hill_index = -1;
 		hill = NULL;
 
 		dir = DIR_NONE;
@@ -64,7 +65,7 @@ void termite_play_turn (Rules *rules,
 				{
 					distance = d;
 					hill = state->hills[i];
-					ant_index = i;
+					hill_index = i;
 				}
 				g_debug ("Distance to hill [%d,%d] = %d (closest = %d)\n",
 						state->hills[i]->row,
@@ -75,6 +76,15 @@ void termite_play_turn (Rules *rules,
 
 			// Find path to go there !
 			dir = pathfinder_get_closest_direction (state->pf, ant, hill); 
+			if (dir != DIR_NONE)
+			{
+
+				g_debug ("ant at [%d,%d] looking for hill at [%d,%d]\n",
+						tile_get_row (ant),
+						tile_get_col (ant),
+						tile_get_row (hill),
+						tile_get_col (hill));
+			}
 		}
 
 		if (dir == DIR_NONE && state->n_food > 0)
