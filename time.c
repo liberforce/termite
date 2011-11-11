@@ -1,8 +1,8 @@
 #include <time.h>
 #include <sys/time.h>
+#include <assert.h>
 
 #include "types.h"
-#include "assert.h"
 
 gint64 g_get_time (void)
 {

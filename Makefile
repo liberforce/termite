@@ -2,13 +2,24 @@ CC=gcc
 
 # For debug
 CFLAGS=-O0 -funroll-loops -c -Wall -ggdb3
-LDFLAGS=-O0 -lm
+LDFLAGS=-O0 -lm -lrt
 
 # For release
 #CFLAGS=-O3 -funroll-loops -c -Wall -DNDEBUG
 #LDFLAGS=-O2 -lm
 
-SOURCES=MyBot.c termite.c ant.c map.c utils.c state.c tile.c pathfinder.c hill.c queue.c
+SOURCES=MyBot.c                    \
+	termite.c                  \
+	ant.c                      \
+	map.c                      \
+	utils.c                    \
+	state.c                    \
+	tile.c                     \
+	pathfinder.c               \
+	hill.c                     \
+	queue.c                    \
+	time.c
+
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=termite
 ARCHIVE=$(EXECUTABLE).zip
