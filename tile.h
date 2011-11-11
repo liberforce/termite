@@ -21,6 +21,7 @@ typedef enum
 	TILE_FLAG_HAS_HILL        = 0x10,
 	TILE_FLAG_HAS_FOOD        = 0x20,
 	TILE_FLAG_HAS_DEAD_ANT    = 0x40,
+	TILE_FLAG_BEING_PROCESSED = 0x80,
 } TileFlags;
 
 typedef struct tile
