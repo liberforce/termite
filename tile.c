@@ -65,7 +65,7 @@ inline void tile_unset_flag (Tile *tile,
 	tile->flags &= ~flag;
 }
 
-inline TileFlags tile_is_flag_set (Tile *tile,
+inline gboolean tile_is_flag_set (Tile *tile,
 		TileFlags flag)
 {
 	assert (tile != NULL);

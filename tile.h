@@ -14,13 +14,13 @@
 
 typedef enum
 {
-	TILE_FLAG_IS_WATER      = 0x01,
-	TILE_FLAG_IS_SEEN       = 0x02,
-	TILE_FLAG_IS_EXPLORED   = 0x04,
-	TILE_FLAG_HAS_ANT       = 0x08,
-	TILE_FLAG_HAS_HILL      = 0x10,
-	TILE_FLAG_HAS_FOOD      = 0x20,
-	TILE_FLAG_HAS_DEAD_ANT  = 0x40,
+	TILE_FLAG_IS_WATER        = 0x01,
+	TILE_FLAG_IS_SEEN         = 0x02,
+	TILE_FLAG_IS_EXPLORED     = 0x04,
+	TILE_FLAG_HAS_ANT         = 0x08,
+	TILE_FLAG_HAS_HILL        = 0x10,
+	TILE_FLAG_HAS_FOOD        = 0x20,
+	TILE_FLAG_HAS_DEAD_ANT    = 0x40,
 } TileFlags;
 
 typedef struct tile
@@ -44,7 +44,7 @@ void tile_set_flag (Tile *tile,
 		TileFlags flag);
 void tile_unset_flag (Tile *tile,
 		TileFlags flag);
-TileFlags tile_is_flag_set (Tile *tile,
+gboolean tile_is_flag_set (Tile *tile,
 		TileFlags flag);
 gchar tile_get_ascii_type (Tile *tile);
 guint tile_get_col (Tile *tile);
