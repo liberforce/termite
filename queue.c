@@ -36,12 +36,15 @@ inline gpointer queue_pop (Queue *queue)
 	assert (queue->start < queue->end);
 	gpointer data = *queue->start;
 	queue->start++;
-
-	// Rewind when empty to avoid overflow
-	if (queue_is_empty (queue))
-		queue->start = queue->end = queue->data;
-
 	return data;
+}
+
+inline void queue_reset (Queue *queue)
+{
+	assert (queue_is_empty (queue));
+
+	// Rewind to avoid overflow
+	queue->start = queue->end = queue->data;
 }
 
 inline gboolean queue_is_empty (Queue *queue)
