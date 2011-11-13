@@ -1,6 +1,6 @@
 #! /bin/sh
 this_script_dir=$(cd $(dirname $0) && pwd)
-there="${this_script_dir}/../tools"
+there="${this_script_dir}/../aichallenge/ants"
 game_id=$1
 shift
 
@@ -15,10 +15,10 @@ ${there}/playgame.py                                        \
 	-E                                                  \
 	--turntime 9999900                                  \
 	--loadtime 9999900                                  \
-	--log_dir ${this_script_dir}/logs                   \
+	--log_dir /tmp/logs                                 \
 	--turns 300                                         \
 	--map_file ${there}/maps/example/tutorial1.map      \
 	--serial                                            \
 	"$@"                                                \
-	termite                                             \
-	"python ${there}/sample_bots/python/HunterBot.py" 
+	"./termite"                                         \
+	"python ${there}/dist/sample_bots/python/HunterBot.py"

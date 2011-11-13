@@ -1,6 +1,6 @@
 #!/bin/sh
 this_script_dir="$(cd $(dirname $0) && pwd)"
-there="${this_script_dir}/../tools"
+there="${this_script_dir}/../aichallenge/ants/visualizer"
 
-java -jar ${there}/visualizer.jar logs/$1.replay
+${there}/visualize_locally.py < /tmp/logs/$1.replay
 
