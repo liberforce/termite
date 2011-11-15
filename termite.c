@@ -200,11 +200,6 @@ void termite_play_turn (Rules *rules,
 		// We don't handle hills the same way as food, so that several 
 		// ants can chase the same hill
 	}
-
-	// Inform the server we finished sending our actions for the turn
-	fprintf (stdout, "go\n");
-	fflush (stdout);
-	g_debug ("BOT: go\n");
 }
 
 // sends a move to the tournament engine and keeps track of ants new location
@@ -521,8 +516,18 @@ gboolean termite_process_command (Rules *rules,
 	{
 		assert (n_args == 1);
 		map_dump (state->map);
+		g_debug ("%06li: map_dump\n", state_timer_get_elapsed (state));
+
 		termite_play_turn (rules, state);
+		g_debug ("%06li: termite_play_turn\n", state_timer_get_elapsed (state));
+
+		// Inform the server we finished sending our actions for the turn
+		fprintf (stdout, "go\n");
+		fflush (stdout);
+		g_debug ("%06li: go sent\n", state_timer_get_elapsed (state));
+
 		termite_cleanup_map (rules, state);
+		g_debug ("%06li: termite_cleanup_map\n", state_timer_get_elapsed (state));
 	}
 	else if (strcmp (args[0], "h") == 0)
 	{
@@ -539,6 +544,7 @@ gboolean termite_process_command (Rules *rules,
 	{
 		assert (n_args == 2);
 		guint n_turn = atoi (args[1]);
+		g_debug ("turn %d\n", n_turn);
 		state_set_turn (state, n_turn);
 	}
 	else if (strcmp (args[0], "ready") == 0)
