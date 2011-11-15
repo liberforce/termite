@@ -235,20 +235,20 @@ void termite_move_ant (Rules *rules,
 	guint n_rows = map_get_n_rows (state->map);
 	guint n_cols = map_get_n_cols (state->map);
 
-	if (row == n_rows)
+	if G_UNLIKELY (row == n_rows)
 		row = 0;
-	else if (row == G_MAX_UINT)
+	else if G_UNLIKELY (row == G_MAX_UINT)
 		row = n_rows - 1;
 
-	if (col == n_cols)
+	if G_UNLIKELY (col == n_cols)
 		col = 0;
-	else if (col == G_MAX_UINT)
+	else if G_UNLIKELY (col == G_MAX_UINT)
 		col = n_cols - 1;
 
 	// The ant moved out of that tile...
 	tile_unset_flag (tile, TILE_FLAG_HAS_ANT);
 
-	// ...to go ont that one
+	// ...to go on that one
 	Tile *next_tile = map_get_tile (state->map, row, col);
 	assert (! tile_is_flag_set (next_tile, TILE_FLAG_HAS_ANT));
 	tile_set_flag (next_tile, TILE_FLAG_HAS_ANT);
