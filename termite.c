@@ -297,10 +297,10 @@ void termite_cleanup_map (Rules *rules,
 	Tile *tile = map_get_buffer (state->map);
 	Tile *end = tile + map_get_n_elements (state->map);
 
-	do
+	while (tile < end);
 	{
-		tile_unset_flag (tile, TILE_FLAG_HAS_ANT | TILE_FLAG_HAS_FOOD | TILE_FLAG_IS_SEEN);
-	} while (++tile < end);
+		tile_unset_flag (tile++, TILE_FLAG_HAS_ANT | TILE_FLAG_HAS_FOOD | TILE_FLAG_IS_SEEN);
+	}
 
 	state->n_ants = 0;
 	state->n_food = 0;
