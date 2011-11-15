@@ -62,8 +62,18 @@ inline guint manhattan_distance (guint row1,
 		guint n_rows,
 		guint n_cols)
 {
-	return (abs (wrapped_vector (row1, row2, n_rows)) 
-		+ abs (wrapped_vector (col1, col2, n_cols)));
+	return (wrapped_distance (row1, row2, n_rows) 
+		+ wrapped_distance (col1, col2, n_cols));
+}
+
+// Pass all rows, or all cols
+inline guint wrapped_distance (guint rc1,
+		guint rc2,
+		guint n_rcs)
+{
+	guint d1 = abs ((gint)rc2 - (gint)rc1);
+	guint d2 = abs ((rc1 > rc2) ? n_rcs + d1 : d1 - n_rcs);
+	return (d1 < d2 ? d1 : d2);
 }
 
 // Pass all rows, or all cols
