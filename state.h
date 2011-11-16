@@ -20,11 +20,16 @@ typedef struct state
 	guint n_food;
 
 	PathFinder *pf;
+	gint64 timer;
 } State;
 
 void state_set_turn (State *state,
 		guint n_turn);
 
 guint state_get_turn (State *state);
+
+void state_timer_reset (State *state);
+
+gint64 state_timer_get_elapsed (State *state);
 
 #endif // STATE_H

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <signal.h> // for sigaction
 
 #include "types.h"
 #include "rules.h"
@@ -8,6 +9,15 @@
 #include "termite.h"
 
 // main, communicates with tournament engine
+
+#ifndef NDEBUG
+static State *s = NULL;
+
+void on_signal_continue (int num, siginfo_t *info, void *context)
+{
+	state_timer_reset (s);
+}
+#endif
 
 int main (int argc, char *argv[]) 
 {
@@ -20,6 +30,16 @@ int main (int argc, char *argv[])
 
 	memset (&rules, 0, sizeof (rules));
 	memset (&state, 0, sizeof (state));
+
+#ifndef NDEBUG
+	// Intercept SIGCONT to measure turn time
+	s = &state;
+	struct sigaction newsig;
+	newsig.sa_sigaction = on_signal_continue;
+	sigemptyset (&newsig.sa_mask);
+	newsig.sa_flags = SA_SIGINFO | SA_NODEFER;
+	sigaction (SIGCONT, &newsig, NULL);
+#endif
 
 	while (game_running) 
 	{

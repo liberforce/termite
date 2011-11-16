@@ -28,4 +28,7 @@ typedef void * gpointer;
 
 #define G_MAX_UINT ((unsigned int) 0xffffffff)
 
+#define G_LIKELY(expr)  (__builtin_expect (expr, 1))
+#define G_UNLIKELY(expr) (__builtin_expect (expr, 0))
+
 #endif // TYPES_H

@@ -200,11 +200,6 @@ void termite_play_turn (Rules *rules,
 		// We don't handle hills the same way as food, so that several 
 		// ants can chase the same hill
 	}
-
-	// Inform the server we finished sending our actions for the turn
-	fprintf (stdout, "go\n");
-	fflush (stdout);
-	g_debug ("BOT: go\n");
 }
 
 // sends a move to the tournament engine and keeps track of ants new location
@@ -240,20 +235,20 @@ void termite_move_ant (Rules *rules,
 	guint n_rows = map_get_n_rows (state->map);
 	guint n_cols = map_get_n_cols (state->map);
 
-	if (row == n_rows)
+	if G_UNLIKELY (row == n_rows)
 		row = 0;
-	else if (row == G_MAX_UINT)
+	else if G_UNLIKELY (row == G_MAX_UINT)
 		row = n_rows - 1;
 
-	if (col == n_cols)
+	if G_UNLIKELY (col == n_cols)
 		col = 0;
-	else if (col == G_MAX_UINT)
+	else if G_UNLIKELY (col == G_MAX_UINT)
 		col = n_cols - 1;
 
 	// The ant moved out of that tile...
 	tile_unset_flag (tile, TILE_FLAG_HAS_ANT);
 
-	// ...to go ont that one
+	// ...to go on that one
 	Tile *next_tile = map_get_tile (state->map, row, col);
 	assert (! tile_is_flag_set (next_tile, TILE_FLAG_HAS_ANT));
 	tile_set_flag (next_tile, TILE_FLAG_HAS_ANT);
@@ -302,10 +297,10 @@ void termite_cleanup_map (Rules *rules,
 	Tile *tile = map_get_buffer (state->map);
 	Tile *end = tile + map_get_n_elements (state->map);
 
-	do
+	while (tile < end);
 	{
-		tile_unset_flag (tile, TILE_FLAG_HAS_ANT | TILE_FLAG_HAS_FOOD | TILE_FLAG_IS_SEEN);
-	} while (++tile < end);
+		tile_unset_flag (tile++, TILE_FLAG_HAS_ANT | TILE_FLAG_HAS_FOOD | TILE_FLAG_IS_SEEN);
+	}
 
 	state->n_ants = 0;
 	state->n_food = 0;
@@ -521,8 +516,18 @@ gboolean termite_process_command (Rules *rules,
 	{
 		assert (n_args == 1);
 		map_dump (state->map);
+		g_debug ("%06li: map_dump\n", state_timer_get_elapsed (state));
+
 		termite_play_turn (rules, state);
+		g_debug ("%06li: termite_play_turn\n", state_timer_get_elapsed (state));
+
+		// Inform the server we finished sending our actions for the turn
+		fprintf (stdout, "go\n");
+		fflush (stdout);
+		g_debug ("%06li: go sent\n", state_timer_get_elapsed (state));
+
 		termite_cleanup_map (rules, state);
+		g_debug ("%06li: termite_cleanup_map\n", state_timer_get_elapsed (state));
 	}
 	else if (strcmp (args[0], "h") == 0)
 	{
@@ -539,6 +544,7 @@ gboolean termite_process_command (Rules *rules,
 	{
 		assert (n_args == 2);
 		guint n_turn = atoi (args[1]);
+		g_debug ("turn %d\n", n_turn);
 		state_set_turn (state, n_turn);
 	}
 	else if (strcmp (args[0], "ready") == 0)

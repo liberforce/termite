@@ -30,4 +30,9 @@ guint manhattan_distance (guint row1,
 gint wrapped_vector (guint rc1,
 		guint rc2,
 		guint n_rcs);
+
+guint wrapped_distance (guint rc1,
+		guint rc2,
+		guint n_rcs);
+
 #endif // UTILS_H
