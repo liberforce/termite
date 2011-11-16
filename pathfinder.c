@@ -140,3 +140,61 @@ void pathfinder_propagate_attractivity (PathFinder *pf,
 	}
 }
 
+gchar pathfinder_get_most_attractive_direction (PathFinder* pf,
+		Tile *tile)
+{
+	assert (pf != NULL);
+	assert (pf->map != NULL);
+	assert (tile != NULL);
+
+	gchar dir = DIR_NONE;
+	struct cardinals look = { NULL, NULL, NULL, NULL };
+	map_get_cardinals (pf->map, tile_get_row (tile), tile_get_col (tile), &look);
+
+	guint att = tile_get_attractivity (tile);
+	guint att2;
+
+	if (tile_is_free (look.north))
+	{
+		att2 = tile_get_attractivity (look.north);
+	    	if (att2 > att)
+		{
+			att = att2;
+			dir = DIR_NORTH;
+		}
+	}
+
+	if (tile_is_free (look.south))
+	{
+		att2 = tile_get_attractivity (look.south);
+	    	if (att2 > att)
+		{
+			att = att2;
+			dir = DIR_SOUTH;
+		}
+	}
+
+	if (tile_is_free (look.east))
+	{
+		att2 = tile_get_attractivity (look.east);
+	    	if (att2 > att)
+		{
+			att = att2;
+			dir = DIR_EAST;
+		}
+	}
+
+	if (tile_is_free (look.west))
+	{
+		att2 = tile_get_attractivity (look.west);
+	    	if (att2 > att)
+		{
+			att = att2;
+			dir = DIR_WEST;
+		}
+	}
+
+	// DIR_NONE may happen if we can't move
+	return dir;
+}
+

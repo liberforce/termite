@@ -15,4 +15,7 @@ gchar pathfinder_get_closest_direction (PathFinder* pf,
 		Tile *tile,
 		Tile *target);
 
+gchar pathfinder_get_most_attractive_direction (PathFinder* pf,
+		Tile *tile);
+
 #endif // PATHFINDER_H
