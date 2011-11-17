@@ -5,6 +5,7 @@ game_id=$1
 shift
 
 ${there}/playgame.py                                        \
+	--verbose                                    \
 	--player_seed 42                                    \
 	--end_wait=0.25                                     \
 	--nolaunch                                          \
