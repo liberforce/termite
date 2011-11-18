@@ -2,6 +2,7 @@
 #include <stdlib.h>     // for calloc
 
 #include "pathfinder.h"
+#include "direction.h"
 #include "utils.h"
 #include "debug.h"
 
@@ -32,27 +33,25 @@ inline gchar pathfinder_get_closest_direction (PathFinder* pf,
 	assert (tile != NULL);
 	assert (target != NULL);
 
-	gchar dir = DIR_NONE;
-	struct cardinals look = { NULL, NULL, NULL, NULL };
-	map_get_cardinals (pf->map, tile_get_row (tile), tile_get_col (tile), &look);
+	Cardinals look;
+	map_get_cardinals (pf->map, tile_get_row (tile), tile_get_col (tile), look);
 
 	gint dr = wrapped_vector (tile_get_row (tile), tile_get_row (target), map_get_n_rows (pf->map));
 	gint dc = wrapped_vector (tile_get_col (tile), tile_get_col (target), map_get_n_cols (pf->map));
 
-	if (tile_is_free (look.north)
-	    	&& dr < 0)
-		dir = DIR_NORTH;
-	else if (tile_is_free (look.south)
-	    	&& dr > 0)
-		dir = DIR_SOUTH;
-	else if (tile_is_free (look.east)
-	    	&& dc > 0)
-		dir = DIR_EAST;
-	else if (tile_is_free (look.west)
-	    	&& dc < 0)
-		dir = DIR_WEST;
+	if (tile_is_free (look[DI_NORTH]) && dr < 0)
+		return DIR_NORTH;
+
+	if (tile_is_free (look[DI_SOUTH]) && dr > 0)
+		return DIR_SOUTH;
+
+	if (tile_is_free (look[DI_EAST]) && dc > 0)
+		return DIR_EAST;
+
+	if (tile_is_free (look[DI_WEST]) && dc < 0)
+		return DIR_WEST;
 
 	// DIR_NONE may happen if we can't move or if tile == target
-	return dir;
+	return DIR_NONE;
 }
 

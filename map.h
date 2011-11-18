@@ -4,13 +4,7 @@
 #include "types.h"
 #include "tile.h"
 
-struct cardinals
-{
-	Tile *north;
-	Tile *south;
-	Tile *east;
-	Tile *west;
-};
+typedef Tile*(Cardinals)[4];
 
 typedef struct map Map;
 
@@ -27,7 +21,7 @@ Tile * map_get_tile (Map *map,
 void map_get_cardinals (Map *map,
 		guint row,
 		guint col,
-		struct cardinals *seen);
+		Cardinals seen);
 
 gboolean map_tile_in_range (Map *map,
 		Tile *tile, 

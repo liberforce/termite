@@ -5,6 +5,7 @@
 
 #include "termite.h"
 #include "ant.h"
+#include "direction.h"
 #include "map.h"
 #include "debug.h"
 
@@ -317,14 +318,14 @@ gchar termite_explore (Rules *rules,
 	gboolean n, s, e, w;
 	guint8 n_free_tiles = 0;
 	gchar last_dir = ant_get_direction (&tile->with.ant);
-	struct cardinals look = { NULL, NULL, NULL, NULL };
+	Cardinals look = { NULL, NULL, NULL, NULL };
 
-	map_get_cardinals (map, tile_get_row (tile), tile_get_col (tile), &look);
+	map_get_cardinals (map, tile_get_row (tile), tile_get_col (tile), look);
 
-	n = tile_is_free (look.north);
-	s = tile_is_free (look.south);
-	e = tile_is_free (look.east);
-	w = tile_is_free (look.west);
+	n = tile_is_free (look[DI_NORTH]);
+	s = tile_is_free (look[DI_SOUTH]);
+	e = tile_is_free (look[DI_EAST]);
+	w = tile_is_free (look[DI_WEST]);
 	
 	n_free_tiles = n + s +e + w;
 
