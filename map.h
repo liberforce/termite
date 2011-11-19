@@ -38,8 +38,10 @@ guint map_get_manhattan_distance (Map *map,
 
 #ifndef NDEBUG
 void map_dump (Map *map);
+void map_dump_attractivity (Map *map);
 #else
 #define map_dump(...)
+#define map_dump_attractivity(...)
 #endif
 
 #endif // MAP_H

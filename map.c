@@ -186,5 +186,27 @@ inline void map_dump (Map *map)
 	}
 	g_debug ("\n");
 }
+
+inline void map_dump_attractivity (Map *map)
+{
+	assert (map != NULL);
+	guint i, j;
+
+	g_debug ("\n");
+	for (i = 0; i < map->n_rows; i++)
+	{
+		for (j = 0; j < map->n_cols; j++)
+		{
+			Tile *tile = map_get_tile (map, i, j);
+			guint attractivity = tile_get_attractivity (tile);
+			if G_LIKELY (attractivity == 0)
+				fprintf (stderr, " . ");
+			else
+				fprintf (stderr, "%02d ", attractivity);
+		}
+		fprintf (stderr, "\n");
+	}
+	g_debug ("\n");
+}
 #endif
 
