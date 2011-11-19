@@ -50,5 +50,5 @@ inline void queue_reset (Queue *queue)
 inline gboolean queue_is_empty (Queue *queue)
 {
 	assert (queue != NULL);
-	return queue->start != queue->end;
+	return queue->start == queue->end;
 }
