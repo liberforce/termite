@@ -34,9 +34,7 @@ inline gpointer queue_pop (Queue *queue)
 {
 	assert (queue != NULL);
 	assert (queue->start < queue->end);
-	gpointer data = *queue->start;
-	queue->start++;
-	return data;
+	return *queue->start++;
 }
 
 inline Queue* queue_reset (Queue *queue)
@@ -51,8 +49,7 @@ inline Queue* queue_reset (Queue *queue)
 inline guint queue_get_n_elements (Queue *queue)
 {
 	assert (queue != NULL);
-
-	return (queue->end - queue->start) / sizeof (gpointer);
+	return (queue->end - queue->start);
 }
 
 inline void queue_push_queue (Queue *queue, Queue *other)
