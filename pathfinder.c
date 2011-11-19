@@ -82,7 +82,8 @@ static void pathfinder_select_tile_group_set_attractivity (PathFinder *pf,
 		DirectionIndex di;
 		for (di = DI_FIRST; di < DI_LAST; ++di)
 		{
-			if (! tile_is_flag_set (look[di], TILE_FLAG_BEING_PROCESSED))
+			if (! (tile_is_flag_set (look[di], TILE_FLAG_BEING_PROCESSED)
+					|| tile_is_flag_set (look[di], TILE_FLAG_IS_WATER)))
 			{
 				queue_push (output, look[di]);
 				tile_set_flag (look[di], TILE_FLAG_BEING_PROCESSED);
