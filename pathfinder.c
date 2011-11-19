@@ -85,12 +85,13 @@ static void pathfinder_select_tile_group_set_attractivity (PathFinder *pf,
 		DirectionIndex di;
 		for (di = DI_FIRST; di < DI_LAST; ++di)
 		{
-			if (! (tile_is_flag_set (look[di], TILE_FLAG_BEING_PROCESSED)
-					|| tile_is_flag_set (look[di], TILE_FLAG_IS_WATER)))
+			Tile *other = look[di];
+			if (! (tile_is_flag_set (other, TILE_FLAG_BEING_PROCESSED)
+					|| tile_is_flag_set (other, TILE_FLAG_IS_WATER)))
 			{
-				queue_push (output, look[di]);
-				tile_set_flag (look[di], TILE_FLAG_BEING_PROCESSED);
-				tile_add_attractivity (look[di], attractivity);
+				queue_push (output, other);
+				tile_set_flag (other, TILE_FLAG_BEING_PROCESSED);
+				tile_add_attractivity (other, attractivity);
 			}
 		}
 	}
