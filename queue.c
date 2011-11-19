@@ -40,7 +40,7 @@ inline gpointer queue_pop (Queue *queue)
 
 inline void queue_reset (Queue *queue)
 {
-	assert (queue_is_empty (queue));
+	assert (queue != NULL);
 
 	// Rewind to avoid overflow
 	queue->start = queue->end = queue->data;
