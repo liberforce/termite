@@ -137,7 +137,7 @@ void termite_cleanup_map (Rules *rules,
 
 	while (tile < end)
 	{
-		tile_unset_flag (tile++, TILE_FLAG_HAS_ANT | TILE_FLAG_HAS_FOOD | TILE_FLAG_IS_SEEN);
+		tile_unset_flag (tile++, TILE_FLAG_HAS_ANT | TILE_FLAG_HAS_FOOD | TILE_FLAG_IS_SEEN | TILE_FLAG_BEING_PROCESSED);
 		tile_set_attractivity (tile, 0);
 	}
 
