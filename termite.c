@@ -356,6 +356,7 @@ gboolean termite_process_command (Rules *rules,
 	{
 		assert (n_args == 1);
 		map_dump (state->map);
+		map_dump_attractivity (state->map);
 		g_debug ("%06li: map_dump\n", state_timer_get_elapsed (state));
 
 		termite_play_turn (rules, state);
@@ -379,7 +380,8 @@ gboolean termite_process_command (Rules *rules,
 		tile_set_flag (tile, TILE_FLAG_HAS_HILL);
 		tile->with.hill.owner = owner;
 		state->hills[state->n_hills++] = tile;
-		pathfinder_propagate_attractivity (state->pf, tile, 40, 7);
+		if (owner != 0)
+			pathfinder_propagate_attractivity (state->pf, tile, 40, 7);
 	}
 	else if (strcmp (args[0], "turn") == 0)
 	{
