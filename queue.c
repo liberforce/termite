@@ -48,12 +48,11 @@ inline Queue* queue_reset (Queue *queue)
 	return queue;
 }
 
-// Returns the length in bytes of the used part of the queue
-inline guint queue_get_length (Queue *queue)
+inline guint queue_get_n_elements (Queue *queue)
 {
 	assert (queue != NULL);
 
-	return queue->end - queue->start;
+	return (queue->end - queue->start) / sizeof (gpointer);
 }
 
 inline void queue_push_queue (Queue *queue, Queue *other)
@@ -61,7 +60,9 @@ inline void queue_push_queue (Queue *queue, Queue *other)
 	assert (queue != NULL);
 	assert (other != NULL);
 
-	memmove (queue->end, other->start, queue_get_length (other));
+	guint n =  queue_get_n_elements (other);
+	memmove (queue->end, other->start, n * sizeof (gpointer));
+	queue->end += n;
 }
 
 inline gboolean queue_is_empty (Queue *queue)

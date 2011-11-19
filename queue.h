@@ -15,7 +15,7 @@ Queue * queue_reset (Queue *queue);
 
 gboolean queue_is_empty (Queue *queue);
 
-guint queue_get_length (Queue *queue);
+guint queue_get_n_elements (Queue *queue);
 
 void queue_push_queue (Queue *queue, Queue *other);
 
