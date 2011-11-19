@@ -18,4 +18,9 @@ gchar pathfinder_get_closest_direction (PathFinder* pf,
 gchar pathfinder_get_most_attractive_direction (PathFinder* pf,
 		Tile *tile);
 
+void pathfinder_propagate_attractivity (PathFinder *pf,
+		Tile *tile,
+		gint attractivity,
+		gint8 depth);
+
 #endif // PATHFINDER_H

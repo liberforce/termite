@@ -94,12 +94,12 @@ static void pathfinder_select_tile_group_set_attractivity (PathFinder *pf,
 
 void pathfinder_propagate_attractivity (PathFinder *pf,
 		Tile *tile,
-		gint attractivity)
+		gint attractivity,
+		gint8 depth)
 {
 	assert (pf != NULL);
 	assert (tile != NULL);
-	assert (abs (attractivity) < map_get_n_rows (pf->map));
-	assert (abs (attractivity) < map_get_n_cols (pf->map));
+	assert (depth >= 0);
 
 	Queue *input  = pf->queue1;
 	Queue *output = pf->queue2;
@@ -116,7 +116,7 @@ void pathfinder_propagate_attractivity (PathFinder *pf,
 	tile_set_flag (tile, TILE_FLAG_BEING_PROCESSED);
 	tile_add_attractivity (tile, attractivity);
 
-	while (! queue_is_empty (output) && attractivity != 0)
+	while (--depth > 0)
 	{
 		pathfinder_select_tile_group_set_attractivity (pf,
 				input,
@@ -132,6 +132,9 @@ void pathfinder_propagate_attractivity (PathFinder *pf,
 		input = output;
 		output = tmp;
 	}
+
+	queue_reset (input);
+	queue_reset (output);
 }
 
 

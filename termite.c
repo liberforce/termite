@@ -13,157 +13,15 @@ void termite_play_turn (Rules *rules,
 		State *state)
 {
 	guint i;
-	gint food_index, ant_index, hill_index;
-	guint distance; // Manhattan distance
-	Tile *food;
-	Tile *ant;
-	Tile *hill;
 	gchar dir;
 
-	// Keep enemy hills only. Beware that removing list items while 
-	// iterating is tricky. We replace a friendly hill by the last hill.
-	i = 0;
-	while (i < state->n_hills)
-	{
-		if (! tile_has_enemy_hill (state->hills[i]))
-		{
-			state->hills[i] = state->hills[--state->n_hills];
-			continue;
-		}
-		i++;
-	}
-
 	// Process each ant
-	while (state->n_ants > 0)
+	for (i = 0; i < state->n_ants; i++)
 	{
-		// Pre-select first ant
-		ant_index = 0;
-		ant = state->ants[ant_index];
+		Tile *ant = state->ants[i];
 
-		// Pre-select no food
-		food_index = -1;
-		food = NULL;
-
-		// Pre-select no hill
-		hill_index = -1;
-		hill = NULL;
-
-		dir = DIR_NONE;
-
-		// Look for enemy hills to destroy
-		if (dir == DIR_NONE && state->n_hills > 0)
-		{
-			// Find nearest enemy hill for that ant
-			g_debug ("Ant = [%d,%d], searching nearest hill...\n", ant->row, ant->col);
-			
-			distance = G_MAX_UINT;
-			for (i = 0; i < state->n_hills; ++i) 
-			{
-				guint d = map_get_manhattan_distance (state->map,
-						ant,
-						state->hills[i]);
-				if (d < distance)
-				{
-					distance = d;
-					hill = state->hills[i];
-					hill_index = i;
-				}
-				g_debug ("Distance to hill [%d,%d] = %d (closest = %d)\n",
-						state->hills[i]->row,
-						state->hills[i]->col,
-						d,
-						distance);
-			}
-
-			// Find path to go there !
-			dir = pathfinder_get_closest_direction (state->pf, ant, hill); 
-			if (dir != DIR_NONE)
-			{
-
-				g_debug ("ant at [%d,%d] looking for hill at [%d,%d]\n",
-						tile_get_row (ant),
-						tile_get_col (ant),
-						tile_get_row (hill),
-						tile_get_col (hill));
-			}
-		}
-
-		if (dir == DIR_NONE && state->n_food > 0)
-		{
-			if (state->n_food <= state->n_ants)
-			{
-				// Select first food item
-				food_index = 0;
-				food = state->food[food_index];
-				ant_index = -1;
-				ant = NULL;
-
-				// Find nearest ant for that food
-				g_debug ("Food = [%d,%d], searching nearest ant...\n", food->row, food->col);
-				distance = G_MAX_UINT;
-				for (i = 0; i < state->n_ants; ++i) 
-				{
-					guint d = map_get_manhattan_distance (state->map,
-							state->ants[i],
-							food);
-					if (d < distance)
-					{
-						distance = d;
-						ant = state->ants[i];
-						ant_index = i;
-					}
-					g_debug ("Distance to ant [%d,%d] = %d (closest = %d)\n",
-							state->ants[i]->row,
-							state->ants[i]->col,
-							d,
-							distance);
-				}
-			}
-			else
-			{
-				// Find nearest food for that ant
-				g_debug ("Ant = [%d,%d], searching nearest food...\n", ant->row, ant->col);
-
-				distance = G_MAX_UINT;
-				for (i = 0; i < state->n_food; ++i) 
-				{
-					guint d = map_get_manhattan_distance (state->map,
-							ant,
-							state->food[i]);
-					if (d < distance)
-					{
-						distance = d;
-						food = state->food[i];
-						food_index = i;
-					}
-					g_debug ("Distance to food [%d,%d] = %d (closest = %d)\n",
-							state->food[i]->row,
-							state->food[i]->col,
-							d,
-							distance);
-				}
-			}
-
-			assert (food != NULL);
-			assert (ant != NULL);
-
-			// Find path to go there !
-			dir = pathfinder_get_closest_direction (state->pf, ant, food); 
-			if (dir != DIR_NONE)
-			{
-
-				g_debug ("ant at [%d,%d] looking for food at [%d,%d]\n",
-						tile_get_row (ant),
-						tile_get_col (ant),
-						tile_get_row (food),
-						tile_get_col (food));
-			}
-			else
-			{
-				// Prevent marking this food as already being processed
-				food = NULL;
-			}
-		}
+		// Find path to go there !
+		dir = pathfinder_get_most_attractive_direction (state->pf, ant); 
 
 		if (dir == DIR_NONE)
 		{
@@ -180,31 +38,10 @@ void termite_play_turn (Rules *rules,
 		{
 			termite_move_ant (rules, state, ant, dir);
 		}
-
-		if (food != NULL)
-		{
-			assert (food_index >= 0);
-			// Remove that food item from the candidates list
-			// Prevents several ants from chasing the same food
-			state->food[food_index] = state->food[state->n_food - 1];
-			state->n_food--;
-		}
-
-		if (ant != NULL)
-		{
-			assert (ant_index >= 0);
-			// Remove that ant from the candidates list
-			state->ants[ant_index] = state->ants[state->n_ants - 1];
-			state->n_ants--;
-		}
-
-		// We don't handle hills the same way as food, so that several 
-		// ants can chase the same hill
 	}
 }
 
 // sends a move to the tournament engine and keeps track of ants new location
-
 void termite_move_ant (Rules *rules,
 		State* state,
 		Tile* tile,
@@ -301,6 +138,7 @@ void termite_cleanup_map (Rules *rules,
 	while (tile < end)
 	{
 		tile_unset_flag (tile++, TILE_FLAG_HAS_ANT | TILE_FLAG_HAS_FOOD | TILE_FLAG_IS_SEEN);
+		tile_set_attractivity (tile, 0);
 	}
 
 	state->n_ants = 0;
@@ -504,6 +342,7 @@ gboolean termite_process_command (Rules *rules,
 		Tile *tile = map_get_tile (state->map, row, col);
 		tile_set_flag (tile, TILE_FLAG_HAS_FOOD);
 		state->food[state->n_food++] = tile;
+		pathfinder_propagate_attractivity (state->pf, tile, 10, 7);
 	}
 	else if (strcmp (args[0], "w") == 0)
 	{
@@ -540,6 +379,7 @@ gboolean termite_process_command (Rules *rules,
 		tile_set_flag (tile, TILE_FLAG_HAS_HILL);
 		tile->with.hill.owner = owner;
 		state->hills[state->n_hills++] = tile;
+		pathfinder_propagate_attractivity (state->pf, tile, 40, 7);
 	}
 	else if (strcmp (args[0], "turn") == 0)
 	{
