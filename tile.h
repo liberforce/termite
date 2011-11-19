@@ -5,13 +5,6 @@
 #include "ant.h"
 #include "hill.h"
 
-// Possible directions
-#define DIR_NORTH 'N'
-#define DIR_EAST  'E'
-#define DIR_SOUTH 'S'
-#define DIR_WEST  'W'
-#define DIR_NONE  'X'
-
 typedef enum
 {
 	TILE_FLAG_IS_WATER        = 0x01,

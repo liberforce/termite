@@ -3,6 +3,7 @@
 
 #include "pathfinder.h"
 #include "queue.h"
+#include "direction.h"
 #include "utils.h"
 #include "debug.h"
 
@@ -38,28 +39,57 @@ inline gchar pathfinder_get_closest_direction (PathFinder* pf,
 	assert (tile != NULL);
 	assert (target != NULL);
 
-	gchar dir = DIR_NONE;
-	struct cardinals look = { NULL, NULL, NULL, NULL };
-	map_get_cardinals (pf->map, tile_get_row (tile), tile_get_col (tile), &look);
+	Cardinals look;
+	map_get_cardinals (pf->map, tile_get_row (tile), tile_get_col (tile), look);
 
 	gint dr = wrapped_vector (tile_get_row (tile), tile_get_row (target), map_get_n_rows (pf->map));
 	gint dc = wrapped_vector (tile_get_col (tile), tile_get_col (target), map_get_n_cols (pf->map));
 
-	if (tile_is_free (look.north)
-	    	&& dr < 0)
-		dir = DIR_NORTH;
-	else if (tile_is_free (look.south)
-	    	&& dr > 0)
-		dir = DIR_SOUTH;
-	else if (tile_is_free (look.east)
-	    	&& dc > 0)
-		dir = DIR_EAST;
-	else if (tile_is_free (look.west)
-	    	&& dc < 0)
-		dir = DIR_WEST;
+	if (tile_is_free (look[DI_NORTH]) && dr < 0)
+		return DIR_NORTH;
+
+	if (tile_is_free (look[DI_SOUTH]) && dr > 0)
+		return DIR_SOUTH;
+
+	if (tile_is_free (look[DI_EAST]) && dc > 0)
+		return DIR_EAST;
+
+	if (tile_is_free (look[DI_WEST]) && dc < 0)
+		return DIR_WEST;
 
 	// DIR_NONE may happen if we can't move or if tile == target
-	return dir;
+	return DIR_NONE;
+}
+
+static void pathfinder_select_tile_group_set_attractivity (PathFinder *pf,
+		Queue *input, 
+		Queue *output,
+		gint attractivity)
+{
+	assert (input != NULL);
+	assert (output != NULL);
+
+	while (! queue_is_empty (input))
+	{
+		Tile *t = queue_pop (input);
+
+		Cardinals look;
+		map_get_cardinals (pf->map,
+				tile_get_row (t),
+				tile_get_col (t),
+				look);
+
+		DirectionIndex di;
+		for (di = DI_FIRST; di < DI_LAST; ++di)
+		{
+			if (! tile_is_flag_set (look[di], TILE_FLAG_BEING_PROCESSED))
+			{
+				queue_push (output, look[di]);
+				tile_set_flag (look[di], TILE_FLAG_BEING_PROCESSED);
+				tile_add_attractivity (look[di], attractivity);
+			}
+		}
+	}
 }
 
 void pathfinder_propagate_attractivity (PathFinder *pf,
@@ -88,57 +118,22 @@ void pathfinder_propagate_attractivity (PathFinder *pf,
 
 	while (! queue_is_empty (output) && attractivity != 0)
 	{
-		while (! queue_is_empty (input))
-		{
-			Tile *t = queue_pop (input);
-			tile_unset_flag (t, TILE_FLAG_BEING_PROCESSED);
-
-			struct cardinals look = { NULL, NULL, NULL, NULL };
-			map_get_cardinals (pf->map,
-					tile_get_row (t),
-					tile_get_col (t),
-					&look);
-
-			if (! tile_is_flag_set (look.north, TILE_FLAG_BEING_PROCESSED))
-			{
-				queue_push (output, look.north);
-				tile_set_flag (look.north, TILE_FLAG_BEING_PROCESSED);
-				tile_add_attractivity (look.north, attractivity);
-			}
-
-			if (! tile_is_flag_set (look.south, TILE_FLAG_BEING_PROCESSED))
-			{
-				queue_push (output, look.south);
-				tile_add_attractivity (look.south, attractivity);
-				tile_set_flag (look.south, TILE_FLAG_BEING_PROCESSED);
-			}
-
-			if (! tile_is_flag_set (look.east, TILE_FLAG_BEING_PROCESSED))
-			{
-				queue_push (output, look.east);
-				tile_add_attractivity (look.east, attractivity);
-				tile_set_flag (look.east, TILE_FLAG_BEING_PROCESSED);
-			}
-
-			if (! tile_is_flag_set (look.west, TILE_FLAG_BEING_PROCESSED))
-			{
-				queue_push (output, look.west);
-				tile_add_attractivity (look.west, attractivity);
-				tile_set_flag (look.west, TILE_FLAG_BEING_PROCESSED);
-			}
-		}
-
-		--attractivity;
+		pathfinder_select_tile_group_set_attractivity (pf,
+				input,
+				output,
+				attractivity--);
 
 		// Avoids overflow
 		queue_reset (input);
 
-		// Get neighbours from next level -> swap input and output queues
+		// To get neighbours for next depth level, reuse by swapping input and
+		// output queues
 		Queue *tmp = input;
 		input = output;
 		output = tmp;
 	}
 }
+
 
 gchar pathfinder_get_most_attractive_direction (PathFinder* pf,
 		Tile *tile)
@@ -148,49 +143,25 @@ gchar pathfinder_get_most_attractive_direction (PathFinder* pf,
 	assert (tile != NULL);
 
 	gchar dir = DIR_NONE;
-	struct cardinals look = { NULL, NULL, NULL, NULL };
-	map_get_cardinals (pf->map, tile_get_row (tile), tile_get_col (tile), &look);
+	static const gchar dirs[DI_LAST] = { DIR_NORTH, DIR_SOUTH, DIR_EAST, DIR_WEST };
+	Cardinals look;
+	DirectionIndex di;
+
+	map_get_cardinals (pf->map, tile_get_row (tile), tile_get_col (tile), look);
 
 	guint att = tile_get_attractivity (tile);
 	guint att2;
 
-	if (tile_is_free (look.north))
+	for (di = DI_FIRST; di < DI_LAST; ++di)
 	{
-		att2 = tile_get_attractivity (look.north);
-	    	if (att2 > att)
+		if (tile_is_free (look[di]))
 		{
-			att = att2;
-			dir = DIR_NORTH;
-		}
-	}
-
-	if (tile_is_free (look.south))
-	{
-		att2 = tile_get_attractivity (look.south);
-	    	if (att2 > att)
-		{
-			att = att2;
-			dir = DIR_SOUTH;
-		}
-	}
-
-	if (tile_is_free (look.east))
-	{
-		att2 = tile_get_attractivity (look.east);
-	    	if (att2 > att)
-		{
-			att = att2;
-			dir = DIR_EAST;
-		}
-	}
-
-	if (tile_is_free (look.west))
-	{
-		att2 = tile_get_attractivity (look.west);
-	    	if (att2 > att)
-		{
-			att = att2;
-			dir = DIR_WEST;
+			att2 = tile_get_attractivity (look[di]);
+			if (att2 > att)
+			{
+				att = att2;
+				dir = dirs[di];
+			}
 		}
 	}
 

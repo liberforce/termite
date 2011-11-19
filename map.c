@@ -5,6 +5,7 @@
 
 #include "map.h"
 #include "utils.h"
+#include "direction.h"
 #include "debug.h"
 
 struct map
@@ -81,7 +82,7 @@ inline Tile * map_get_tile (Map *map, guint row, guint col)
 void map_get_cardinals (Map *map,
 		guint row,
 		guint col,
-		struct cardinals *seen)
+		Cardinals seen)
 {
 	assert (map != NULL);
 	assert (seen != NULL);
@@ -119,10 +120,10 @@ void map_get_cardinals (Map *map,
 			right = - (map->n_cols -1);
 	}
 
-	seen->north = &map->tiles[offset + up   ];
-	seen->south = &map->tiles[offset + down ];
-	seen->east  = &map->tiles[offset + right];
-	seen->west  = &map->tiles[offset + left ];
+	seen[DI_NORTH] = &map->tiles[offset + up   ];
+	seen[DI_SOUTH] = &map->tiles[offset + down ];
+	seen[DI_EAST]  = &map->tiles[offset + right];
+	seen[DI_WEST]  = &map->tiles[offset + left ];
 }
 
 inline gboolean map_tile_in_range (Map *map,

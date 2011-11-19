@@ -2,6 +2,7 @@
 #include <assert.h>   // for assert
 
 #include "tile.h"
+#include "direction.h"
 
 // ascii codes for tile_dump
 #define TILE_LAND                   '.'
