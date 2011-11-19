@@ -1,5 +1,6 @@
 #include <stdlib.h>   // for calloc, malloc
 #include <assert.h>   // for assert
+#include <string.h>   // for memmove
 
 #include "queue.h"
 
@@ -38,12 +39,29 @@ inline gpointer queue_pop (Queue *queue)
 	return data;
 }
 
-inline void queue_reset (Queue *queue)
+inline Queue* queue_reset (Queue *queue)
 {
 	assert (queue != NULL);
 
 	// Rewind to avoid overflow
 	queue->start = queue->end = queue->data;
+	return queue;
+}
+
+// Returns the length in bytes of the used part of the queue
+inline guint queue_get_length (Queue *queue)
+{
+	assert (queue != NULL);
+
+	return queue->end - queue->start;
+}
+
+inline void queue_push_queue (Queue *queue, Queue *other)
+{
+	assert (queue != NULL);
+	assert (other != NULL);
+
+	memmove (queue->end, other->start, queue_get_length (other));
 }
 
 inline gboolean queue_is_empty (Queue *queue)

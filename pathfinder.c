@@ -1,5 +1,6 @@
 #include <assert.h>     // for assert
 #include <stdlib.h>     // for calloc
+#include <string.h>     // for memmove
 
 #include "pathfinder.h"
 #include "queue.h"
@@ -12,6 +13,7 @@ struct pathfinder
 	Map *map;
 	Queue *queue1;
 	Queue *queue2;
+	Queue *tileset;
 };
 
 inline PathFinder *pathfinder_new (void)
@@ -19,6 +21,7 @@ inline PathFinder *pathfinder_new (void)
 	PathFinder *pf = calloc (1, sizeof(PathFinder));
 	pf->queue1 = queue_new (1024);
 	pf->queue2 = queue_new (1024);
+	pf->tileset = queue_new (1024);
 	return pf;
 }
 
@@ -102,8 +105,9 @@ void pathfinder_propagate_attractivity (PathFinder *pf,
 	assert (tile != NULL);
 	assert (depth >= 0);
 
-	Queue *input  = pf->queue1;
-	Queue *output = pf->queue2;
+	Queue *input  = queue_reset (pf->queue1);
+	Queue *output = queue_reset (pf->queue2);
+	Queue *tileset = queue_reset (pf->tileset);
 
 	// Feed the input to start finding neigbours
 	queue_push (input, tile);
@@ -127,6 +131,9 @@ void pathfinder_propagate_attractivity (PathFinder *pf,
 		// Avoids overflow
 		queue_reset (input);
 
+		// Memorize output
+		queue_push_queue (tileset, output);
+
 		// To get neighbours for next depth level, reuse by swapping input and
 		// output queues
 		Queue *tmp = input;
@@ -134,8 +141,11 @@ void pathfinder_propagate_attractivity (PathFinder *pf,
 		output = tmp;
 	}
 
-	queue_reset (input);
-	queue_reset (output);
+	while (! queue_is_empty (tileset))
+	{
+		Tile *t = queue_pop (tileset);
+		tile_unset_flag (t, TILE_FLAG_BEING_PROCESSED);
+	}
 }
 
 

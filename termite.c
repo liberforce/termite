@@ -9,6 +9,8 @@
 #include "map.h"
 #include "debug.h"
 
+#define DEFAULT_DEPTH 2
+
 void termite_play_turn (Rules *rules,
 		State *state)
 {
@@ -137,7 +139,7 @@ void termite_cleanup_map (Rules *rules,
 
 	while (tile < end)
 	{
-		tile_unset_flag (tile++, TILE_FLAG_HAS_ANT | TILE_FLAG_HAS_FOOD | TILE_FLAG_IS_SEEN | TILE_FLAG_BEING_PROCESSED);
+		tile_unset_flag (tile++, TILE_FLAG_HAS_ANT | TILE_FLAG_HAS_FOOD | TILE_FLAG_IS_SEEN);
 		tile_set_attractivity (tile, 0);
 	}
 
@@ -342,7 +344,7 @@ gboolean termite_process_command (Rules *rules,
 		Tile *tile = map_get_tile (state->map, row, col);
 		tile_set_flag (tile, TILE_FLAG_HAS_FOOD);
 		state->food[state->n_food++] = tile;
-		pathfinder_propagate_attractivity (state->pf, tile, 10, 7);
+		pathfinder_propagate_attractivity (state->pf, tile, 10, DEFAULT_DEPTH);
 	}
 	else if (strcmp (args[0], "w") == 0)
 	{
@@ -381,7 +383,7 @@ gboolean termite_process_command (Rules *rules,
 		tile->with.hill.owner = owner;
 		state->hills[state->n_hills++] = tile;
 		if (owner != 0)
-			pathfinder_propagate_attractivity (state->pf, tile, 40, 7);
+			pathfinder_propagate_attractivity (state->pf, tile, 40, DEFAULT_DEPTH);
 	}
 	else if (strcmp (args[0], "turn") == 0)
 	{
