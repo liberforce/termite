@@ -26,8 +26,7 @@ inline void queue_push (Queue *queue, gpointer data)
 {
 	assert (queue != NULL);
 	assert (queue->end < queue->start + queue->len);
-	*queue->start = data;
-	queue->end++;
+	*queue->end++ = data;
 }
 
 inline gpointer queue_pop (Queue *queue)
@@ -50,5 +49,6 @@ inline void queue_reset (Queue *queue)
 inline gboolean queue_is_empty (Queue *queue)
 {
 	assert (queue != NULL);
+	assert (queue->start <= queue->end);
 	return queue->start == queue->end;
 }
