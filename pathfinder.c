@@ -116,7 +116,7 @@ void pathfinder_propagate_attractivity (PathFinder *pf,
 	tile_set_flag (tile, TILE_FLAG_BEING_PROCESSED);
 	tile_add_attractivity (tile, attractivity);
 
-	while (! queue_is_empty (input) && --depth > 0)
+	while (! queue_is_empty (input) && --depth >= 0)
 	{
 		pathfinder_select_tile_group_set_attractivity (pf,
 				input,
