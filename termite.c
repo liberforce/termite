@@ -383,7 +383,7 @@ gboolean termite_process_command (Rules *rules,
 		tile->with.hill.owner = owner;
 		state->hills[state->n_hills++] = tile;
 		if (owner != 0)
-			pathfinder_propagate_attractivity (state->pf, tile, 40, DEFAULT_DEPTH);
+			pathfinder_propagate_attractivity (state->pf, tile, 40, 2*DEFAULT_DEPTH);
 	}
 	else if (strcmp (args[0], "turn") == 0)
 	{
