@@ -91,7 +91,7 @@ static void pathfinder_select_tile_group_set_attractivity (PathFinder *pf,
 			{
 				queue_push (output, other);
 				tile_set_flag (other, TILE_FLAG_BEING_PROCESSED);
-				tile_add_attractivity (other, attractivity);
+				tile_set_attractivity (other, max (tile_get_attractivity (other), attractivity));
 			}
 		}
 	}
@@ -120,7 +120,7 @@ void pathfinder_propagate_attractivity (PathFinder *pf,
 
 	// We set attractivity level when an input tile is consumed
 	tile_set_flag (tile, TILE_FLAG_BEING_PROCESSED);
-	tile_add_attractivity (tile, attractivity);
+	tile_set_attractivity (tile, 0);
 
 	while (! queue_is_empty (input) && --depth >= 0)
 	{

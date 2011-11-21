@@ -9,7 +9,7 @@
 #include "map.h"
 #include "debug.h"
 
-#define DEFAULT_DEPTH 2
+#define DEFAULT_DEPTH 7
 
 void termite_play_turn (Rules *rules,
 		State *state)
