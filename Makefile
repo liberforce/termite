@@ -2,7 +2,7 @@ CC=gcc
 
 # For debug
 CFLAGS=-O0 -funroll-loops -c -Wall -ggdb3
-LDFLAGS=-O0 -lm -lrt
+LDFLAGS=-O0 -lm
 
 # For release
 #CFLAGS=-O3 -funroll-loops -c -Wall -DNDEBUG
