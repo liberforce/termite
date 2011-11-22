@@ -113,21 +113,20 @@ void pathfinder_propagate_attractivity (PathFinder *pf,
 	// Feed the input to start finding neigbours
 	queue_push (input, tile);
 
-	// Add center tile to output so it gets the same attractivity bonus as
-	// neighbours, because when 2 food items are in diagonal, we want to 
-	// favorize positions where both can be eaten at once
+	// The target tile needs to be part of the final tileset 
+	// so the TILE_FLAG_BEING_PROCESSED flag can be removed
 	queue_push (output, tile);
 
 	// We set attractivity level when an input tile is consumed
 	tile_set_flag (tile, TILE_FLAG_BEING_PROCESSED);
-	tile_set_attractivity (tile, 0);
+	tile_set_attractivity (tile, max (attractivity, tile_get_attractivity (tile)));
 
 	while (! queue_is_empty (input) && --depth >= 0)
 	{
 		pathfinder_select_tile_group_set_attractivity (pf,
 				input,
 				output,
-				attractivity--);
+				--attractivity);
 
 		// Avoids overflow
 		queue_reset (input);
