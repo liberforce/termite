@@ -3,13 +3,13 @@
 
 #include "hill.h"
 
-inline guint hill_get_owner (Hill *hill)
+inline guint8 hill_get_owner (Hill *hill)
 {
 	assert (hill != NULL);
 	return hill->owner;
 }
 
-inline void hill_set_owner (Hill *hill, guint owner)
+inline void hill_set_owner (Hill *hill, guint8 owner)
 {
 	assert (hill != NULL);
 	assert (owner < 26); // owner is in the [0;25] range

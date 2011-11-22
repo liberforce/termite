@@ -5,11 +5,11 @@
 
 typedef struct hill
 {
-	guint owner;
+	guint8 owner;
 } Hill;
 
-guint hill_get_owner (Hill *hill);
+guint8 hill_get_owner (Hill *hill);
 
-void hill_set_owner (Hill *hill, guint owner);
+void hill_set_owner (Hill *hill, guint8 owner);
 
 #endif // HILL_H
