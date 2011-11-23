@@ -54,7 +54,7 @@ void termite_move_ant (Rules *rules,
 	guint col = tile_get_col (tile);
 
 	fprintf (stdout, "o %u %u %c\n", row, col, dir);
-	g_debug ("BOT: o %u %u %c\n", row, col, dir);
+	// g_debug ("BOT: o %u %u %c\n", row, col, dir);
  
 	switch (dir)
 	{
@@ -128,7 +128,7 @@ void termite_init (Rules *rules,
 	// Inform the server we're ready to play
 	fprintf (stdout, "go\n");
 	fflush (stdout);
-	g_debug ("BOT: go\n");
+	// g_debug ("BOT: go\n");
 }
 
 void termite_cleanup_map (Rules *rules,
@@ -305,7 +305,7 @@ gboolean termite_process_command (Rules *rules,
 	gchar *args[10];
 	gint n_args = 0;
 
-	g_debug ("SRV: %s", line);
+	// g_debug ("SRV: %s", line);
 
 	// Replace spaces and newlines by null
 	// This splits the arguments into multiple null-terminated strings
@@ -357,8 +357,8 @@ gboolean termite_process_command (Rules *rules,
 	else if (strcmp (args[0], "go") == 0)
 	{
 		assert (n_args == 1);
-		map_dump (state->map);
-		map_dump_attractivity (state->map);
+		//map_dump (state->map);
+		//map_dump_attractivity (state->map);
 		g_debug ("%06li: map_dump\n", state_timer_get_elapsed (state));
 
 		termite_play_turn (rules, state);
