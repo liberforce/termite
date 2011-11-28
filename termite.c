@@ -147,6 +147,7 @@ void termite_cleanup_map (Rules *rules,
 	}
 
 	state->n_ants = 0;
+	state->n_ennemies = 0;
 	state->n_food = 0;
 	state->n_hills = 0;
 }
@@ -333,10 +334,13 @@ gboolean termite_process_command (Rules *rules,
 		tile_set_flag (tile, TILE_FLAG_HAS_ANT);
 		ant_set_owner (&tile->with.ant, owner);
 
-		if (owner == 0)
+		if G_LIKELY (owner == 0)
 		{
 			state->ants[state->n_ants++] = tile;
-			tile_set_flag (tile, TILE_FLAG_IS_EXPLORED);
+		}
+		else
+		{
+			state->ennemies[state->n_ennemies++] = tile;
 		}
 	}
 	else if (strcmp (args[0], "f") == 0)
