@@ -117,6 +117,9 @@ void termite_init (Rules *rules,
 	state->food = calloc (rules->rows * rules->cols, sizeof (Tile *));
 	state->n_food = 0;
 
+	state->ennemies = calloc (rules->rows * rules->cols, sizeof (Tile *));
+	state->n_ennemies = 0;
+
 	// 26 players at most
 	state->hills = calloc (26, sizeof (Tile *));
 	state->n_hills = 0;
@@ -353,6 +356,15 @@ gboolean termite_process_command (Rules *rules,
 		guint col = atoi (args[2]);
 		Tile *tile = map_get_tile (state->map, row, col);
 		tile_set_flag (tile, TILE_FLAG_IS_WATER);
+	}
+	else if (strcmp (args[0], "d") == 0)
+	{
+		assert (n_args == 4);
+		guint row = atoi (args[1]);
+		guint col = atoi (args[2]);
+		// guint owner = atoi (args[3]);
+		Tile *tile = map_get_tile (state->map, row, col);
+		tile_unset_flag (tile, TILE_FLAG_HAS_ANT);
 	}
 	else if (strcmp (args[0], "go") == 0)
 	{
