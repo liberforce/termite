@@ -10,6 +10,7 @@
 #include "debug.h"
 
 #define DEFAULT_DEPTH 7
+#define MAX_HILLS     26 // 10 (26 in theory) players at most with several hills each
 
 void termite_play_turn (Rules *rules,
 		State *state)
@@ -40,6 +41,32 @@ void termite_play_turn (Rules *rules,
 		{
 			termite_move_ant (rules, state, ant, dir);
 		}
+	}
+}
+
+// Performs checkings required once we have all turn's info
+void termite_init_turn (Rules *rules,
+		State *state)
+{
+	assert (rules != NULL);
+	assert (state != NULL);
+
+	guint i = 0;
+
+	// Check for razed hills
+	// At this time, all seen hills have been announced
+	while (i < state->n_hills)
+	{
+		Tile *t = state->hills[i];
+
+		if G_UNLIKELY (! tile_is_flag_set (t, TILE_FLAG_HAS_HILL))
+		{
+			// The hill has somehow been razed, as it was 
+			// not signaled this turn
+			state->hills[i] = state->hills[--state->n_hills];
+			continue;
+		}
+		i++;
 	}
 }
 
@@ -120,8 +147,7 @@ void termite_init (Rules *rules,
 	state->ennemies = calloc (rules->rows * rules->cols, sizeof (Tile *));
 	state->n_ennemies = 0;
 
-	// 26 players at most
-	state->hills = calloc (26, sizeof (Tile *));
+	state->hills = calloc (MAX_HILLS, sizeof (Tile *));
 	state->n_hills = 0;
 
 	// Our pathfinder
@@ -146,10 +172,23 @@ void termite_cleanup_map (Rules *rules,
 		tile_set_attractivity (tile, 0);
 	}
 
+	// Prepare next turn's check for razed hills
+	guint i;
+	for (i = 0; i < state->n_hills; i++)
+	{
+		Tile *t = state->hills[i];
+
+		// If an hill is supposed to be seen on next turn, then if it's
+		// not announced, that means the hill has been razed 
+		if (! tile_is_flag_set (t, TILE_FLAG_IS_SEEN))
+		{
+			tile_unset_flag (t, TILE_FLAG_HAS_HILL);
+		}
+	}
+
 	state->n_ants = 0;
 	state->n_ennemies = 0;
 	state->n_food = 0;
-	state->n_hills = 0;
 }
 
 gchar termite_explore (Rules *rules,
@@ -373,6 +412,10 @@ gboolean termite_process_command (Rules *rules,
 	else if (strcmp (args[0], "go") == 0)
 	{
 		assert (n_args == 1);
+
+		// Perform checkings required once we have all turn's info
+		termite_init_turn (rules, state);
+
 		//map_dump (state->map);
 		//map_dump_attractivity (state->map);
 		g_debug ("%06li: map_dump\n", state_timer_get_elapsed (state));
@@ -394,12 +437,38 @@ gboolean termite_process_command (Rules *rules,
 		guint row = atoi (args[1]);
 		guint col = atoi (args[2]);
 		guint owner = atoi (args[3]);
+		gboolean is_new_hill = TRUE;
 		Tile *tile = map_get_tile (state->map, row, col);
+
+		// Find out if this hill is already known
+		guint i = 0;
+		for (i = 0; i < state->n_hills; i++)
+		{
+			if (tile == state->hills[i])
+			{
+				is_new_hill = FALSE;
+				break;
+			}
+		}
+
+		// Detect new hills
+		if (is_new_hill)
+		{
+			assert (state->n_hills < MAX_HILLS);
+			tile->with.hill.owner = owner;
+			state->hills[state->n_hills++] = tile;
+
+			if (owner != 0)
+			{
+				pathfinder_propagate_attractivity (state->pf,
+						tile,
+						40,
+						2 * DEFAULT_DEPTH);
+			}
+		}
+
+		// Remember we've seen this hill this turn
 		tile_set_flag (tile, TILE_FLAG_HAS_HILL);
-		tile->with.hill.owner = owner;
-		state->hills[state->n_hills++] = tile;
-		if (owner != 0)
-			pathfinder_propagate_attractivity (state->pf, tile, 40, 2*DEFAULT_DEPTH);
 	}
 	else if (strcmp (args[0], "turn") == 0)
 	{

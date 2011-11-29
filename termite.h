@@ -14,6 +14,9 @@ void termite_cleanup_map (Rules *rules,
 void termite_update_state (Rules *rules, 
 		State *state);
 
+void termite_init_turn (Rules *rules,
+		State *state);
+
 void termite_play_turn (Rules *rules,
 		State *state);
 
