@@ -168,8 +168,9 @@ void termite_cleanup_map (Rules *rules,
 
 	while (tile < end)
 	{
-		tile_unset_flag (tile++, TILE_FLAG_HAS_ANT | TILE_FLAG_HAS_FOOD);
+		tile_unset_flag (tile, TILE_FLAG_HAS_ANT | TILE_FLAG_HAS_FOOD);
 		tile_set_attractivity (tile, 0);
+		++tile;
 	}
 
 	// Prepare next turn's check for razed hills
