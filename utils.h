@@ -6,14 +6,14 @@
 gint max (gint a, gint b);
 gint min (gint a, gint b);
 
-guint distance (guint row1,
+guint euclidian_distance (guint row1,
 		guint col1,
 		guint row2,
 		guint col2,
 		guint n_rows,
 		guint n_cols);
 
-guint distance_sq (guint row1,
+guint euclidian_distance_sq (guint row1,
 		guint col1,
 		guint row2,
 		guint col2,

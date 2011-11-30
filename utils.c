@@ -16,7 +16,7 @@ inline gint min (gint a, gint b)
 	return (a <= b) ? a : b;
 }
 
-inline guint distance_sq (guint row1,
+inline guint euclidian_distance_sq (guint row1,
 		guint col1,
 		guint row2,
 		guint col2,
@@ -39,14 +39,14 @@ inline guint distance_sq (guint row1,
 
 // returns the distance between two items on the grid accounting for map wrapping
 
-inline guint distance (guint row1, 
+inline guint euclidian_distance (guint row1, 
 		guint col1, 
 		guint row2, 
 		guint col2, 
 		guint n_rows, 
 		guint n_cols) 
 {
-	return sqrt (distance_sq (row1, 
+	return sqrt (euclidian_distance_sq (row1, 
 				col1, 
 				row2, 
 				col2, 
