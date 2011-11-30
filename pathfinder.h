@@ -4,6 +4,7 @@
 #include "types.h"
 #include "map.h"
 #include "tile.h"
+#include "queue.h"
 
 typedef struct pathfinder PathFinder;
 
@@ -22,5 +23,9 @@ void pathfinder_propagate_attractivity (PathFinder *pf,
 		Tile *tile,
 		gint attractivity,
 		gint8 depth);
+
+Queue *pathfinder_select_in_range_sq (PathFinder *pf,
+		Tile *tile,
+		guint distance_sq);
 
 #endif // PATHFINDER_H

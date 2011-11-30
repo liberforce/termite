@@ -7,6 +7,8 @@
 #include "ant.h"
 #include "direction.h"
 #include "map.h"
+#include "queue.h"
+#include "pathfinder.h"
 #include "debug.h"
 
 #define DEFAULT_DEPTH 7
@@ -65,6 +67,26 @@ void termite_init_turn (Rules *rules,
 			// not signaled this turn
 			state->hills[i] = state->hills[--state->n_hills];
 			continue;
+		}
+		i++;
+	}
+
+	// Count how many times a tile is seen by different friendly ants
+	i = 0;
+	while (i < state->n_ants)
+	{
+		Tile *t = state->ants[i];
+		Queue *queue = pathfinder_select_in_range_sq (state->pf,
+				t,
+				rules->viewradius_sq);
+
+		while (! queue_is_empty (queue))
+		{
+			t = queue_pop (queue);
+			tile_incr_seen (t);
+			tile_unset_flag (t, TILE_FLAG_BEING_PROCESSED);
+			if G_UNLIKELY (! tile_is_flag_set (t, TILE_FLAG_IS_EXPLORED))
+				tile_set_flag (t, TILE_FLAG_IS_EXPLORED);
 		}
 		i++;
 	}
@@ -166,13 +188,6 @@ void termite_cleanup_map (Rules *rules,
 	Tile *tile = map_get_buffer (state->map);
 	Tile *end = tile + map_get_n_elements (state->map);
 
-	while (tile < end)
-	{
-		tile_unset_flag (tile, TILE_FLAG_HAS_ANT | TILE_FLAG_HAS_FOOD);
-		tile_set_attractivity (tile, 0);
-		++tile;
-	}
-
 	// Prepare next turn's check for razed hills
 	guint i;
 	for (i = 0; i < state->n_hills; i++)
@@ -181,10 +196,18 @@ void termite_cleanup_map (Rules *rules,
 
 		// If an hill is supposed to be seen on next turn, then if it's
 		// not announced, that means the hill has been razed 
-		if (tile_get_seen (t) > 0)
+		if (tile_is_seen (t))
 		{
 			tile_unset_flag (t, TILE_FLAG_HAS_HILL);
 		}
+	}
+
+	while (tile < end)
+	{
+		tile_unset_flag (tile, TILE_FLAG_HAS_ANT | TILE_FLAG_HAS_FOOD);
+		tile_set_seen (tile, 0);
+		tile_set_attractivity (tile, 0);
+		++tile;
 	}
 
 	state->n_ants = 0;

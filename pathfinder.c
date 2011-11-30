@@ -183,3 +183,52 @@ gchar pathfinder_get_most_attractive_direction (PathFinder* pf,
 	return dir;
 }
 
+static void pathfinder_select_if_in_range (PathFinder *pf,
+		Queue *queue,
+		Tile *tile,
+		Tile *other,
+		guint distance_sq)
+{
+	if (tile_is_flag_set (other, TILE_FLAG_BEING_PROCESSED))
+		return;
+
+	guint d = map_distance_sq (pf->map, tile, other);
+
+	if (d < distance_sq)
+	{
+		queue_push (queue, other);
+		tile_set_flag (other, TILE_FLAG_BEING_PROCESSED);
+
+		Cardinals look;
+		map_get_cardinals (pf->map,
+				tile_get_row (other),
+				tile_get_col (other),
+				look);
+
+		DirectionIndex di;
+		for (di = DI_FIRST; di < DI_LAST; di++)
+		{
+			pathfinder_select_if_in_range (pf,
+					queue,
+					tile,
+					look[di],
+					distance_sq);
+		}
+	}
+}
+
+Queue *pathfinder_select_in_range_sq (PathFinder *pf,
+		Tile *tile,
+		guint distance_sq)
+{
+	assert (pf != NULL);
+	assert (tile != NULL);
+
+	queue_reset (pf->tileset);	
+	pathfinder_select_if_in_range (pf,
+			pf->tileset,
+			tile,
+			tile,
+			distance_sq);
+	return pf->tileset;
+}
