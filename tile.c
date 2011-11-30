@@ -105,6 +105,37 @@ inline gint tile_get_attractivity (Tile *tile)
 	return tile->attractivity;
 }
 
+inline void tile_incr_seen (Tile *tile)
+{
+	assert (tile != NULL);
+	++tile->seen;
+}
+
+inline void tile_decr_seen (Tile *tile)
+{
+	assert (tile != NULL);
+	--tile->seen;
+}
+
+inline guint tile_get_seen (Tile *tile)
+{
+	assert (tile != NULL);
+	return tile->seen;
+}
+
+inline gboolean tile_is_seen (Tile *tile)
+{
+	assert (tile != NULL);
+	return (tile->seen > 0);
+}
+
+inline void tile_set_seen (Tile *tile,
+		guint seen)
+{
+	assert (tile != NULL);
+	tile->seen = seen;
+}
+
 // Probabilities in the range [0; 100]
 gchar tile_get_random_direction (Tile *tile,
 		guint8 north,
@@ -269,7 +300,7 @@ gchar tile_get_ascii_type (Tile *tile)
 	if (! tile_is_flag_set (tile, TILE_FLAG_IS_EXPLORED))
 		return TILE_UNEXPLORED;
 
-	if (!tile_is_flag_set (tile, TILE_FLAG_IS_SEEN))
+	if (! tile_is_seen (tile))
 		return TILE_UNSEEN;
 
 	if (tile_is_flag_set (tile, TILE_FLAG_HAS_DEAD_ANT))

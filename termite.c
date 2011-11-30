@@ -168,7 +168,7 @@ void termite_cleanup_map (Rules *rules,
 
 	while (tile < end)
 	{
-		tile_unset_flag (tile++, TILE_FLAG_HAS_ANT | TILE_FLAG_HAS_FOOD | TILE_FLAG_IS_SEEN);
+		tile_unset_flag (tile++, TILE_FLAG_HAS_ANT | TILE_FLAG_HAS_FOOD);
 		tile_set_attractivity (tile, 0);
 	}
 
@@ -180,7 +180,7 @@ void termite_cleanup_map (Rules *rules,
 
 		// If an hill is supposed to be seen on next turn, then if it's
 		// not announced, that means the hill has been razed 
-		if (! tile_is_flag_set (t, TILE_FLAG_IS_SEEN))
+		if (tile_get_seen (t) > 0)
 		{
 			tile_unset_flag (t, TILE_FLAG_HAS_HILL);
 		}

@@ -8,7 +8,6 @@
 typedef enum
 {
 	TILE_FLAG_IS_WATER        = 0x01,
-	TILE_FLAG_IS_SEEN         = 0x02,
 	TILE_FLAG_IS_EXPLORED     = 0x04,
 	TILE_FLAG_HAS_ANT         = 0x08,
 	TILE_FLAG_HAS_HILL        = 0x10,
@@ -23,6 +22,7 @@ typedef struct tile
 	guint row;
 	guint col;
 	guint attractivity;
+	guint seen;
 	union 
 	{
 		Ant ant;
@@ -58,6 +58,17 @@ void tile_set_attractivity (Tile *tile,
 		gint attractivity);
 
 gint tile_get_attractivity (Tile *tile);
+
+void tile_incr_seen (Tile *tile);
+
+void tile_decr_seen (Tile *tile);
+
+guint tile_get_seen (Tile *tile);
+
+void tile_set_seen (Tile *tile,
+		guint seen);
+
+gboolean tile_is_seen (Tile *tile);
 
 #endif // TILE_H
 
