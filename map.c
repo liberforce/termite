@@ -144,7 +144,7 @@ inline guint map_distance_sq (Map *map,
 	assert (tile != NULL);
 	assert (other != NULL);
 
-	return distance_sq (tile_get_row (tile),
+	return euclidian_distance_sq (tile_get_row (tile),
 			tile_get_col (tile),
 			tile_get_row (other),
 			tile_get_col (other),
