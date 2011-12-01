@@ -407,7 +407,8 @@ gchar pathfinder_explore_least_seen (PathFinder *pf,
 	{
 		Tile *t = look[di];
 
-		if (tile_is_flag_set (t, TILE_FLAG_IS_WATER))
+		if (tile_is_flag_set (t, TILE_FLAG_IS_WATER) 
+				|| tile_is_flag_set (t, TILE_FLAG_HAS_ANT))
 			continue;
 
 		guint s = tile_get_seen (t);
