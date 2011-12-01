@@ -24,9 +24,7 @@ DirectionIndex direction_to_index (gchar dir)
 		case 'S': return DI_SOUTH;
 		case 'E': return DI_EAST;
 		case 'W': return DI_WEST;
-		default:
-			  assert (0);
-			  return DI_FIRST;
+		default:  return DI_FIRST;
 	};
 }
 
