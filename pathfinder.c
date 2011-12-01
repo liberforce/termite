@@ -388,7 +388,7 @@ gchar pathfinder_explore_random (PathFinder *pf,
 	return DIR_NONE;
 }
 
-gchar pathfinder_explore_less_seen (PathFinder *pf,
+gchar pathfinder_explore_least_seen (PathFinder *pf,
 		Tile *tile)
 {
 	assert (tile != NULL);

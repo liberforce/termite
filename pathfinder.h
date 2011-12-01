@@ -32,4 +32,7 @@ Queue *pathfinder_select_in_range_sq (PathFinder *pf,
 gchar pathfinder_explore_random (PathFinder *pf,
 		Tile *tile);
 
+gchar pathfinder_explore_least_seen (PathFinder *pf,
+		Tile *tile);
+
 #endif // PATHFINDER_H
