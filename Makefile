@@ -16,6 +16,7 @@ SOURCES=MyBot.c                    \
 	state.c                    \
 	tile.c                     \
 	pathfinder.c               \
+	direction.c                \
 	hill.c                     \
 	queue.c                    \
 	time.c
