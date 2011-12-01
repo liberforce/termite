@@ -11,7 +11,9 @@
 #include "pathfinder.h"
 #include "debug.h"
 
-#define DEFAULT_DEPTH 7
+#define HILL_PROPAGATION_DEPTH 14
+#define FOOD_PROPAGATION_DEPTH  7
+
 #define MAX_HILLS     26 // 10 (26 in theory) players at most with several hills each
 
 void termite_play_turn (Rules *rules,
@@ -68,6 +70,17 @@ void termite_init_turn (Rules *rules,
 			state->hills[i] = state->hills[--state->n_hills];
 			continue;
 		}
+
+		// Propagate ennemy hill scent
+		if (hill_get_owner (&t->with.hill) != 0)
+		{
+			pathfinder_propagate_attractivity (state->pf,
+					t,
+					40,
+					-1,
+					HILL_PROPAGATION_DEPTH);
+		}
+
 		i++;
 	}
 
@@ -414,7 +427,11 @@ gboolean termite_process_command (Rules *rules,
 		Tile *tile = map_get_tile (state->map, row, col);
 		tile_set_flag (tile, TILE_FLAG_HAS_FOOD);
 		state->food[state->n_food++] = tile;
-		pathfinder_propagate_attractivity (state->pf, tile, 10, DEFAULT_DEPTH);
+		pathfinder_propagate_attractivity (state->pf,
+				tile,
+				10,
+				-1,
+				FOOD_PROPAGATION_DEPTH);
 	}
 	else if (strcmp (args[0], "w") == 0)
 	{
@@ -481,14 +498,6 @@ gboolean termite_process_command (Rules *rules,
 			assert (state->n_hills < MAX_HILLS);
 			tile->with.hill.owner = owner;
 			state->hills[state->n_hills++] = tile;
-
-			if (owner != 0)
-			{
-				pathfinder_propagate_attractivity (state->pf,
-						tile,
-						40,
-						2 * DEFAULT_DEPTH);
-			}
 		}
 
 		// Remember we've seen this hill this turn

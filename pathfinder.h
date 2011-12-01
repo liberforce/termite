@@ -22,6 +22,7 @@ gchar pathfinder_get_most_attractive_direction (PathFinder* pf,
 void pathfinder_propagate_attractivity (PathFinder *pf,
 		Tile *tile,
 		gint attractivity,
+		gint step,
 		gint8 depth);
 
 Queue *pathfinder_select_in_range_sq (PathFinder *pf,

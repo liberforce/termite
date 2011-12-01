@@ -76,6 +76,10 @@ static void pathfinder_select_tile_group_set_attractivity (PathFinder *pf,
 	{
 		Tile *t = queue_pop (input);
 
+		// Don't propagate on unexplored tiles, we may propagate in water
+		if (! tile_is_flag_set (t, TILE_FLAG_IS_EXPLORED))
+			continue;
+
 		Cardinals look;
 		map_get_cardinals (pf->map,
 				tile_get_row (t),
@@ -100,6 +104,7 @@ static void pathfinder_select_tile_group_set_attractivity (PathFinder *pf,
 void pathfinder_propagate_attractivity (PathFinder *pf,
 		Tile *tile,
 		gint attractivity,
+		gint step,
 		gint8 depth)
 {
 	assert (pf != NULL);
@@ -123,10 +128,11 @@ void pathfinder_propagate_attractivity (PathFinder *pf,
 
 	while (! queue_is_empty (input) && --depth >= 0)
 	{
+		attractivity += step;
 		pathfinder_select_tile_group_set_attractivity (pf,
 				input,
 				output,
-				--attractivity);
+				attractivity);
 
 		// Avoids overflow
 		queue_reset (input);
