@@ -387,3 +387,36 @@ gchar pathfinder_explore_random (PathFinder *pf,
 	assert (0);
 	return DIR_NONE;
 }
+
+gchar pathfinder_explore_less_seen (PathFinder *pf,
+		Tile *tile)
+{
+	assert (tile != NULL);
+	assert (tile_is_flag_set (tile, TILE_FLAG_HAS_ANT));
+	assert (ant_get_owner (&tile->with.ant) == 0);
+
+	gchar dir = DIR_NONE;
+	gchar last_dir = ant_get_direction (&tile->with.ant);
+	DirectionIndex last_dir_index = direction_to_index (last_dir);
+	Cardinals look = { NULL, NULL, NULL, NULL };
+	map_get_cardinals (pf->map, tile_get_row (tile), tile_get_col (tile), look);
+
+	guint n_seen = G_MAX_UINT;
+	DirectionIndex di;
+	for (di = DI_FIRST; di < DI_LAST; di++)
+	{
+		Tile *t = look[di];
+
+		if (tile_is_flag_set (t, TILE_FLAG_IS_WATER))
+			continue;
+
+		guint s = tile_get_seen (t);
+		if (s < n_seen || (s == n_seen && last_dir_index == di))
+		{
+			n_seen = s;
+			dir = direction_from_index (di);
+		}
+	}
+
+	return dir;
+}
