@@ -180,7 +180,7 @@ inline void map_dump (Map *map)
 		for (j = 0; j < map->n_cols; j++)
 		{
 			Tile *tile = map_get_tile (map, i, j);
-			fprintf (stderr, "%c", tile_get_ascii_type (tile));
+			fprintf (stderr, " %c", tile_get_ascii_type (tile));
 		}
 		fprintf (stderr, "\n");
 	}
