@@ -232,7 +232,7 @@ gchar termite_explore (Rules *rules,
 		State *state,
 		Tile *tile)
 {
-	return pathfinder_explore_random (state->pf, tile);
+	return pathfinder_explore_least_seen (state->pf, tile);
 }
 
 gboolean termite_process_command (Rules *rules,
