@@ -43,7 +43,7 @@ void termite_play_turn (Rules *rules,
 		// Now we send our move
 		if (dir != DIR_NONE)
 		{
-			termite_move_ant (rules, state, ant, dir);
+			state->ants[i] = termite_move_ant (rules, state, ant, dir);
 		}
 	}
 }
@@ -106,7 +106,7 @@ void termite_init_turn (Rules *rules,
 }
 
 // sends a move to the tournament engine and keeps track of ants new location
-void termite_move_ant (Rules *rules,
+Tile * termite_move_ant (Rules *rules,
 		State* state,
 		Tile* tile,
 		gchar dir) 
@@ -151,13 +151,15 @@ void termite_move_ant (Rules *rules,
 	tile_unset_flag (tile, TILE_FLAG_HAS_ANT);
 
 	// ...to go on that one
-	Tile *next_tile = map_get_tile (state->map, row, col);
-	assert (! tile_is_flag_set (next_tile, TILE_FLAG_HAS_ANT));
-	tile_set_flag (next_tile, TILE_FLAG_HAS_ANT);
-	next_tile->with.ant = tile->with.ant;
+	Tile *new_tile = map_get_tile (state->map, row, col);
+	assert (! tile_is_flag_set (new_tile, TILE_FLAG_HAS_ANT));
+	tile_set_flag (new_tile, TILE_FLAG_HAS_ANT);
+	new_tile->with.ant = tile->with.ant;
 
 	// Remember chosen direction (useful for exploration)
-	ant_set_direction (&next_tile->with.ant, dir);
+	ant_set_direction (&new_tile->with.ant, dir);
+
+	return new_tile;
 }
 
 // initializes the bot on the very first turn using given rules

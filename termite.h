@@ -20,7 +20,7 @@ void termite_init_turn (Rules *rules,
 void termite_play_turn (Rules *rules,
 		State *state);
 
-void termite_move_ant (Rules *rules,
+Tile * termite_move_ant (Rules *rules,
 		State* state, 
 		Tile* tile, 
 		gchar dir);
