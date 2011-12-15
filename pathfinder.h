@@ -29,7 +29,7 @@ Queue *pathfinder_select_in_range_sq (PathFinder *pf,
 		Tile *tile,
 		guint distance_sq);
 
-gchar pathfinder_explore_random (PathFinder *pf,
+gchar pathfinder_get_random_direction (PathFinder *pf,
 		Tile *tile);
 
 gchar pathfinder_explore_least_seen (PathFinder *pf,
